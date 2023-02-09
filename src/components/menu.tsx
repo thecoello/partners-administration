@@ -1,29 +1,55 @@
 import React from "react";
 
-export default class Menu extends React.Component {
+interface IStatesMenu {
+  home?: boolean,
+  invoices?: boolean,
+  filesUpload?: boolean,
+  createUser?: boolean
+}
+
+interface IPropsMenu {
+  home?: boolean,
+  invoices?: boolean,
+  filesUpload?: boolean,
+  createUser?: boolean
+}
+
+export default class Menu extends React.Component<IPropsMenu, IStatesMenu> {
   constructor(props: any) {
     super(props)
+    this.state = {
+      invoices: this.props.invoices,
+      createUser: this.props.createUser
+    }
+
+
   }
 
-  currentYear():any{
+  currentYear(): any {
     return <b>{new Date().getFullYear()}</b>
   }
 
   render(): React.ReactNode {
     return (
       <div id="sidebar">
-      <div id="logo">
-        
-        <p>{<this.currentYear />} SMB INNOVATION SUMMIT</p>
-        <span>Partner administrator</span>
+        <div id="logo">
 
-      </div>
+          <p>{<this.currentYear />} SMB INNOVATION SUMMIT</p>
+          <span>Partner administrator</span>
+
+        </div>
         <nav>
           <ul>
             <li>Home</li>
-            <li>Invoices</li>
+            <li onClick={() => {
+              this.props.invoices
+
+
+            }}>Invoices</li>
             <li>Files Upload</li>
-            <li>Create User</li>
+            <li onClick={()=>{
+              this.props.createUser
+            }}>Create User</li>
           </ul>
 
         </nav>
@@ -34,5 +60,5 @@ export default class Menu extends React.Component {
       </div>
     )
   }
-  
+
 }
