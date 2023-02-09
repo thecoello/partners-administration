@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+* {
+  font-family: "Lato", sans-serif !important;
+}
+
+body, html {
+  overflow: hidden;
+}
+
+.offcanvas-header .btn-close {
+  color: white !important;
+  opacity: 1;
+  filter: contrast(0) brightness(1) opacity(1);
+}
+
+#main {
+  height: 100vh;
+  background-color: #dcdcdc;
+}
+
+.container {
+  padding-left: 0 !important;
+}
+
+#sidebar {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #f7f7f7;
+  background-color: #000000;
+  padding: 4vh 1vw;
+}
+#sidebar #logo p {
+  text-align: left;
+  margin: 0;
+}
+#sidebar #logo span {
+  font-weight: 300;
+}
+#sidebar nav {
+  padding: auto;
+}
+#sidebar nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#sidebar nav ul li {
+  margin: 3vh 2vw;
+  cursor: pointer;
+}
+#sidebar #logout {
+  width: 100%;
+  text-align: center;
+  padding: 0vw 2vh;
+}
+
+#content-view {
+  padding: 2vh 2vw;
+  scroll-behavior: auto;
+}
+
+#invoice {
+  background: #f7f7f7;
+  padding: 3vh 3vh;
+  border-radius: 10px;
+}
+
+#header-invoice {
+  padding: 1vh 0;
+  margin: 0;
+}/*# sourceMappingURL=style.css.map */
