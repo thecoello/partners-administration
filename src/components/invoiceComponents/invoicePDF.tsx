@@ -2,8 +2,10 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import React from "react";
 import { renderToString } from 'react-dom/server';
+import Logo from '../../assets/logo.png'
 
 interface IProps {
+  currency?: string,
   adminUser?: boolean,
   invoiceAvailable?: boolean
   editInvoice?: boolean
@@ -19,6 +21,15 @@ interface IProps {
   ivaTotal?: number,
   total?: number,
   downloadInvoice?: boolean
+  sellerName?: string,
+  sellerAddres?: string,
+  sellerCP?: string,
+  sellerCity?: string,
+  sellerCountry?: string,
+  sellerVAT?: string,
+  footerText?: string,
+  invoiceNumber?: string
+  invoiceDate?: string
 }
 
 interface IinvoicePDF {
@@ -28,9 +39,9 @@ interface IinvoicePDF {
 export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>{
 
   componentDidMount() {
-    
-    
-    
+
+
+
   }
 
   constructor(props: IProps) {
@@ -40,112 +51,114 @@ export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>
 
   invoice = () => {
     return (
-      <div className="container-fluid">
-
-        <div className="row">
-
-          <div className="col">
+      <div style={{ "width": "595px", "margin": "30px 0" }}>
 
 
-            <div className="row">
-              <div className="col bg-dark">
 
-                <h3 className="text-light" id="header-invoice">2023 SMB INNOVATION SUMMIT</h3>
 
-              </div>
+        <div style={{ "width": "495px", "margin": "0 auto", "display": "flex", "flexDirection": "column", "justifyContent": "space-between" }}>
+          <div className="row">
+            <div className="col-8">
+
+              <img style={{ "height": "20px" }} src={Logo} alt="" />
+
             </div>
-
-            <br />
-
-            <div className="row">
-              <div className="col-6">
-                Company name: {this.props.companyName} <br />
-                Addres: {this.props.address} <br />
-                Zip/Postal Code: {this.props.zipCode} <br />
-                Country: {this.props.country} <br />
-                VAT: {this.props.vatNumber} <br />
-              </div>
-              <div className="col-6">
-                VAT 046065132035 <br />
-                Addres: C. de Pamplona, 22 <br />
-                Zip/Postal Code: 28039 <br />
-                Country: Spain, Madrid <br />
-                Email: info@smbsummit.com
-              </div>
+            <div className="col-4">
+              <p style={{ "fontSize": "0.5em", "margin": "5px 0", "textTransform":"uppercase" }}>
+                <b>{this.props.sellerName}</b> <br />
+                {this.props.sellerAddres} <br />
+                {this.props.sellerCP} &nbsp; {this.props.sellerCity}<br />
+                {this.props.sellerCountry} <br />
+                CIF:&nbsp;{this.props.sellerVAT}</p>
             </div>
-            <br />
-
-            <div className="row bg-dark text-light">
-              <div className="col">
-                Incove number: 00000
-              </div>
-              <div className="col">
-                Invoice date: 01/01/20203
-              </div>
-            </div>
-            <br />
-
-            <div className="row">
-              <div className="col">
-                <h3>Details</h3>
-              </div>
-            </div>
-            <hr />
-
-            <div className="row text-left">
-              <div className="col-8">
-                Description
-              </div>
-              <div className="col-2">
-                Quantity
-              </div>
-              <div className="col-2">Subtotal</div>
-            </div>
-            <hr />
-
-            <div className="row text-left">
-              <div className="col-8">
-                <p>{this.props.sponsorCategory}</p>
-                <p>{this.props.location}</p>
-              </div>
-              <div className="col-2">
-                1
-              </div>
-              <div className="col-2">{this.props.subtotal}</div>
-            </div>
-
-            <hr />
-
-            <div className="row text-left">
-              <div className="col-8">
-              </div>
-              <div className="col-2">
-                <p>Subtotal:</p>
-                <p>IVA: ({this.props.iva} %)</p>
-              </div>
-              <div className="col-2">
-                <p>{this.props.subtotal}</p>
-                <p>{this.props.ivaTotal}</p>
-              </div>
-            </div>
-
-            <div className="row text-left">
-              <div className="col-8">
-              </div>
-              <div className="col-2">
-                <h3>Total:</h3>
-              </div>
-              <div className="col-2">
-                <h3>{this.props.total}</h3>
-
-              </div>
-            </div>
-
           </div>
 
+          <br />
+
+          <div className="row" style={{ "background": "#f7f7f7", "display": "flex", "alignItems": "center" }}>
+            <div className="col">
+              <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textTransform":"uppercase" }}>
+                <b>{this.props.companyName}</b> <br />
+                {this.props.address} <br />
+                {this.props.zipCode} <br />
+                {this.props.country} <br />
+                <b>NIF/VAT: {this.props.vatNumber}</b> <br /></p>
+            </div>
+            <div className="col">
+              <p style={{ "fontSize": "1em", "margin": "0px 0" }}><b>INVOICE NUMBER: {this.props.invoiceNumber}</b></p>
+              <p style={{ "fontSize": "0.6em", "margin": "0px 0" }}>INVOICE DATE: <b>{this.props.invoiceDate}</b></p>
+            </div>
+          </div>
+          <br />
+
+
+          {/* BODY */}
+
+          <div>
+
+            <div className="row">
+              <div className="col-12">
+                <p style={{ "fontSize": "0.8em", "margin": "10px 0" }}>Details</p>
+              </div>
+            </div>
+
+            <div className="row text-left" style={{ "borderTop": "1px solid #222222", "borderBottom": "1px solid #222222" }}>
+
+              <div className="col-8">
+                <p style={{ "fontSize": "0.6em", "margin": "0px 0", "textAlign": "left" }}>Description</p>
+              </div>
+              <div className="col-2">
+                <p style={{ "fontSize": "0.6em", "margin": "0px 0", "textAlign": "center" }}>Quantity</p>
+              </div>
+              <div className="col-2">
+                <p style={{ "fontSize": "0.6em", "margin": "0px 0", "textAlign": "right" }}>Subtotal</p></div>
+            </div>
+
+            <div className="row text-left">
+              <div className="col-8">
+                <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}><b>{this.props.sponsorCategory}</b></p>
+                <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>{this.props.location}</p>
+              </div>
+              <div className="col-2">
+                <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "center" }}>1</p>
+              </div>
+              <div className="col-2"><p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.subtotal}&nbsp;{this.props.currency}</p></div>
+            </div>
+
+            <div className="row text-left" style={{ "borderTop": "1px solid #222222" }}>
+              <div className="col-8">
+              </div>
+              <div className="col-2">
+                <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>Subtotal:</p>
+                {this.props.country === "SPAIN" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>IVA: ({this.props.iva} %)</p>: null}
+              </div>
+              <div className="col-2">
+                <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.subtotal}&nbsp;{this.props.currency}</p>
+                {this.props.country === "SPAIN" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.ivaTotal}&nbsp;{this.props.currency}</p>: null}
+              </div>
+            </div>
+
+            <div className="row text-left">
+              <div className="col-8">
+              </div>
+              <div className="col-2" style={{ "borderTop": "0.5px solid #222222" }}>
+                <p style={{ "fontSize": "1em", "margin": "10px 0", "textAlign": "left" }}>Total</p>
+              </div>
+              <div className="col-2" style={{ "borderTop": "0.5px solid #222222", "textAlign": "right" }}>
+                <p style={{ "fontSize": "1em", "margin": "10px 0", "textAlign": "right" }}>{this.props.total}&nbsp;{this.props.currency}</p>
+
+              </div>
+            </div>
+          </div>
+
+          {/* FOOTER */}
+          <div className="row" style={{ "position": "relative", "top": "300px" }}>
+            <div className="col-12">
+              <p style={{ "fontSize": "0.5em", "padding": "10px 0", "background": "#f7f7f7", "textAlign": "center" }}>{this.props.footerText}</p>
+            </div>
+          </div>
 
         </div>
-
       </ div>
     )
   }
