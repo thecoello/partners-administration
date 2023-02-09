@@ -1,13 +1,14 @@
 import jsPDF from "jspdf";
 import React from "react";
-import { renderToString } from "react-dom/server";
 import InvoicePDF from "./invoiceComponents/invoicePDF"
+import ReactDOMServer from "react-dom/server"
 
 interface IProps {
 
 }
 
 interface IinvoiceInfo {
+  currency?:string,
   adminUser?: boolean,
   invoiceAvailable?: boolean
   editInvoice?: boolean
@@ -22,7 +23,17 @@ interface IinvoiceInfo {
   iva?: number,
   ivaTotal?: number,
   total?: number,
-  downloadInvoice?: boolean
+  downloadInvoice?: boolean,
+  sellerName?: string,
+  sellerAddres?: string,
+  sellerCP?: string,
+  sellerCity?: string,
+  sellerCountry?: string,
+  sellerVAT?: string,
+  footerText?: string,
+  invoiceNumber?: string,
+  invoiceDate?: string
+
 }
 
 export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
@@ -31,13 +42,14 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
     super(props)
 
     this.state = {
+      currency: "€",
       adminUser: true,
       invoiceAvailable: true,
       editInvoice: false,
-      companyName: 'Tasman',
-      address: 'C/ Santa adela 5',
+      companyName: 'NOMBRE EMPRESA',
+      address: 'C/ CON DIRECCIÓN 5',
       zipCode: '28033',
-      country: 'spain',
+      country: 'SPAIN',
       vatNumber: '0116851',
       sponsorCategory: 'Gold Sponsor',
       location: 'Panama (NA + LAC) + Bangkok (APJ + GC) + Vienna (EMEA + MEE)',
@@ -46,6 +58,15 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
       ivaTotal: 0,
       total: 0,
       downloadInvoice: false,
+      sellerName: "TASMAN GRAPHICS, S.L.",
+      sellerAddres: "C/ Pamplona, 22 Local",
+      sellerCP: "28039",
+      sellerCity: "Madrid",
+      sellerCountry: "España",
+      sellerVAT: "ESB86062312",
+      footerText: "Tasman Graphics, S.L. - Inscrita en el Registro Mercantil de Madrid, Tomo 28272, Folio 36, Sección 8, Hoja No M-509184 - C.I.F.: B86062312",
+      invoiceNumber: "000000",
+      invoiceDate: "01/01/2023"
     }
 
   }
@@ -355,10 +376,12 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
 
               this.setState({ downloadInvoice: true })
 
-              const doc = new jsPDF('p', 'pt');
+              const doc = new jsPDF('p','px',[595, 842]);
 
-              doc.html(renderToString( <InvoicePDF
-
+              doc.html(ReactDOMServer.renderToString( <InvoicePDF
+                currency={this.state.currency}
+                invoiceNumber={this.state.invoiceNumber}
+                invoiceDate={this.state.invoiceDate}
                 companyName={this.state.companyName}
                 address={this.state.address}
                 zipCode={this.state.zipCode}
@@ -370,6 +393,14 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
                 iva={this.state.iva}
                 ivaTotal={this.state.ivaTotal}
                 total={this.state.total}
+                sellerName={this.state.sellerName}
+                sellerAddres={this.state.sellerAddres}
+                sellerCP={this.state.sellerCP}
+                sellerCity={this.state.sellerCity}
+                sellerCountry={this.state.country}
+                sellerVAT={this.state.sellerVAT}
+                footerText={this.state.footerText}
+      
 
               />), {
                 async callback(doc) {
@@ -423,7 +454,7 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
   }
 
   setIva = () => {
-    return <p>IVA ({this.state.iva} %): {this.state.ivaTotal}</p>
+    return <p>IVA ({this.state.iva} %): {this.state.ivaTotal}&nbsp;{this.state.currency}</p>
   }
 
   invoiceList = () => {
@@ -516,10 +547,11 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
               <div className="mb-3 text-end">
                 <h5><b>Resumen</b></h5>
                 <div className="d-flex flex-column">
-                  <p>Subtotal: {this.state.subtotal}
+                  <p>Subtotal: {this.state.subtotal} &nbsp; {this.state.currency}
                   </p>
 
-                  <this.setIva />
+                  
+                  {this.state.country === "SPAIN" ? <><this.setIva /></> : null}
                 </div>
               </div>
             </div>
@@ -529,7 +561,7 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
                 <div className="d-flex flex-column text-center ">
 
                   <h5><b>Total:</b></h5>
-                  <h3>{this.state.total}</h3>
+                  <h3>{this.state.total}&nbsp; {this.state.currency}</h3>
 
                 </div>
               </div>
