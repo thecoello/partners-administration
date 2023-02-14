@@ -7,7 +7,7 @@ interface IProps {
 
 }
 
-interface IinvoiceInfo {
+interface IState {
   currency?:string,
   adminUser?: boolean,
   invoiceAvailable?: boolean
@@ -25,7 +25,7 @@ interface IinvoiceInfo {
   total?: number,
   downloadInvoice?: boolean,
   sellerName?: string,
-  sellerAddres?: string,
+  sellerAddress?: string,
   sellerCP?: string,
   sellerCity?: string,
   sellerCountry?: string,
@@ -33,10 +33,9 @@ interface IinvoiceInfo {
   footerText?: string,
   invoiceNumber?: string,
   invoiceDate?: string
-
 }
 
-export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
+export default class Invoice extends React.Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props)
@@ -59,7 +58,7 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
       total: 0,
       downloadInvoice: false,
       sellerName: "TASMAN GRAPHICS, S.L.",
-      sellerAddres: "C/ Pamplona, 22 Local",
+      sellerAddress: "C/ Pamplona, 22 Local",
       sellerCP: "28039",
       sellerCity: "Madrid",
       sellerCountry: "España",
@@ -394,14 +393,12 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
                 ivaTotal={this.state.ivaTotal}
                 total={this.state.total}
                 sellerName={this.state.sellerName}
-                sellerAddres={this.state.sellerAddres}
+                sellerAddress={this.state.sellerAddress}
                 sellerCP={this.state.sellerCP}
                 sellerCity={this.state.sellerCity}
                 sellerCountry={this.state.country}
                 sellerVAT={this.state.sellerVAT}
                 footerText={this.state.footerText}
-      
-
               />), {
                 async callback(doc) {
                   console.log(doc)
@@ -416,7 +413,7 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
     )
   }
 
-  componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IinvoiceInfo>, snapshot?: any): void {
+  componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any): void {
 
 
 
@@ -477,8 +474,6 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
               }} type="text" className="form-control" required />
             </div>
             </div>
-
-
           </div>
         </div>
 
@@ -579,11 +574,11 @@ export default class Invoice extends React.Component<IProps, IinvoiceInfo> {
   render(): React.ReactNode {
     return (
       <>
-        <div id="invoice">
+        <div className="section">
 
           <div className="container">
             <div className="row">
-              <div className="col-6">  <h3>Invoice</h3></div>
+              <div className="col-6">  <h3>Invoices</h3></div>
               <div className="col-6 text-end">
                 <button className="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Create Invoice</button>
               </div>

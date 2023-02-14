@@ -1,34 +1,42 @@
 import React from "react";
 
-interface IStatesMenu {
-  home?: boolean,
-  invoices?: boolean,
-  filesUpload?: boolean,
-  createUser?: boolean
+interface IState {
+
 }
 
-interface IPropsMenu {
-  home?: boolean,
-  invoices?: boolean,
-  filesUpload?: boolean,
-  createUser?: boolean
+interface IProps {
+  _home?: any,
+  _invoices?: any,
+  _filesUpload?: any,
+  _createUser?: any
 }
 
-export default class Menu extends React.Component<IPropsMenu, IStatesMenu> {
+export default class Menu extends React.Component<IProps, IState > {
   constructor(props: any) {
     super(props)
-    this.state = {
-      invoices: this.props.invoices,
-      createUser: this.props.createUser
-    }
-
-
+    this.showHome.bind(this)
+    this.showInvoice.bind(this)
+    this.showFiles.bind(this)
+    this.showUsers.bind(this)
   }
 
   currentYear(): any {
     return <b>{new Date().getFullYear()}</b>
   }
 
+  showHome(){
+    this.props._home()
+  }
+  showInvoice(){
+    this.props._invoices()
+  }
+  showFiles(){
+    this.props._filesUpload()
+  }
+  showUsers(){
+    this.props._createUser()
+  }
+  
   render(): React.ReactNode {
     return (
       <div id="sidebar">
@@ -40,16 +48,18 @@ export default class Menu extends React.Component<IPropsMenu, IStatesMenu> {
         </div>
         <nav>
           <ul>
-            <li>Home</li>
             <li onClick={() => {
-              this.props.invoices
-
-
+              this.showHome()
+            }}>Home</li>
+            <li onClick={() => {
+              this.showInvoice()
             }}>Invoices</li>
-            <li>Files Upload</li>
+            <li onClick={() => {
+              this.showFiles()
+            }}>Files Upload</li>
             <li onClick={()=>{
-              this.props.createUser
-            }}>Create User</li>
+              this.showUsers()
+            }}>Users</li>
           </ul>
 
         </nav>

@@ -22,7 +22,7 @@ interface IProps {
   total?: number,
   downloadInvoice?: boolean
   sellerName?: string,
-  sellerAddres?: string,
+  sellerAddress?: string,
   sellerCP?: string,
   sellerCity?: string,
   sellerCountry?: string,
@@ -66,7 +66,7 @@ export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>
             <div className="col-4">
               <p style={{ "fontSize": "0.5em", "margin": "5px 0", "textTransform":"uppercase" }}>
                 <b>{this.props.sellerName}</b> <br />
-                {this.props.sellerAddres} <br />
+                {this.props.sellerAddress} <br />
                 {this.props.sellerCP} &nbsp; {this.props.sellerCity}<br />
                 {this.props.sellerCountry} <br />
                 CIF:&nbsp;{this.props.sellerVAT}</p>
