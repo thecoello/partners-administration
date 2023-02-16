@@ -77,4 +77,12 @@ body, html {
   padding: 3vh 3vh;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.0705882353) 0px 14px 20px 0px;
+}
+
+#actions {
+  text-align: right;
+}
+
+.list-item {
+  margin: 2vh 1vw;
 }/*# sourceMappingURL=style.css.map */
