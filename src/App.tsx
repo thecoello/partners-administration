@@ -1,6 +1,6 @@
 import React from "react";
 import Home from "./components/home";
-import CreateUser from "./components/createUser";
+import CreateUser from "./components/users";
 import FileUpload from "./components/fileUpload";
 import Invoice from "./components/invoice";
 import Menu from "./components/menu"
