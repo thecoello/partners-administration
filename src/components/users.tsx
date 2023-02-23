@@ -19,8 +19,9 @@ interface IState {
   createEditUser?: boolean
   createUser?: boolean
   updateUser?: boolean
-  password?:string
-  userType?:string
+  password?: string
+  userType?: string
+  userId?: string
 }
 
 export default class createAndUpdateUser extends React.Component<IProps, IState> {
@@ -32,8 +33,8 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
       name: "",
       contact: "",
       email: "",
-      password:"",
-      userType:undefined,
+      password: "",
+      userType: undefined,
       sponsorCategory: "",
       location: "",
       priceType: "",
@@ -42,7 +43,8 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
       data: [],
       createEditUser: false,
       createUser: false,
-      updateUser: false
+      updateUser: false,
+      userId: ""
     }
   }
 
@@ -51,6 +53,13 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
       .then((response) => {
         this.setState({ data: response.data })
       })
+  }
+
+  deleteUser(){
+    axios.delete(this.state.url + "/api/deleteuser/" + this.state.userId)
+    .then((response) => {
+      alert(response.data)
+    })
   }
 
   listUsers = () => {
@@ -67,9 +76,10 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
             this.setState({ name: user.name })
             this.setState({ contact: user.contact })
             this.setState({ email: user.email })
-            this.setState({ password: ""})
-            this.setState({ userType: user.user_type.toString()})
+            this.setState({ password: "" })
+            this.setState({ userType: user.user_type.toString() })
             this.setState({ createEditUser: true })
+            this.setState({ userId: user.id})
           }}>Edit user</button>
         </div>
       </div>)
@@ -118,8 +128,8 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
             </div>
             <div className="col-2"> <div className="mb-3">
               <label className="form-label">User Type*</label>
-              <select onChange={(e)=>{
-                this.setState({userType: e.target.value})
+              <select onChange={(e) => {
+                this.setState({ userType: e.target.value })
               }} value={this.state.userType == "0" || this.state.userType == "1" ? this.state.userType : "DEFAULT"} className="form-select" id="floatingSelectDisabled" aria-label="Floating label disabled select example">
                 <option value="DEFAULT">Select a option</option>
                 <option value="0">User</option>
@@ -199,12 +209,16 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
 
                     {this.state.updateUser ? <button onClick={() => {
                     }} className="btn btn-success" >Update User</button> : null}
-
-
                   </div>
                 </div>
               </div>
-              <div className="col-10"></div>
+              <div className="col-2">
+                {this.state.updateUser ? <button onClick={() => {
+                 this.deleteUser()
+                }} className="btn btn-white text-danger" >Delete user</button> : null}
+
+              </div>
+              <div className="col-8"></div>
             </div>
           </div>
 
@@ -257,8 +271,7 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
             </div>
 
             <div className="offcanvas offcanvas-bottom h-50" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
-              <div className="offcanvas-header bg-black text-white
-">
+              <div className="offcanvas-header bg-black text-white">
                 <h3 className="offcanvas-title" id="offcanvasBottomLabel">{this.state.createUser ? "New User" : "Update User"}</h3>
                 <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" onClick={() => {
                   this.setState({ updateUser: false })
@@ -273,6 +286,8 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
             </div>
           </div>
         </div>
+
+        
 
       </>
     )
