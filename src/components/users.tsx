@@ -1,33 +1,37 @@
-import axios from "axios";
-import React from "react";
-import FormData from "form-data";
+import axios from "axios"
+import React from "react"
+import FormData from "form-data"
+import qs from "qs"
+
 
 interface IProps { }
 
 interface IState {
-  priceInputDisabled?: boolean;
-  name?: string;
-  contact?: string;
-  email?: string;
-  sponsorCategoryData?: any;
-  sponsorCategory: string;
-  location?: string;
-  locationData?: any;
-  priceType?: string;
-  price_normal?: string;
-  price_all_normal?: string;
-  price_all_early?: string;
-  price_early?: string;
-  subTotal?: string;
-  url?: string;
-  data?: any;
-  createEditUser?: boolean;
-  createUser?: boolean;
-  updateUser?: boolean;
-  password?: string;
-  contractFile?: any;
-  userType?: string;
-  userId?: string;
+  priceInputDisabled?: boolean
+  name?: string
+  contact?: string
+  email?: string
+  sponsorCategoryData?: any
+  sponsorCategory: string
+  location?: string
+  locationData?: any
+  priceType?: string
+  price_normal?: string
+  price_all_normal?: string
+  price_all_early?: string
+  price_early?: string
+  subTotal?: string
+  url?: string
+  data?: any
+  createEditUser?: boolean
+  createUser?: boolean
+  updateUser?: boolean
+  password?: string
+  contractFile?: any
+  userType?: string
+  userId?: string
+  inputDisabled?: boolean
+  locationUser?: string
 }
 
 export default class createAndUpdateUser extends React.Component<
@@ -35,7 +39,7 @@ export default class createAndUpdateUser extends React.Component<
   IState
 > {
   constructor(props: IProps) {
-    super(props);
+    super(props)
     this.state = {
       priceInputDisabled: true,
       name: "",
@@ -60,32 +64,35 @@ export default class createAndUpdateUser extends React.Component<
       createUser: false,
       updateUser: false,
       userId: "",
-    };
+      inputDisabled: false,
+      locationUser: ""
+    }
   }
 
   componentDidMount(): void {
-    axios.get(this.state.url + "/api/getusers").then((response) => {
-      this.setState({ data: response.data });
-    });
+    axios.get(this.state.url + "/api/getusersinvoices").then((response) => {
+      console.log(response.data)
+      this.setState({ data: response.data })
+    })
 
     axios.get(this.state.url + "/api/getpackages").then((response) => {
-      this.setState({ sponsorCategoryData: response.data });
-    });
+      this.setState({ sponsorCategoryData: response.data })
+    })
 
     axios.get(this.state.url + "/api/getlocations").then((response) => {
-      this.setState({ locationData: response.data });
-    });
+      this.setState({ locationData: response.data })
+    })
   }
 
   getInvoiceInfo = (id: any) => {
-
-    axios.get(this.state.url + "/api/getinvoice/" + id).then((response) => {
-      this.setState({ location: response.data });
-      this.setState({ sponsorCategory: response.data.category })
-      this.setState({ location: response.data.location })
-      this.setState({ priceType: response.data.pricetype })
-      this.setState({ subTotal: response.data.subtotal })
-    });
+    axios.get(this.state.url + "/api/getinvoice/" + id)
+      .then((response) => {
+        this.setState({ location: response.data })
+        this.setState({ sponsorCategory: response.data.category })
+        this.setState({ location: response.data.location })
+        this.setState({ priceType: response.data.pricetype })
+        this.setState({ subTotal: response.data.subtotal })
+      })
 
   }
 
@@ -93,31 +100,16 @@ export default class createAndUpdateUser extends React.Component<
     prevProps: Readonly<IProps>,
     prevState: Readonly<IState>,
     snapshot?: any
-  ): void {
-    if (this.state.sponsorCategory != prevState.sponsorCategory && !this.state.updateUser) {
-      this.updatePrice();
-    } else if (this.state.location != prevState.location && !this.state.updateUser) {
-      this.updatePrice();
-    } else if (this.state.priceType != prevState.priceType && !this.state.updateUser) {
-      this.updatePrice();
-    }else if (this.state.sponsorCategory != prevState.sponsorCategory && !this.state.createUser) {
-      this.updatePrice();
-    } else if (this.state.location != prevState.location && !this.state.createUser) {
-      this.updatePrice();
-    } else if (this.state.priceType != prevState.priceType && !this.state.createUser) {
-      this.updatePrice();
-    }
-
-   }
+  ): void { }
 
   cleanInputs = () => {
-    this.setState({ name: "" });
-    this.setState({ contact: "" });
-    this.setState({ email: "" });
-    this.setState({ password: "" });
-    this.setState({ userType: "" });;
-    this.setState({ contractFile: "" });
-    this.setState({ location: "" });
+    this.setState({ name: "" })
+    this.setState({ contact: "" })
+    this.setState({ email: "" })
+    this.setState({ password: "" })
+    this.setState({ userType: "" })
+    this.setState({ contractFile: "" })
+    this.setState({ location: "" })
     this.setState({ sponsorCategory: "" })
     this.setState({ location: "" })
     this.setState({ priceType: "" })
@@ -125,46 +117,44 @@ export default class createAndUpdateUser extends React.Component<
   }
 
   createUser() {
-    const data = new FormData();
+    const data = new FormData()
 
-    data.append("name", this.state.name);
-    data.append("contact", this.state.contact);
-    data.append("email", this.state.email);
-    data.append("password", this.state.password);
-    data.append("user_type", this.state.userType);
-    data.append("contract_file", this.state.contractFile[0]);
-
+    data.append("name", this.state.name)
+    data.append("contact", this.state.contact)
+    data.append("email", this.state.email)
+    data.append("password", this.state.password)
+    data.append("user_type", this.state.userType)
+    data.append("contract_file", this.state.contractFile[0])
 
     const config = {
       method: "post",
       maxBodyLength: Infinity,
       url: this.state.url + "/api/postuser",
       headers: {
-        'Content-Type': 'multipart/form-data'
+        "Content-Type": "multipart/form-data",
       },
       data: data,
-    };
+    }
 
     axios(config)
       .then((response) => {
         if (response.statusText === "Created") {
+          const data2 = new FormData()
 
-          const data2 = new FormData();
-
-          data2.append("user_id", response.data.id);
-          data2.append("category", this.state.sponsorCategory);
-          data2.append("location", this.state.location);
-          data2.append("pricetype", this.state.priceType);
-          data2.append("subtotal", this.state.subTotal);
+          data2.append("user_id", response.data.id)
+          data2.append("category", this.state.sponsorCategory)
+          data2.append("location", this.state.location)
+          data2.append("pricetype", this.state.priceType)
+          data2.append("subtotal", Number(this.state.subTotal))
 
           const config2 = {
-            method: 'post',
+            method: "post",
             url: this.state.url + "/api/postinvoice",
             headers: {
-              'Content-Type': 'multipart/form-data'
+              "Content-Type": "multipart/form-data",
             },
-            data: data2
-          };
+            data: data2,
+          }
 
           axios(config2)
             .then((response) => {
@@ -176,67 +166,128 @@ export default class createAndUpdateUser extends React.Component<
             .catch(function (error) {
               Object.keys(error.response.data).forEach((key: any) => {
                 alert(error.response.data[key])
-              });
-            });
-
+              })
+            })
         }
       })
       .catch(function (error) {
         Object.keys(error.response.data).forEach((key: any) => {
           alert(error.response.data[key])
-        });
-      });
+        })
+      })
+  }
+
+  updateUser() {
+    let data
+    if (this.state.password === "") {
+      data = qs.stringify({
+        "name": this.state.name,
+        "contact": this.state.contact,
+        "email": this.state.email,
+        "user_type": this.state.userType
+      })
+    } else {
+      data = qs.stringify({
+        "name": this.state.name,
+        "contact": this.state.contact,
+        "email": this.state.email,
+        "password": this.state.password,
+        "user_type": this.state.userType
+      })
+    }
+
+
+    var config = {
+      maxBodyLength: Infinity,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+    };
+
+
+
+    axios.put(this.state.url + "/api/putuser/" + this.state.userId, data)
+      .then((response) => {
+        if (response.statusText === "OK") {
+
+          let data2;
+
+          data2 = qs.stringify({
+            "category": this.state.sponsorCategory,
+            "location": this.state.location,
+            "pricetype": this.state.priceType,
+            "subtotal": this.state.subTotal
+          })
+
+          var config2 = {
+            maxBodyLength: Infinity,
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+          };
+
+          axios.put(this.state.url + "/api/putinvoice/" + this.state.userId, data2)
+            .then((response) => {
+              if (response.statusText === "OK") {
+
+                alert(this.state.name + " Updated")
+                this.cleanInputs()
+
+              }
+            })
+            .catch(function (error) {
+              Object.keys(error.response.data).forEach((key: any) => {
+                alert(error.response.data[key])
+              })
+            })
+        }
+      })
+      .catch(function (error) {
+        Object.keys(error.response.data).forEach((key: any) => {
+          alert(error.response.data[key])
+        })
+      })
   }
 
   updatePrice = () => {
-
-    if (
-      Number(this.state.sponsorCategory) > 0 &&
-      Number(this.state.location) > 0 &&
-      Number(this.state.priceType) > 0
+    if (Number(this.state.priceType) === 1 && Number(this.state.location) < 4) {
+      this.setState({ subTotal: this.state.price_normal })
+    } else if (
+      Number(this.state.priceType) === 2 &&
+      Number(this.state.location) < 4
     ) {
-      if (
-        Number(this.state.priceType) === 1 &&
-        Number(this.state.location) < 4
-      ) {
-        this.setState({ subTotal: this.state.price_normal });
-      }
-      if (
-        Number(this.state.priceType) === 2 &&
-        Number(this.state.location) < 4
-      ) {
-        this.setState({ subTotal: this.state.price_early });
-      }
-      if (
-        Number(this.state.priceType) === 1 &&
-        Number(this.state.location) === 4
-      ) {
-        this.setState({ subTotal: this.state.price_all_normal });
-      }
-      if (
-        Number(this.state.priceType) === 2 &&
-        Number(this.state.location) === 4
-      ) {
-        this.setState({ subTotal: this.state.price_all_early });
-      }
+      this.setState({ subTotal: this.state.price_early })
+    } else if (
+      Number(this.state.priceType) === 1 &&
+      Number(this.state.location) === 4
+    ) {
+      this.setState({ subTotal: this.state.price_all_normal })
+    } else if (
+      Number(this.state.priceType) === 2 &&
+      Number(this.state.location) === 4
+    ) {
+      this.setState({ subTotal: this.state.price_all_early })
     }
-  };
+  }
 
-  /*   deleteUser(){
-      axios.delete(this.state.url + "/api/deleteuser/" + this.state.userId)
-      .then((response) => {
-        alert(this.state.sponsorCategoryData)
-      })
-    } */
+  deleteUser() {
+    axios.delete(this.state.url + "/api/deleteuser/" + this.state.userId)
+    axios.delete(this.state.url + "/api/deleteinvoice/" + this.state.userId)
+  }
 
   listUsers = () => {
-    const listUsersDiv: JSX.Element[] = [];
+    const listUsersDiv: JSX.Element[] = []
 
     this.state.data.forEach((user: any, i: number) => {
+
       listUsersDiv.push(
         <div key={i} className="row list-item">
-          <div className="col-4">{user.name}</div>
-          <div className="col-4">{user.email}</div>
+          <div className="col-2">{user.contact}</div>
+          <div className="col-2">{user.location}</div>
+
+          <div className="col-2">{user.name}</div>
+          <div className="col-2">{user.email}</div>
+
           <div className="col-4 text-right" id="actions">
             <button
               className="btn btn-dark"
@@ -245,85 +296,75 @@ export default class createAndUpdateUser extends React.Component<
               data-bs-target="#offcanvasBottom"
               aria-controls="offcanvasBottom"
               onClick={() => {
-                this.cleanInputs()
-                this.setState({ updateUser: true });
-                this.setState({ name: user.name });
-                this.setState({ contact: user.contact });
-                this.setState({ email: user.email });
-                this.setState({ password: "" });
-                this.setState({ userType: user.user_type.toString() });
-                this.setState({ createEditUser: true });
-                this.setState({ userId: user.id });
-                this.getInvoiceInfo(user.id)
+                this.setState({ inputDisabled: true })
+
+                this.setState({ updateUser: true })
+                this.setState({ name: user.name })
+                this.setState({ contact: user.contact })
+                this.setState({ email: user.email })
+                this.setState({ password: "" })
+                this.setState({ userType: user.user_type })
+                this.setState({ contractFile: user.contract_file })
+                this.setState({ userId: user.id }, () => {
+                  this.getInvoiceInfo(user.id)
+                })
+
+                this.setState({ createEditUser: true })
               }}
             >
               Edit user
             </button>
           </div>
         </div>
-      );
-    });
+      )
+    })
 
-    return <>{listUsersDiv}</>;
-  };
+    return <>{listUsersDiv}</>
+  }
 
   getCategorySponsor = () => {
-    const sponsorCategoryData: JSX.Element[] = [];
+    const sponsorCategoryData: JSX.Element[] = []
 
     this.state.sponsorCategoryData.forEach((category: any, i: number) => {
       sponsorCategoryData.push(
         <option onChange={(e) => { }} key={i++} value={i + 1}>
           {category.pack_name}
         </option>
-      );
-    });
+      )
+    })
 
-    return <>{sponsorCategoryData}</>;
-  };
+    return <>{sponsorCategoryData}</>
+  }
 
   getLocations = () => {
-    const locationsData: JSX.Element[] = [];
+    const locationsData: JSX.Element[] = []
 
     this.state.locationData.forEach((category: any, i: number) => {
       locationsData.push(
         <option onClick={() => { }} key={i++} value={i + 1}>
           {category.location_name}
         </option>
-      );
-    });
+      )
+    })
 
-    return <>{locationsData}</>;
-  };
+    return <>{locationsData}</>
+  }
 
-  createAndUpdateUser = () => {
+  _createAndUpdateUser = () => {
     return (
       <form>
         <br />
 
         <div className="container">
           <div className="row">
+
             <div className="col-4">
-              {" "}
               <div className="mb-3">
-                <label className="form-label">Name*</label>
-                <input
-                  value={this.state.name}
-                  onChange={(e) => {
-                    this.setState({ name: e.target.value });
-                  }}
-                  type="text"
-                  className="form-control"
-                />
-              </div>
-            </div>
-            <div className="col-4">
-              {" "}
-              <div className="mb-3">
-                <label className="form-label">Contact*</label>
+                <label className="form-label">Compnay name*</label>
                 <input
                   value={this.state.contact}
                   onChange={(e) => {
-                    this.setState({ contact: e.target.value });
+                    this.setState({ contact: e.target.value })
                   }}
                   type="text"
                   className="form-control"
@@ -332,32 +373,42 @@ export default class createAndUpdateUser extends React.Component<
             </div>
 
             <div className="col-4">
-              {" "}
+              <div className="mb-3">
+                <label className="form-label">Name *</label>
+                <input
+                  value={this.state.name}
+                  onChange={(e) => {
+                    this.setState({ name: e.target.value })
+                  }}
+                  type="text"
+                  className="form-control"
+                />
+              </div>
+            </div>
+
+
+            <div className="col-4">
               <div className="mb-3">
                 <label className="form-label">Email*</label>
                 <input
                   value={this.state.email}
                   onChange={(e) => {
-                    this.setState({ email: e.target.value });
+                    this.setState({ email: e.target.value })
                   }}
                   type="text"
-                  className="form-control"
+                  className="form-control" disabled={this.state.updateUser ? true : false}
                 />
               </div>
             </div>
-
           </div>
           <div className="row">
-
-
             <div className="col-4">
-              {" "}
               <div className="mb-3">
                 <label className="form-label">Password*</label>
                 <input
                   value={this.state.password}
                   onChange={(e) => {
-                    this.setState({ password: e.target.value });
+                    this.setState({ password: e.target.value })
                   }}
                   type="text"
                   className="form-control"
@@ -365,12 +416,11 @@ export default class createAndUpdateUser extends React.Component<
               </div>
             </div>
             <div className="col-4">
-              {" "}
               <div className="mb-3">
                 <label className="form-label">User Type*</label>
                 <select
                   onChange={(e) => {
-                    this.setState({ userType: e.target.value });
+                    this.setState({ userType: e.target.value })
                   }}
                   value={
                     this.state.userType == "0" || this.state.userType == "1"
@@ -388,16 +438,35 @@ export default class createAndUpdateUser extends React.Component<
               </div>
             </div>
             <div className="col-4">
-              {" "}
-              <div className="mb-3">
-                <label className="form-label">Upload contract*</label>
-                <input type="file" onChange={(e) => {
-                  console.log(e.target.files)
-                  this.setState({ contractFile: e.target.files });
+              {this.state.createUser ? (
+                <div className="mb-3">
+                  <label className="form-label">Upload contract*</label>
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      this.setState({ contractFile: e.target.files })
+                    }}
+                    className="form-control"
+                    id="inputGroupFile01"
+                  />
+                </div>
+              ) : null}
 
-                }} className="form-control" id="inputGroupFile01" />
+              {this.state.updateUser ? (
+                <div className="mb-3">
+                  <label className="form-label">Contract</label>
 
-              </div>
+                  <br />
+
+                  <a
+                    className="btn btn-dark"
+                    href={this.state.url + "/" + this.state.contractFile}
+                    target="_blank"
+                  >
+                    Download Contract
+                  </a>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -411,25 +480,34 @@ export default class createAndUpdateUser extends React.Component<
                 <label className="form-label">Sponsorship category*</label>
                 <select
                   onChange={(e) => {
-                    this.setState({ sponsorCategory: e.target.value });
+                    if (this.state.updateUser && this.state.inputDisabled) {
+                      this.setState({ location: "" })
+                      this.setState({ priceType: "" })
+                      this.setState({ subTotal: "" })
+                      this.setState({ inputDisabled: false })
+                    }
 
                     let categorySelected =
                       this.state.sponsorCategoryData[
                       Number(e.target.value) - 1
-                      ];
+                      ]
 
                     this.setState({
                       price_normal: categorySelected.price_normal,
-                    });
+                    })
                     this.setState({
                       price_early: categorySelected.price_early,
-                    });
+                    })
                     this.setState({
                       price_all_normal: categorySelected.price_all_normal,
-                    });
+                    })
                     this.setState({
                       price_all_early: categorySelected.price_all_early,
-                    });
+                    })
+
+                    this.setState({ sponsorCategory: e.target.value }, () => {
+                      this.updatePrice()
+                    })
                   }}
                   value={this.state.sponsorCategory}
                   className="form-select"
@@ -448,12 +526,15 @@ export default class createAndUpdateUser extends React.Component<
                   <label className="form-label">Location*</label>
                   <select
                     onChange={(e) => {
-                      this.setState({ location: e.target.value });
+                      this.setState({ location: e.target.value }, () => {
+                        this.updatePrice()
+                      })
                     }}
                     value={this.state.location}
                     className="form-select"
                     id="floatingSelectDisabled"
                     aria-label="Floating label disabled select example"
+                    disabled={this.state.inputDisabled ? true : false}
                   >
                     <option value="DEFAULT">Select a option</option>
                     <this.getLocations />
@@ -469,11 +550,14 @@ export default class createAndUpdateUser extends React.Component<
                   <select
                     value={this.state.priceType}
                     onChange={(e) => {
-                      this.setState({ priceType: e.target.value });
+                      this.setState({ priceType: e.target.value }, () => {
+                        this.updatePrice()
+                      })
                     }}
                     className="form-select"
                     id="floatingSelectDisabled"
                     aria-label="Floating label disabled select example"
+                    disabled={this.state.inputDisabled ? true : false}
                   >
                     <option value="DEFAULT">Select a option</option>
                     <option value="1">Regular</option>
@@ -484,20 +568,30 @@ export default class createAndUpdateUser extends React.Component<
             </div>
 
             <div className="col">
-              {" "}
-              <div className="mb-3">
-                <label className="form-label">Price</label>
-                <input
-                  value={this.state.subTotal}
-                  type="text"
-                  className="form-control"
-                  onChange={(e) => {
-                    this.setState({
-                      subTotal: e.target.value,
-                    });
-                  }}
-                />
-              </div>
+              {Number(this.state.sponsorCategory) > 0 &&
+                Number(this.state.location) > 0 &&
+                Number(this.state.priceType) > 0 ? (
+                <div className="mb-3">
+                  <label className="form-label">Price</label>
+                  <input
+                    value={this.state.subTotal}
+                    type="text"
+                    className="form-control"
+                    onChange={(e) => {
+                      this.setState(
+                        {
+                          subTotal: e.target.value,
+                        },
+                        () => {
+                          if (this.state.subTotal) {
+                            e.target.value = this.state.subTotal
+                          }
+                        }
+                      )
+                    }}
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -508,21 +602,36 @@ export default class createAndUpdateUser extends React.Component<
               <div className="col-2">
                 <div className="mb-3">
                   <div className="d-flex flex-column text-center ">
-
-                    {
-                      this.state.createUser && (this.state.name != "")
-                        && (this.state.contact != "") && (this.state.email != "") && (this.state.password != "") && (this.state.userType != "") && (this.state.contractFile != "") && (this.state.sponsorCategory != "") && (this.state.location != "") && (this.state.priceType != "") ? (
-                        <button onClick={(e) => {
+                    {this.state.createUser &&
+                      this.state.name != "" &&
+                      this.state.contact != "" &&
+                      this.state.email != "" &&
+                      this.state.password != "" &&
+                      this.state.userType != "" &&
+                      this.state.contractFile != "" &&
+                      this.state.sponsorCategory != "" &&
+                      this.state.location != "" &&
+                      this.state.priceType != "" ? (
+                      <button
+                        onClick={(e) => {
                           e.preventDefault()
                           this.createUser()
-                          this.cleanInputs()
-                        }} className="btn btn-success">
-                          Create User
-                        </button>
-                      ) : null}
+                        }}
+                        className="btn btn-success"
+                      >
+                        Create User
+                      </button>
+                    ) : null}
 
                     {this.state.updateUser ? (
-                      <button onClick={() => { }} className="btn btn-success">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault()
+                          this.updateUser()
+                          this.setState({ inputDisabled: true })
+                        }}
+                        className="btn btn-success"
+                      >
                         Update User
                       </button>
                     ) : null}
@@ -532,9 +641,16 @@ export default class createAndUpdateUser extends React.Component<
               <div className="col-2">
                 {this.state.updateUser ? (
                   <button
-                    onClick={() => {
-                      /*                  this.deleteUser()
-                       */
+                    onClick={(e) => {
+                      e.preventDefault()
+                      const deleteUser = window.confirm("Are u sure you want to delete the user " + this.state.name + " and the invoice");
+
+                      if (deleteUser) {
+                        this.deleteUser()
+                        alert("User " + this.state.name + " and Invoice are deleted")
+                        this.cleanInputs()
+                      }
+
                     }}
                     className="btn btn-white text-danger"
                   >
@@ -547,8 +663,8 @@ export default class createAndUpdateUser extends React.Component<
           </div>
         </div>
       </form>
-    );
-  };
+    )
+  }
 
   render(): React.ReactNode {
     return (
@@ -558,7 +674,6 @@ export default class createAndUpdateUser extends React.Component<
             <div className="container">
               <div className="row">
                 <div className="col-6">
-                  {" "}
                   <h3>Users</h3>
                 </div>
                 <div className="col-6 text-end">
@@ -569,9 +684,9 @@ export default class createAndUpdateUser extends React.Component<
                     data-bs-target="#offcanvasBottom"
                     aria-controls="offcanvasBottom"
                     onClick={() => {
-                      this.setState({ createUser: true });
-                      this.setState({ createEditUser: true });
-                      this.cleanInputs()
+                      this.setState({ createUser: true })
+                      this.setState({ createEditUser: true })
+                      this.setState({ inputDisabled: false })
                     }}
                   >
                     Create new user
@@ -583,8 +698,9 @@ export default class createAndUpdateUser extends React.Component<
 
               <div className="container container-lists">
                 <div className="row">
-                  <div className="col-4">Usuario</div>
-                  <div className="col-4">Email</div>
+                  <div className="col-2">Company name</div>
+                  <div className="col-2">Name</div>
+                  <div className="col-2">Email</div>
                   <div className="col-4 text-right" id="actions">
                     Actions
                   </div>
@@ -613,21 +729,21 @@ export default class createAndUpdateUser extends React.Component<
                   data-bs-dismiss="offcanvas"
                   aria-label="Close"
                   onClick={() => {
-                    this.setState({ updateUser: false });
-                    this.setState({ createUser: false });
+                    this.setState({ updateUser: false })
+                    this.setState({ createUser: false })
                     this.cleanInputs()
                   }}
                 ></button>
               </div>
               <div className="d-flex flex-column justify-content-center container">
                 {this.state.createEditUser ? (
-                  <this.createAndUpdateUser />
+                  <this._createAndUpdateUser />
                 ) : null}
               </div>
             </div>
           </div>
         </div>
       </>
-    );
+    )
   }
 }
