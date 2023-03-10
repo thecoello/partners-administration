@@ -130,11 +130,11 @@ export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>
               </div>
               <div className="col-2">
                 <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>Subtotal:</p>
-                {this.props.country === "SPAIN" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>IVA: ({this.props.iva} %)</p>: null}
+                {this.props.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>IVA: ({this.props.iva} %)</p>: null}
               </div>
               <div className="col-2">
                 <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.subtotal}&nbsp;{this.props.currency}</p>
-                {this.props.country === "SPAIN" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.ivaTotal}&nbsp;{this.props.currency}</p>: null}
+                {this.props.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.ivaTotal}&nbsp;{this.props.currency}</p>: null}
               </div>
             </div>
 

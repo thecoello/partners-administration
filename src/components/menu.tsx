@@ -54,9 +54,9 @@ export default class Menu extends React.Component<IProps, IState > {
             <li onClick={() => {
               this.showInvoice()
             }}>Invoices</li>
-            <li onClick={() => {
+         {/*    <li onClick={() => {
               this.showFiles()
-            }}>Files Upload</li>
+            }}>Files Upload</li> */}
             <li onClick={()=>{
               this.showUsers()
             }}>Users</li>

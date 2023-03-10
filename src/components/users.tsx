@@ -32,6 +32,7 @@ interface IState {
   userId?: string
   inputDisabled?: boolean
   locationUser?: string
+  invoiceNumner?: any
 }
 
 export default class createAndUpdateUser extends React.Component<
@@ -65,15 +66,14 @@ export default class createAndUpdateUser extends React.Component<
       updateUser: false,
       userId: "",
       inputDisabled: false,
-      locationUser: ""
+      locationUser: "",
+      invoiceNumner: ""
     }
   }
 
   componentDidMount(): void {
-    axios.get(this.state.url + "/api/getusersinvoices").then((response) => {
-      console.log(response.data)
-      this.setState({ data: response.data })
-    })
+
+    this.getUserInvoice()
 
     axios.get(this.state.url + "/api/getpackages").then((response) => {
       this.setState({ sponsorCategoryData: response.data })
@@ -81,6 +81,12 @@ export default class createAndUpdateUser extends React.Component<
 
     axios.get(this.state.url + "/api/getlocations").then((response) => {
       this.setState({ locationData: response.data })
+    })
+  }
+
+  getUserInvoice(){
+    axios.get(this.state.url + "/api/getusersinvoices").then((response) => {
+      this.setState({ data: response.data })
     })
   }
 
@@ -161,6 +167,7 @@ export default class createAndUpdateUser extends React.Component<
               if (response.statusText === "Created") {
                 alert(this.state.name + " " + response.statusText)
                 this.cleanInputs()
+                this.getUserInvoice()
               }
             })
             .catch(function (error) {
@@ -196,16 +203,6 @@ export default class createAndUpdateUser extends React.Component<
       })
     }
 
-
-    var config = {
-      maxBodyLength: Infinity,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-    };
-
-
-
     axios.put(this.state.url + "/api/putuser/" + this.state.userId, data)
       .then((response) => {
         if (response.statusText === "OK") {
@@ -219,12 +216,6 @@ export default class createAndUpdateUser extends React.Component<
             "subtotal": this.state.subTotal
           })
 
-          var config2 = {
-            maxBodyLength: Infinity,
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-          };
 
           axios.put(this.state.url + "/api/putinvoice/" + this.state.userId, data2)
             .then((response) => {
@@ -283,7 +274,7 @@ export default class createAndUpdateUser extends React.Component<
       listUsersDiv.push(
         <div key={i} className="row list-item">
           <div className="col-2">{user.contact}</div>
-          <div className="col-2">{user.location}</div>
+          <div className="col-2">{user.location}<br /><p style={{fontSize:"12px"}}>{user.category}</p></div>
 
           <div className="col-2">{user.name}</div>
           <div className="col-2">{user.email}</div>
@@ -308,6 +299,7 @@ export default class createAndUpdateUser extends React.Component<
                 this.setState({ userId: user.id }, () => {
                   this.getInvoiceInfo(user.id)
                 })
+                this.setState({ invoiceNumner: user.invoice_number})
 
                 this.setState({ createEditUser: true })
               }}
@@ -360,7 +352,7 @@ export default class createAndUpdateUser extends React.Component<
 
             <div className="col-4">
               <div className="mb-3">
-                <label className="form-label">Compnay name*</label>
+                <label className="form-label">Company name*</label>
                 <input
                   value={this.state.contact}
                   onChange={(e) => {
@@ -443,6 +435,7 @@ export default class createAndUpdateUser extends React.Component<
                   <label className="form-label">Upload contract*</label>
                   <input
                     type="file"
+                    defaultValue={""}
                     onChange={(e) => {
                       this.setState({ contractFile: e.target.files })
                     }}
@@ -617,7 +610,7 @@ export default class createAndUpdateUser extends React.Component<
                           e.preventDefault()
                           this.createUser()
                         }}
-                        className="btn btn-success"
+                        className="btn btn-success" data-bs-dismiss="offcanvas"
                       >
                         Create User
                       </button>
@@ -639,7 +632,7 @@ export default class createAndUpdateUser extends React.Component<
                 </div>
               </div>
               <div className="col-2">
-                {this.state.updateUser ? (
+                {this.state.updateUser && !this.state.invoiceNumner ? (
                   <button
                     onClick={(e) => {
                       e.preventDefault()
@@ -648,11 +641,13 @@ export default class createAndUpdateUser extends React.Component<
                       if (deleteUser) {
                         this.deleteUser()
                         alert("User " + this.state.name + " and Invoice are deleted")
+                        this.getUserInvoice()
                         this.cleanInputs()
                       }
 
                     }}
-                    className="btn btn-white text-danger"
+                    className="btn btn-white text-danger" data-bs-dismiss="offcanvas"
+
                   >
                     Delete user
                   </button>
@@ -699,8 +694,10 @@ export default class createAndUpdateUser extends React.Component<
               <div className="container container-lists">
                 <div className="row">
                   <div className="col-2">Company name</div>
+                  <div className="col-2">Location</div>
                   <div className="col-2">Name</div>
                   <div className="col-2">Email</div>
+
                   <div className="col-4 text-right" id="actions">
                     Actions
                   </div>
@@ -732,6 +729,7 @@ export default class createAndUpdateUser extends React.Component<
                     this.setState({ updateUser: false })
                     this.setState({ createUser: false })
                     this.cleanInputs()
+                    this.getUserInvoice()
                   }}
                 ></button>
               </div>
