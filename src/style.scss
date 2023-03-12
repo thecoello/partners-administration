@@ -20,6 +20,18 @@ body,html{
   }
 }
 
+#login{
+  width: 100vw;
+  position: relative;
+  z-index: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  color: #f7f7f7;
+  backdrop-filter: blur(20px);
+  background-color: #000000af;
+}
+
 #main{
   height: 100vh;
 }

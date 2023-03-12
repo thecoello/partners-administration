@@ -6,8 +6,13 @@ import axios from "axios";
 import FormData from "form-data"
 import qs, { stringify } from "qs"
 
-interface IProps {
+const instance = axios.create({
+  withCredentials: true
+}); 
 
+interface IProps {
+  userType?: any
+  userID?: any
 }
 
 interface IState {
@@ -47,7 +52,7 @@ export default class Invoice extends React.Component<IProps, IState> {
     super(props)
 
     this.state = {
-      url: "http://localhost:8000",
+      url: import.meta.env.VITE_URL,
       currency: "€",
       adminUser: true,
       invoiceAvailable: false,
@@ -80,7 +85,7 @@ export default class Invoice extends React.Component<IProps, IState> {
   }
 
   getEventInfo() {
-    axios.get(this.state.url + "/api/eventinfo").then((response) => {
+    instance.get(this.state.url + "/api/eventinfo").then((response) => {
       const eventInfo = response.data[0]
       this.setState({ sellerName: eventInfo.seller_name })
       this.setState({ sellerAddress: eventInfo.seller_address })
@@ -92,8 +97,14 @@ export default class Invoice extends React.Component<IProps, IState> {
     })
   }
 
+  getInvoice(){
+    instance.get(this.state.url + "/api/getuserinvoice/" + this.props.userID).then((response) => {
+      this.setState({ data: response.data })
+    })
+  }
+
   getInvoiceAll() {
-    axios.get(this.state.url + "/api/getusersinvoices").then((response) => {
+    instance.get(this.state.url + "/api/getusersinvoices").then((response) => {
       this.setState({ data: response.data })
     })
   }
@@ -114,9 +125,21 @@ export default class Invoice extends React.Component<IProps, IState> {
   }
 
   componentDidMount(): void {
-    this.state.invoiceAvailable ? this.disableInput() : null;
-    this.getEventInfo()
-    this.getInvoiceAll()
+
+    this.ActionUserType()
+    
+  }
+
+  ActionUserType(){
+    if(this.props.userType == 1){
+      this.getInvoiceAll()
+      this.getEventInfo()
+      this.state.invoiceAvailable ? this.disableInput() : null
+    }else{
+      this.getInvoice()
+      this.getEventInfo()
+      this.state.invoiceAvailable ? this.disableInput() : null;
+    } 
   }
 
   selectorCountry = () => {
@@ -421,7 +444,7 @@ export default class Invoice extends React.Component<IProps, IState> {
               e.preventDefault()
 
 
-              axios.get(this.state.url + "/api/puteventinfo/1").then((response) => {
+              instance.get(this.state.url + "/api/puteventinfo/1").then((response) => {
                 let data;
                 let number;
 
@@ -449,14 +472,13 @@ export default class Invoice extends React.Component<IProps, IState> {
                   "invoice_date": date.getMonth() + "-" + date.getDate() + "-" + date.getFullYear()
                 })
 
-                axios.put(this.state.url + "/api/putinvoice/" + this.state.userId, data)
+                instance.put(this.state.url + "/api/putinvoice/" + this.state.userId, data)
                   .then((response) => {
                     if (response.statusText === "OK") {
                       alert("Invoice " + this.state.invoiceNumber + " Created")
                       this.downloadInvoice()
                       this.clearInputs()
-                      this.getInvoiceAll()
-                     
+                      this.ActionUserType()                     
                     }
                   })
                   .catch(function (error) {
@@ -481,6 +503,7 @@ export default class Invoice extends React.Component<IProps, IState> {
     this.setState({ downloadInvoice: true })
 
     const doc = new jsPDF('p', 'px', [595, 842]);
+    let invoiceName = "Invoice-" + this.state.invoiceNumber
 
     doc.html(ReactDOMServer.renderToString(<InvoicePDF
       currency={this.state.currency}
@@ -501,12 +524,12 @@ export default class Invoice extends React.Component<IProps, IState> {
       sellerAddress={this.state.sellerAddress}
       sellerCP={this.state.sellerCP}
       sellerCity={this.state.sellerCity}
-      sellerCountry={this.state.country}
+      sellerCountry={this.state.sellerCountry}
       sellerVAT={this.state.sellerVAT}
       footerText={this.state.footerText}
     />), {
       async callback(doc) {
-        doc.save("pdf_name");
+        doc.save(invoiceName);
       }
     });
   }
@@ -564,9 +587,8 @@ export default class Invoice extends React.Component<IProps, IState> {
                 "total": this.state.total
               })
 
-              axios.put(this.state.url + "/api/putinvoicedetails/" + this.state.userId, data)
+              instance.put(this.state.url + "/api/putinvoicedetails/" + this.state.userId, data)
                 .then((response) => {
-                  console.log(response)
                   if (response.statusText === "OK") {
                     alert("Invoice " + response.data.invoice_number + " Updated")
                   }
@@ -579,7 +601,7 @@ export default class Invoice extends React.Component<IProps, IState> {
 
               this.setState({ editInvoice: false })
               this.downloadInvoice()
-              this.getInvoiceAll()
+              this.ActionUserType()
               this.disableInput()
             }} className="btn btn-primary" data-bs-dismiss="offcanvas">Update invoice</button>
           </div>
@@ -724,10 +746,10 @@ export default class Invoice extends React.Component<IProps, IState> {
       listInvoicesDiv.push(
         <div key={i} className="row list-item">
           <div className="col-2">{invoice.contact} <br /><p style={{ fontSize: "12px" }}>{invoice.name}</p></div>
-          <div className="col-2">{invoice.invoice_number} </div>
+          <div className="col-2">{invoice.invoice_number} <br /> {invoice.invoice_number ? <>{invoice.payment_status ? <span className="badge text-bg-success">Payed</span> : <span className="badge text-bg-danger">Unpaid</span> }</> :null} </div>
           <div className="col-2">{invoice.location}<br /><p style={{ fontSize: "12px" }}>{invoice.category}</p></div>
           <div className="col-2">{invoice.email}</div>
-          <div className="col-2">{invoice.total}</div>
+          <div className="col-2">{invoice.total} {invoice.invoice_number ? <>€</> : null} </div>
           <div className="col-2 text-right" id="actions">
             <button
               className="btn btn-dark"
@@ -806,7 +828,6 @@ export default class Invoice extends React.Component<IProps, IState> {
               <div className="col-2">Company name</div>
               <div className="col-2">Invoice #</div>
               <div className="col-2">Pack</div>
-
               <div className="col-2">Email</div>
               <div className="col-2">Total</div>
 

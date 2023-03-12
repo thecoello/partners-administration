@@ -3,6 +3,9 @@ import React from "react"
 import FormData from "form-data"
 import qs from "qs"
 
+const instance = axios.create({
+  withCredentials: true
+}); 
 
 interface IProps { }
 
@@ -59,7 +62,7 @@ export default class createAndUpdateUser extends React.Component<
       price_all_early: "",
       price_early: "",
       subTotal: "",
-      url: "http://localhost:8000",
+      url: import.meta.env.VITE_URL,
       data: [],
       createEditUser: false,
       createUser: false,
@@ -75,23 +78,23 @@ export default class createAndUpdateUser extends React.Component<
 
     this.getUserInvoice()
 
-    axios.get(this.state.url + "/api/getpackages").then((response) => {
+    instance.get(this.state.url + "/api/getpackages").then((response) => {
       this.setState({ sponsorCategoryData: response.data })
     })
 
-    axios.get(this.state.url + "/api/getlocations").then((response) => {
+    instance.get(this.state.url + "/api/getlocations").then((response) => {
       this.setState({ locationData: response.data })
     })
   }
 
   getUserInvoice(){
-    axios.get(this.state.url + "/api/getusersinvoices").then((response) => {
+    instance.get(this.state.url + "/api/getusersinvoices").then((response) => {
       this.setState({ data: response.data })
     })
   }
 
   getInvoiceInfo = (id: any) => {
-    axios.get(this.state.url + "/api/getinvoice/" + id)
+    instance.get(this.state.url + "/api/getinvoice/" + id)
       .then((response) => {
         this.setState({ location: response.data })
         this.setState({ sponsorCategory: response.data.category })
@@ -142,7 +145,7 @@ export default class createAndUpdateUser extends React.Component<
       data: data,
     }
 
-    axios(config)
+    instance(config)
       .then((response) => {
         if (response.statusText === "Created") {
           const data2 = new FormData()
@@ -162,7 +165,7 @@ export default class createAndUpdateUser extends React.Component<
             data: data2,
           }
 
-          axios(config2)
+          instance(config2)
             .then((response) => {
               if (response.statusText === "Created") {
                 alert(this.state.name + " " + response.statusText)
@@ -203,7 +206,7 @@ export default class createAndUpdateUser extends React.Component<
       })
     }
 
-    axios.put(this.state.url + "/api/putuser/" + this.state.userId, data)
+    instance.put(this.state.url + "/api/putuser/" + this.state.userId, data)
       .then((response) => {
         if (response.statusText === "OK") {
 
@@ -217,7 +220,7 @@ export default class createAndUpdateUser extends React.Component<
           })
 
 
-          axios.put(this.state.url + "/api/putinvoice/" + this.state.userId, data2)
+          instance.put(this.state.url + "/api/putinvoice/" + this.state.userId, data2)
             .then((response) => {
               if (response.statusText === "OK") {
 
@@ -262,8 +265,8 @@ export default class createAndUpdateUser extends React.Component<
   }
 
   deleteUser() {
-    axios.delete(this.state.url + "/api/deleteuser/" + this.state.userId)
-    axios.delete(this.state.url + "/api/deleteinvoice/" + this.state.userId)
+    instance.delete(this.state.url + "/api/deleteuser/" + this.state.userId)
+    instance.delete(this.state.url + "/api/deleteinvoice/" + this.state.userId)
   }
 
   listUsers = () => {

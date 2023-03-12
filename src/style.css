@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 * {
-  font-family: "Lato", sans-serif !important;
+  font-family: 'Lato', sans-serif !important;
 }
 
 body, html {
@@ -14,7 +14,25 @@ body, html {
 .offcanvas-header .btn-close {
   color: white !important;
   opacity: 1;
-  filter: contrast(0) brightness(1) opacity(1);
+  -webkit-filter: contrast(0) brightness(1) opacity(1);
+          filter: contrast(0) brightness(1) opacity(1);
+}
+
+#login {
+  width: 100vw;
+  position: relative;
+  z-index: 0;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  color: #f7f7f7;
+  -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px);
+  background-color: #000000af;
 }
 
 #main {
@@ -38,34 +56,47 @@ body, html {
   position: relative;
   z-index: 0;
   height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   color: #f7f7f7;
   -webkit-backdrop-filter: blur(20px);
           backdrop-filter: blur(20px);
-  background-color: rgba(0, 0, 0, 0.6862745098);
+  background-color: #000000af;
   padding: 4vh 1vw;
 }
+
 #sidebar #logo p {
   text-align: left;
   margin: 0;
 }
+
 #sidebar #logo span {
   font-weight: 300;
 }
+
 #sidebar nav {
   padding: auto;
 }
+
 #sidebar nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
+
 #sidebar nav ul li {
   margin: 3vh 2vw;
   cursor: pointer;
 }
+
 #sidebar #logout {
   width: 100%;
   margin: 3vh 2vw;
@@ -76,7 +107,8 @@ body, html {
   background: #f7f7f7;
   padding: 3vh 3vh;
   border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.0705882353) 0px 14px 20px 0px;
+  -webkit-box-shadow: #00000012 0px 14px 20px 0px;
+          box-shadow: #00000012 0px 14px 20px 0px;
 }
 
 #actions {
@@ -85,4 +117,5 @@ body, html {
 
 .list-item {
   margin: 2vh 1vw;
-}/*# sourceMappingURL=style.css.map */
+}
+/*# sourceMappingURL=style.css.map */
