@@ -743,64 +743,68 @@ export default class Invoice extends React.Component<IProps, IState> {
 
     this.state.data.forEach((invoice: any, i: number) => {
 
-      listInvoicesDiv.push(
-        <div key={i} className="row list-item">
-          <div className="col-2">{invoice.contact} <br /><p style={{ fontSize: "12px" }}>{invoice.name}</p></div>
-          <div className="col-2">{invoice.invoice_number} <br /> {invoice.invoice_number ? <>{invoice.payment_status ? <span className="badge text-bg-success">Payed</span> : <span className="badge text-bg-danger">Unpaid</span> }</> :null} </div>
-          <div className="col-2">{invoice.location}<br /><p style={{ fontSize: "12px" }}>{invoice.category}</p></div>
-          <div className="col-2">{invoice.email}</div>
-          <div className="col-2">{invoice.total} {invoice.invoice_number ? <>€</> : null} </div>
-          <div className="col-2 text-right" id="actions">
-            <button
-              className="btn btn-dark"
-              type="button"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvasBottom"
-              aria-controls="offcanvasBottom"
-              onClick={() => {
-
-                this.setState({ userId: invoice.id })
-                this.setState({ companyName: invoice.company_name })
-                this.setState({ address: invoice.address })
-                this.setState({ zipCode: invoice.zip })
-                this.setState({ country: invoice.country })
-                this.setState({ vatNumber: invoice.vat })
-                this.setState({ sponsorCategory: invoice.category })
-                this.setState({ location: invoice.location })
-                this.setState({ subtotal: invoice.subtotal })
-                this.setState({ ivaTotal: invoice.iva })
-                this.setState({ total: invoice.total })
-                this.setState({ invoiceDate: invoice.invoice_date })
-
-                if (invoice.country === "Spain") {
-                  this.setState({ iva: 21 }, () => {
-                    this.setState({ ivaTotal: (Number(this.state.subtotal) * Number(this.state.iva)) / 100 }, () => {
-                      this.setState({ total: Number(this.state.subtotal) + Number(this.state.ivaTotal) })
+      if(invoice.user_type != 1){
+        listInvoicesDiv.push(
+          <div key={i} className="row list-item">
+            <div className="col-2">{invoice.contact} <br /><p style={{ fontSize: "12px" }}>{invoice.name}</p></div>
+            <div className="col-2">{invoice.invoice_number} <br /> {invoice.invoice_number ? <>{invoice.payment_status ? <span className="badge text-bg-success">Payed</span> : <span className="badge text-bg-danger">Unpaid</span> }</> :null} </div>
+            <div className="col-2">{invoice.location}<br /><p style={{ fontSize: "12px" }}>{invoice.category}</p></div>
+            <div className="col-2">{invoice.email}</div>
+            <div className="col-2">{invoice.total} {invoice.invoice_number ? <>€</> : null} </div>
+            <div className="col-2 text-right" id="actions">
+              <button
+                className="btn btn-dark"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasBottom"
+                aria-controls="offcanvasBottom"
+                onClick={() => {
+  
+                  this.setState({ userId: invoice.id })
+                  this.setState({ companyName: invoice.company_name })
+                  this.setState({ address: invoice.address })
+                  this.setState({ zipCode: invoice.zip })
+                  this.setState({ country: invoice.country })
+                  this.setState({ vatNumber: invoice.vat })
+                  this.setState({ sponsorCategory: invoice.category })
+                  this.setState({ location: invoice.location })
+                  this.setState({ subtotal: invoice.subtotal })
+                  this.setState({ ivaTotal: invoice.iva })
+                  this.setState({ total: invoice.total })
+                  this.setState({ invoiceDate: invoice.invoice_date })
+  
+                  if (invoice.country === "Spain") {
+                    this.setState({ iva: 21 }, () => {
+                      this.setState({ ivaTotal: (Number(this.state.subtotal) * Number(this.state.iva)) / 100 }, () => {
+                        this.setState({ total: Number(this.state.subtotal) + Number(this.state.ivaTotal) })
+                      })
                     })
-                  })
-                } else {
-                  this.setState({ iva: 0 })
-                  this.setState({ ivaTotal: 0 })
-                  this.setState({ total: Number(invoice.subtotal) })
-                }
-
-                if (invoice.invoice_number) {
-                  this.disableInput()
-                  this.setState({ invoiceAvailable: true })
-                  this.setState({ invoiceNumber: invoice.invoice_number })
-
-                } else {
-                  this.setState({ invoiceAvailable: false })
-                  this.setState({})
-
-                }
-              }}
-            >
-              {invoice.invoice_number ? (<>Edit Invoice</>) : (<>Create Invoice</>)}
-            </button>
+                  } else {
+                    this.setState({ iva: 0 })
+                    this.setState({ ivaTotal: 0 })
+                    this.setState({ total: Number(invoice.subtotal) })
+                  }
+  
+                  if (invoice.invoice_number) {
+                    this.disableInput()
+                    this.setState({ invoiceAvailable: true })
+                    this.setState({ invoiceNumber: invoice.invoice_number })
+  
+                  } else {
+                    this.setState({ invoiceAvailable: false })
+                    this.setState({})
+  
+                  }
+                }}
+              >
+                {invoice.invoice_number ? (<>Edit Invoice</>) : (<>Create Invoice</>)}
+              </button>
+            </div>
           </div>
-        </div>
-      )
+        )
+      }
+
+  
     })
 
     return <>{listInvoicesDiv}</>

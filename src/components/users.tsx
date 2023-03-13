@@ -277,7 +277,11 @@ export default class createAndUpdateUser extends React.Component<
       listUsersDiv.push(
         <div key={i} className="row list-item">
           <div className="col-2">{user.contact}</div>
-          <div className="col-2">{user.location}<br /><p style={{fontSize:"12px"}}>{user.category}</p></div>
+          <div className="col-2">{user.user_type != 1 ? <>{user.location}<br /><p style={{fontSize:"12px"}}>{user.category}</p></>
+           : null}
+            </div>
+
+            
 
           <div className="col-2">{user.name}</div>
           <div className="col-2">{user.email}</div>
