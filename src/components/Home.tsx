@@ -3,13 +3,13 @@ import axios, { AxiosHeaders } from "axios";
 import qs from "qs";
 
 const instance = axios.create({
-  withCredentials: true
+  withCredentials: true,
+  baseURL: import.meta.env.VITE_URL
 }); 
 
 interface IProps {
   userType?: any
   userID?: any
-  instance?: any
 }
 
 interface IState {
@@ -17,8 +17,6 @@ interface IState {
   data?: any
   paymentStatus?: any
   paymentMethod?: any
-  instance?: any
-
 }
 
 export default class Home extends React.Component<IProps, IState>{
@@ -44,8 +42,12 @@ export default class Home extends React.Component<IProps, IState>{
 
     var config = {
       method: 'get',
-      url: this.state.url + "/api/getuserinvoice/" + this.props.userID,
+      url: import.meta.env.VITE_URL + "/api/getuserinvoice/" + this.props.userID,
     };
+    
+    console.log(import.meta.env.VITE_URL)
+
+    console.log(this.props.userID)
 
    
     instance(config).then((response) => {
@@ -120,7 +122,7 @@ export default class Home extends React.Component<IProps, IState>{
 
                 instance.put(this.state.url + "/api/putpaymentsatus/" + this.props.userID, data)
                   .then((response) => {
-                    if (response.statusText === "OK") {
+                    if (response.status === 200) {
                       alert("Invoice " + response.data.invoice_number + " Mark as payed")
                       this.getUserInfo()
 

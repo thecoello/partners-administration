@@ -3,9 +3,13 @@ import React from "react"
 import FormData from "form-data"
 import qs from "qs"
 
+axios.defaults.withCredentials = true
+
+
 const instance = axios.create({
-  withCredentials: true
-}); 
+  baseURL: import.meta.env.VITE_URL,
+  withCredentials: true,
+})
 
 interface IProps { }
 
@@ -137,7 +141,6 @@ export default class createAndUpdateUser extends React.Component<
 
     const config = {
       method: "post",
-      maxBodyLength: Infinity,
       url: this.state.url + "/api/postuser",
       headers: {
         "Content-Type": "multipart/form-data",
@@ -147,7 +150,7 @@ export default class createAndUpdateUser extends React.Component<
 
     instance(config)
       .then((response) => {
-        if (response.statusText === "Created") {
+        if (response.status === 200) {
           const data2 = new FormData()
 
           data2.append("user_id", response.data.id)
@@ -167,7 +170,7 @@ export default class createAndUpdateUser extends React.Component<
 
           instance(config2)
             .then((response) => {
-              if (response.statusText === "Created") {
+              if (response.status === 200) {
                 alert(this.state.name + " " + response.statusText)
                 this.cleanInputs()
                 this.getUserInvoice()
@@ -208,7 +211,7 @@ export default class createAndUpdateUser extends React.Component<
 
     instance.put(this.state.url + "/api/putuser/" + this.state.userId, data)
       .then((response) => {
-        if (response.statusText === "OK") {
+        if (response.status === 200) {
 
           let data2;
 
@@ -222,7 +225,7 @@ export default class createAndUpdateUser extends React.Component<
 
           instance.put(this.state.url + "/api/putinvoice/" + this.state.userId, data2)
             .then((response) => {
-              if (response.statusText === "OK") {
+              if (response.status === 200) {
 
                 alert(this.state.name + " Updated")
                 this.cleanInputs()

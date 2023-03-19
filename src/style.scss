@@ -91,6 +91,8 @@ body,html{
 }
 
 .section{
+  overflow-y: scroll;
+  height: 100vh;
   background: #f7f7f7;
   padding: 3vh 3vh;
   border-radius: 10px;

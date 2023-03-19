@@ -8,6 +8,9 @@ import axios from "axios"
 import qs from "qs"
 import Cookies from "js-cookie";
 
+axios.defaults.withCredentials = true
+
+
 interface IProps {
 
 }
@@ -90,21 +93,11 @@ export default class App extends React.Component<IProps, IState> {
       'token': import.meta.env.VITE_TOKEN
     });
 
-    var config = {
-      method: 'post',
-      url: import.meta.env.VITE_URL,
-      data : data,
-      withCredentials: true,
-    };
 
-    const instance = axios.create({
-      withCredentials: true
-  });
-
-  instance(config)
+  axios.post(import.meta.env.VITE_URL,data,{withCredentials: true})
     .then((response)=> {
 
-      if(response.statusText === "OK"){
+      if(response.status === 200){
         this.setState({userID:""})
         this.setState({userType:""})
       }
@@ -131,13 +124,13 @@ export default class App extends React.Component<IProps, IState> {
     };
 
     const instance = axios.create({
-      withCredentials: true
-  });
+      baseURL: import.meta.env.VITE_URL,
+      withCredentials: true,
+   })
 
   instance(config)
     .then((response)=> {
-
-      if(response.statusText === "OK"){
+      if(response.status === 200){
         this.setState({userID:response.data.id})
         this.setState({userType:response.data.user_type})
         if(response.data.user_type == 1){

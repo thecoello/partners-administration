@@ -7,7 +7,8 @@ import FormData from "form-data"
 import qs, { stringify } from "qs"
 
 const instance = axios.create({
-  withCredentials: true
+  withCredentials: true,
+  baseURL: import.meta.env.VITE_URL
 }); 
 
 interface IProps {
@@ -474,7 +475,7 @@ export default class Invoice extends React.Component<IProps, IState> {
 
                 instance.put(this.state.url + "/api/putinvoice/" + this.state.userId, data)
                   .then((response) => {
-                    if (response.statusText === "OK") {
+                    if (response.status === 200) {
                       alert("Invoice " + this.state.invoiceNumber + " Created")
                       this.downloadInvoice()
                       this.clearInputs()
@@ -589,7 +590,7 @@ export default class Invoice extends React.Component<IProps, IState> {
 
               instance.put(this.state.url + "/api/putinvoicedetails/" + this.state.userId, data)
                 .then((response) => {
-                  if (response.statusText === "OK") {
+                  if (response.status === 200) {
                     alert("Invoice " + response.data.invoice_number + " Updated")
                   }
                 })
