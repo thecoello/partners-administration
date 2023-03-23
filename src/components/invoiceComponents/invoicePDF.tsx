@@ -30,6 +30,7 @@ interface IProps {
   footerText?: string,
   invoiceNumber?: string
   invoiceDate?: string
+  dueDate?: any
 }
 
 interface IinvoicePDF {
@@ -64,7 +65,7 @@ export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>
 
             </div>
             <div className="col-4">
-              <p style={{ "fontSize": "0.5em", "margin": "5px 0", "textTransform":"uppercase" }}>
+              <p style={{ "fontSize": "0.5em", "margin": "5px 0", "textTransform": "uppercase" }}>
                 <b>{this.props.sellerName}</b> <br />
                 {this.props.sellerAddress} <br />
                 {this.props.sellerCP} &nbsp; {this.props.sellerCity}<br />
@@ -77,7 +78,7 @@ export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>
 
           <div className="row" style={{ "background": "#f7f7f7", "display": "flex", "alignItems": "center" }}>
             <div className="col">
-              <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textTransform":"uppercase" }}>
+              <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textTransform": "uppercase" }}>
                 <b>{this.props.companyName}</b> <br />
                 {this.props.address} <br />
                 {this.props.zipCode} <br />
@@ -87,6 +88,8 @@ export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>
             <div className="col">
               <p style={{ "fontSize": "1em", "margin": "0px 0" }}><b>INVOICE NUMBER: {this.props.invoiceNumber}</b></p>
               <p style={{ "fontSize": "0.6em", "margin": "0px 0" }}>INVOICE DATE: <b>{this.props.invoiceDate}</b></p>
+              <p style={{ "fontSize": "0.6em", "margin": "0px 0" }}>DUE DATE: <b>{this.props.dueDate}</b></p>
+
             </div>
           </div>
           <br />
@@ -130,11 +133,11 @@ export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>
               </div>
               <div className="col-2">
                 <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>Subtotal:</p>
-                {this.props.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>IVA: ({this.props.iva} %)</p>: null}
+                {this.props.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>IVA: ({this.props.iva} %)</p> : null}
               </div>
               <div className="col-2">
                 <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.subtotal}&nbsp;{this.props.currency}</p>
-                {this.props.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.ivaTotal}&nbsp;{this.props.currency}</p>: null}
+                {this.props.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{this.props.ivaTotal}&nbsp;{this.props.currency}</p> : null}
               </div>
             </div>
 
@@ -149,10 +152,31 @@ export default class InvoicePDF extends React.PureComponent<IProps, IinvoicePDF>
 
               </div>
             </div>
+
+            <br />
+            <br />
+
+
+            <div className="row text-left">
+
+              <div className="col-12">
+                <p style={{ "fontSize": "0.6em", "textAlign": "left" }}>
+                  <b>Recipient Account: </b>ES50 2100 2502 7513 0020 0716 SWIFT: CAIXESBBXXX <br />
+                  <b>Bank:</b> CAIXABANK, S.A. <br />
+                  <b>Bank address:</b> Calle Dr. Esquerdo,97 (28007 Madrid) Recipient Name: TASMAN GRAPHICS <br />
+                  <b>Company Information:</b> <br />
+                  Tasman Graphics, S.L. <br />
+                  Calle Pamplona 22, Local <br />
+                  28039 Madrid <br />
+                  SPAIN</p>
+              </div>
+            </div>
           </div>
 
+
+
           {/* FOOTER */}
-          <div className="row" style={{ "position": "relative", "top": "300px" }}>
+          <div className="row" style={{ "position": "relative", "top": "170px" }}>
             <div className="col-12">
               <p style={{ "fontSize": "0.5em", "padding": "10px 0", "background": "#f7f7f7", "textAlign": "center" }}>{this.props.footerText}</p>
             </div>

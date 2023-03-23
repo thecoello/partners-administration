@@ -9,7 +9,7 @@ import qs, { stringify } from "qs"
 const instance = axios.create({
   withCredentials: true,
   baseURL: import.meta.env.VITE_URL
-}); 
+});
 
 interface IProps {
   userType?: any
@@ -45,6 +45,9 @@ interface IState {
   invoiceDate?: string
   data?: any
   userId?: any
+  dueDate?: any
+  paymentStatus?: any
+  paymentMethod?: any
 }
 
 export default class Invoice extends React.Component<IProps, IState> {
@@ -80,7 +83,10 @@ export default class Invoice extends React.Component<IProps, IState> {
       invoiceNumber: "",
       invoiceDate: "",
       data: [],
-      userId: ""
+      userId: "",
+      dueDate: "",
+      paymentStatus: "",
+      paymentMethod: ""
     }
 
   }
@@ -95,10 +101,11 @@ export default class Invoice extends React.Component<IProps, IState> {
       this.setState({ sellerCountry: eventInfo.seller_country })
       this.setState({ sellerVAT: eventInfo.seller_vat })
       this.setState({ footerText: eventInfo.seller_footer })
+      this.setState({ dueDate: eventInfo.due_date })
     })
   }
 
-  getInvoice(){
+  getInvoice() {
     instance.get(this.state.url + "/api/getuserinvoice/" + this.props.userID).then((response) => {
       this.setState({ data: response.data })
     })
@@ -128,19 +135,19 @@ export default class Invoice extends React.Component<IProps, IState> {
   componentDidMount(): void {
 
     this.ActionUserType()
-    
+
   }
 
-  ActionUserType(){
-    if(this.props.userType == 1){
+  ActionUserType() {
+    if (this.props.userType == 1) {
       this.getInvoiceAll()
       this.getEventInfo()
       this.state.invoiceAvailable ? this.disableInput() : null
-    }else{
+    } else {
       this.getInvoice()
       this.getEventInfo()
       this.state.invoiceAvailable ? this.disableInput() : null;
-    } 
+    }
   }
 
   selectorCountry = () => {
@@ -470,7 +477,7 @@ export default class Invoice extends React.Component<IProps, IState> {
                   "quantity": 1,
                   "iva": this.state.ivaTotal,
                   "total": this.state.total,
-                  "invoice_date": date.getMonth() + "-" + date.getDate() + "-" + date.getFullYear()
+                  "invoice_date": (date.getMonth() + 1) + "-" + date.getDate() + "-" + date.getFullYear()
                 })
 
                 instance.put(this.state.url + "/api/putinvoice/" + this.state.userId, data)
@@ -479,7 +486,7 @@ export default class Invoice extends React.Component<IProps, IState> {
                       alert("Invoice " + this.state.invoiceNumber + " Created")
                       this.downloadInvoice()
                       this.clearInputs()
-                      this.ActionUserType()                     
+                      this.ActionUserType()
                     }
                   })
                   .catch(function (error) {
@@ -500,7 +507,7 @@ export default class Invoice extends React.Component<IProps, IState> {
     )
   }
 
-  downloadInvoice(){
+  downloadInvoice() {
     this.setState({ downloadInvoice: true })
 
     const doc = new jsPDF('p', 'px', [595, 842]);
@@ -528,6 +535,7 @@ export default class Invoice extends React.Component<IProps, IState> {
       sellerCountry={this.state.sellerCountry}
       sellerVAT={this.state.sellerVAT}
       footerText={this.state.footerText}
+      dueDate={this.state.dueDate}
     />), {
       async callback(doc) {
         doc.save(invoiceName);
@@ -545,7 +553,7 @@ export default class Invoice extends React.Component<IProps, IState> {
           <div className="d-flex flex-column text-center ">
             <span onClick={() => {
 
-             this.downloadInvoice()
+              this.downloadInvoice()
 
             }} className="btn btn-success" >Download Invoice</span>
           </div>
@@ -618,123 +626,179 @@ export default class Invoice extends React.Component<IProps, IState> {
   invoiceInfoColect = () => {
     return (
       <form className="needs-validation">
-        <h5><b>Company information</b></h5>
-        <hr />
-        <div className="container">
-          <div className="row">
-            <div className="col-4"> <div className="mb-3">
-              <label className="form-label">Company Name*</label>
-              <input value={this.state.companyName} onChange={(e) => {
-                this.setState({ companyName: e.target.value })
-              }} type="text" className="form-control" required />
-            </div></div>
-            <div className="col-8"> <div className="mb-3">
-              <label className="form-label">Address*</label>
-              <input value={this.state.address} onChange={(e) => {
-                this.setState({ address: e.target.value })
-              }} type="text" className="form-control" required />
-            </div>
-            </div>
-          </div>
-        </div>
 
-        <div className="container">
-          <div className="row">
-            <div className="col">  <div className="mb-3">
-              <label className="form-label">ZIP/Postal Code*</label>
-              <input value={this.state.zipCode} onChange={(e) => {
-                this.setState({ zipCode: e.target.value })
-              }} type="text" className="form-control" required />
-            </div>
-            </div>
-            <div className="col">
-              <div className="mb-3">
-                <label className="form-label">Country*</label>
-                <this.selectorCountry />
-              </div>
-            </div>
+        {this.state.paymentStatus ? <>Payment method: {this.state.paymentMethod}</> :
 
-            <div className="col">
-              <div className="mb-3">
-                <label className="form-label">VAT Number</label>
-                <input value={this.state.vatNumber} onChange={(e) => {
-                  this.setState({ vatNumber: e.target.value })
-                }} type="text" className="form-control" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <br /><br />
-
-        <h5><b>Pack information</b></h5>
-        <hr />
-
-        <div className="container">
           <div className="row">
 
-            <div className="col">
-              <div className="mb-3">
-                <h6 className="form-label">Sponsorship category</h6>
-                <p>{this.state.sponsorCategory}</p>
-
-              </div>
+            <div className="col-6"><p><b>Have you already paid your sponsorship?</b> Please, select your payment method: </p>
             </div>
-
-            <div className="col">
-              <div className="mb-3">
-                <h6 className="form-label">Location</h6>
-                <p>{this.state.location}</p>
-              </div>
-            </div>
-
-
-            <div className="col">
-              <div className="mb-3">
-                <h6 className="form-label">Price</h6>
-                <p>{this.state.subtotal + " " + this.state.currency}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr /><br /><br />
-
-        <div className="container">
-          <div className="row">
 
             <div className="col-6">
-              {!this.state.invoiceAvailable ? <div className="col-6">{this.state.total ? <this.generateInvoice /> : null}</div> : <div className="col-6"> {this.state.editInvoice ? <this.finishEditInvoice /> : <this.editInvoice />}   <this.downloadInvoiceBtn /></div>}
-            </div>
+              <select onChange={(e) => {
 
-            <div className="col-4">
-              {this.state.total ? <div className="mb-3 text-end">
-                <h5><b>Resumen</b></h5>
-                <div className="d-flex flex-column">
-                  <p>Subtotal: {this.state.subtotal} &nbsp; {this.state.currency}
-                  </p>
+                if (e.target.value) {
+                  this.setState({ paymentMethod: e.target.value })
+                  this.setState({ paymentStatus: 1 })
+                } else {
+                  this.setState({ paymentMethod: "" })
+                  this.setState({ paymentStatus: "" })
+                }
+              }} className="form-select" aria-label="Default select example">
+                <option value="">Select a option</option>
+                <option value="Bank transfer">Bank transfer</option>
+                <option value="Bank transfer">PayPal</option>
+              </select>
 
+              <br />
 
-                  {this.state.country === "Spain" ? <><this.setIva /></> : null}
+              {this.state.paymentStatus == 1 ? 
+              <><button onClick={(e) => {
+
+                e.preventDefault()
+
+                let data = qs.stringify({
+                  "payment_status": this.state.paymentStatus,
+                  "payment_method": this.state.paymentMethod,
+
+                })
+
+                instance.put(this.state.url + "/api/putpaymentsatus/" + this.props.userID, data)
+                  .then((response) => {
+                    if (response.status === 200) {
+                      alert("Invoice " + response.data.invoice_number + " Mark as payed")
+                      this.ActionUserType()
+                    }
+                  })
+                  .catch(function (error) {
+                    Object.keys(error.response.data).forEach((key: any) => {
+                      alert(error.response.data[key])
+                    })
+                  })
+
+              }} type="submit" className="btn btn-success" data-bs-dismiss="offcanvas">Mark as paid</button></> : null} 
                 </div>
-              </div> : null}
-            </div>
+              </div>
+        
+        }
 
-            <div className="col-2 ">
-              {this.state.total ? <div className="mb-3">
-                <div className="d-flex flex-column text-center ">
+              <h5><b>Company information</b></h5>
+              <hr />
+              <div className="container">
+                <div className="row">
+                  <div className="col-4"> <div className="mb-3">
+                    <label className="form-label">Company Name*</label>
+                    <input value={this.state.companyName} onChange={(e) => {
+                      this.setState({ companyName: e.target.value })
+                    }} type="text" className="form-control" required />
+                  </div></div>
+                  <div className="col-8"> <div className="mb-3">
+                    <label className="form-label">Address*</label>
+                    <input value={this.state.address} onChange={(e) => {
+                      this.setState({ address: e.target.value })
+                    }} type="text" className="form-control" required />
+                  </div>
+                  </div>
+                </div>
+              </div>
 
-                  <h5><b>Total:</b></h5>
-                  <h3>{this.state.total}&nbsp; {this.state.currency}</h3>
+              <div className="container">
+                <div className="row">
+                  <div className="col">  <div className="mb-3">
+                    <label className="form-label">ZIP/Postal Code*</label>
+                    <input value={this.state.zipCode} onChange={(e) => {
+                      this.setState({ zipCode: e.target.value })
+                    }} type="text" className="form-control" required />
+                  </div>
+                  </div>
+                  <div className="col">
+                    <div className="mb-3">
+                      <label className="form-label">Country*</label>
+                      <this.selectorCountry />
+                    </div>
+                  </div>
+
+                  <div className="col">
+                    <div className="mb-3">
+                      <label className="form-label">VAT Number</label>
+                      <input value={this.state.vatNumber} onChange={(e) => {
+                        this.setState({ vatNumber: e.target.value })
+                      }} type="text" className="form-control" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <br /><br />
+
+              <h5><b>Pack information</b></h5>
+              <hr />
+
+              <div className="container">
+                <div className="row">
+
+                  <div className="col">
+                    <div className="mb-3">
+                      <h6 className="form-label">Sponsorship category</h6>
+                      <p>{this.state.sponsorCategory}</p>
+
+                    </div>
+                  </div>
+
+                  <div className="col">
+                    <div className="mb-3">
+                      <h6 className="form-label">Location</h6>
+                      <p>{this.state.location}</p>
+                    </div>
+                  </div>
+
+
+                  <div className="col">
+                    <div className="mb-3">
+                      <h6 className="form-label">Price</h6>
+                      <p>{this.state.subtotal + " " + this.state.currency}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr /><br /><br />
+
+              <div className="container">
+                <div className="row">
+
+                  <div className="col-6">
+                    {!this.state.invoiceAvailable ? <div className="col-6">{this.state.total ? <this.generateInvoice /> : null}</div> : <div className="col-6"> {this.state.editInvoice ? <this.finishEditInvoice /> : <this.editInvoice />}   <this.downloadInvoiceBtn /></div>}
+                  </div>
+
+                  <div className="col-4">
+                    {this.state.total ? <div className="mb-3 text-end">
+                      <h5><b>Resumen</b></h5>
+                      <div className="d-flex flex-column">
+                        <p>Subtotal: {this.state.subtotal} &nbsp; {this.state.currency}
+                        </p>
+
+
+                        {this.state.country === "Spain" ? <><this.setIva /></> : null}
+                      </div>
+                    </div> : null}
+                  </div>
+
+                  <div className="col-2 ">
+                    {this.state.total ? <div className="mb-3">
+                      <div className="d-flex flex-column text-center ">
+
+                        <h5><b>Total:</b></h5>
+                        <h3>{this.state.total}&nbsp; {this.state.currency}</h3>
+
+                      </div>
+                    </div> : null}
+                  </div>
 
                 </div>
-              </div> : null}
-            </div>
-
-          </div>
-        </div>
-      </form>
-    )
+              </div>
+            </form>
+            )
   }
 
 
@@ -745,135 +809,137 @@ export default class Invoice extends React.Component<IProps, IState> {
     this.state.data.forEach((invoice: any, i: number) => {
 
       if(invoice.user_type != 1){
-        listInvoicesDiv.push(
-          <div key={i} className="row list-item">
-            <div className="col-2">{invoice.contact} <br /><p style={{ fontSize: "12px" }}>{invoice.name}</p></div>
-            <div className="col-2">{invoice.invoice_number} <br /> {invoice.invoice_number ? <>{invoice.payment_status ? <span className="badge text-bg-success">Payed</span> : <span className="badge text-bg-danger">Unpaid</span> }</> :null} </div>
-            <div className="col-2">{invoice.location}<br /><p style={{ fontSize: "12px" }}>{invoice.category}</p></div>
-            <div className="col-2">{invoice.email}</div>
-            <div className="col-2">{invoice.total} {invoice.invoice_number ? <>€</> : null} </div>
-            <div className="col-2 text-right" id="actions">
-              <button
-                className="btn btn-dark"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasBottom"
-                aria-controls="offcanvasBottom"
-                onClick={() => {
-  
-                  this.setState({ userId: invoice.id })
-                  this.setState({ companyName: invoice.company_name })
-                  this.setState({ address: invoice.address })
-                  this.setState({ zipCode: invoice.zip })
-                  this.setState({ country: invoice.country })
-                  this.setState({ vatNumber: invoice.vat })
-                  this.setState({ sponsorCategory: invoice.category })
-                  this.setState({ location: invoice.location })
-                  this.setState({ subtotal: invoice.subtotal })
-                  this.setState({ ivaTotal: invoice.iva })
-                  this.setState({ total: invoice.total })
-                  this.setState({ invoiceDate: invoice.invoice_date })
-  
-                  if (invoice.country === "Spain") {
-                    this.setState({ iva: 21 }, () => {
-                      this.setState({ ivaTotal: (Number(this.state.subtotal) * Number(this.state.iva)) / 100 }, () => {
-                        this.setState({ total: Number(this.state.subtotal) + Number(this.state.ivaTotal) })
-                      })
-                    })
-                  } else {
-                    this.setState({ iva: 0 })
-                    this.setState({ ivaTotal: 0 })
-                    this.setState({ total: Number(invoice.subtotal) })
-                  }
-  
-                  if (invoice.invoice_number) {
-                    this.disableInput()
-                    this.setState({ invoiceAvailable: true })
-                    this.setState({ invoiceNumber: invoice.invoice_number })
-  
-                  } else {
-                    this.setState({ invoiceAvailable: false })
-                    this.setState({})
-  
-                  }
-                }}
-              >
-                {invoice.invoice_number ? (<>Edit Invoice</>) : (<>Create Invoice</>)}
-              </button>
-            </div>
-          </div>
-        )
-      }
+              listInvoicesDiv.push(
+                <div key={i} className="row list-item">
+                  <div className="col-2">{invoice.contact} <br /><p style={{ fontSize: "12px" }}>{invoice.name}</p></div>
+                  <div className="col-2">{invoice.invoice_number} <br /> {invoice.invoice_number ? <>{invoice.payment_status ? <span className="badge text-bg-success">Payed</span> : <span className="badge text-bg-danger">Unpaid</span>}</> : null} </div>
+                  <div className="col-2">{invoice.location}<br /><p style={{ fontSize: "12px" }}>{invoice.category}</p></div>
+                  <div className="col-3">{invoice.email}</div>
+                  <div className="col-1">{invoice.total} {invoice.invoice_number ? <>€</> : null} </div>
+                  <div className="col-2 text-right" id="actions">
+                    <button
+                      className="btn btn-dark"
+                      type="button"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvasBottom"
+                      aria-controls="offcanvasBottom"
+                      onClick={() => {
+
+                        this.setState({ userId: invoice.id })
+                        this.setState({ companyName: invoice.company_name })
+                        this.setState({ address: invoice.address })
+                        this.setState({ zipCode: invoice.zip })
+                        this.setState({ country: invoice.country })
+                        this.setState({ vatNumber: invoice.vat })
+                        this.setState({ sponsorCategory: invoice.category })
+                        this.setState({ location: invoice.location })
+                        this.setState({ subtotal: invoice.subtotal })
+                        this.setState({ ivaTotal: invoice.iva })
+                        this.setState({ total: invoice.total })
+                        this.setState({ invoiceDate: invoice.invoice_date })
+                        this.setState({ paymentMethod: invoice.payment_method })
+                        this.setState({ paymentStatus: invoice.payment_status })
+
+                        if (invoice.country === "Spain") {
+                          this.setState({ iva: 21 }, () => {
+                            this.setState({ ivaTotal: (Number(this.state.subtotal) * Number(this.state.iva)) / 100 }, () => {
+                              this.setState({ total: Number(this.state.subtotal) + Number(this.state.ivaTotal) })
+                            })
+                          })
+                        } else {
+                          this.setState({ iva: 0 })
+                          this.setState({ ivaTotal: 0 })
+                          this.setState({ total: Number(invoice.subtotal) })
+                        }
+
+                        if (invoice.invoice_number) {
+                          this.disableInput()
+                          this.setState({ invoiceAvailable: true })
+                          this.setState({ invoiceNumber: invoice.invoice_number })
+
+                        } else {
+                          this.setState({ invoiceAvailable: false })
+                          this.setState({})
+
+                        }
+                      }}
+                    >
+                      {invoice.invoice_number ? (<>Edit Invoice</>) : (<>Create Invoice</>)}
+                    </button>
+                  </div>
+                </div>
+              )
+            }
 
   
     })
 
-    return <>{listInvoicesDiv}</>
+            return <>{listInvoicesDiv}</>
   }
 
 
-  render(): React.ReactNode {
+            render(): React.ReactNode {
     return (
-      <>
-        <div className="section">
+            <>
+              <div className="section">
 
-          <div className="container">
-            <div className="row">
-              <div className="col-6">  <h3>Invoices</h3></div>
-              <div className="col-6 text-end">
-                {/* <button className="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Create Invoice</button> */}
-              </div>
-            </div>
-          </div>
+                <div className="container">
+                  <div className="row">
+                    <div className="col-6">  <h3>Invoices</h3></div>
+                    <div className="col-6 text-end">
+                      {/* <button className="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Create Invoice</button> */}
+                    </div>
+                  </div>
+                </div>
 
-          <br />
+                <br />
 
-          <div className="container container-lists">
-            <div className="row">
-              <div className="col-2">Company name</div>
-              <div className="col-2">Invoice #</div>
-              <div className="col-2">Pack</div>
-              <div className="col-2">Email</div>
-              <div className="col-2">Total</div>
+                <div className="container container-lists">
+                  <div className="row">
+                    <div className="col-2">Company name</div>
+                    <div className="col-2">Invoice #</div>
+                    <div className="col-2">Pack</div>
+                    <div className="col-3">Email</div>
+                    <div className="col-1">Total</div>
 
-              <div className="col-2 text-right" id="actions">
-                Actions
-              </div>
-            </div>
-          </div>
+                    <div className="col-2 text-right" id="actions">
+                      Actions
+                    </div>
+                  </div>
+                </div>
 
-          <hr />
+                <hr />
 
-          <div className="container container-lists">
-            <div className="container container-lists">
-              <this.lisInvoices />
-            </div>
-          </div>
+                <div className="container container-lists">
+                  <div className="container container-lists">
+                    <this.lisInvoices />
+                  </div>
+                </div>
 
-          <div className="offcanvas offcanvas-bottom h-100" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
-            <div className="offcanvas-header bg-black text-white">
-              <h3 className="offcanvas-title" id="offcanvasBottomLabel">New Invoice</h3>
+                <div className="offcanvas offcanvas-bottom h-100" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+                  <div className="offcanvas-header bg-black text-white">
+                    <h3 className="offcanvas-title" id="offcanvasBottomLabel">New Invoice</h3>
 
 
 
-              <div className="row">
-                <div className="col d-flex">
-                  <button onClick={() => {
-                    this.clearInputs()
-                  }} type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    <div className="row">
+                      <div className="col d-flex">
+                        <button onClick={() => {
+                          this.clearInputs()
+                        }} type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex flex-column justify-content-center h-100 container">
+
+
+                    <this.invoiceInfoColect />
+
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="d-flex flex-column justify-content-center h-100 container">
-
-
-              <this.invoiceInfoColect />
-
-            </div>
-          </div>
-        </div>
-      </>
-    )
+            </>
+            )
   }
 
 

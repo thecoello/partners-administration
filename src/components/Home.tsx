@@ -44,11 +44,6 @@ export default class Home extends React.Component<IProps, IState>{
       method: 'get',
       url: import.meta.env.VITE_URL + "/api/getuserinvoice/" + this.props.userID,
     };
-    
-    console.log(import.meta.env.VITE_URL)
-
-    console.log(this.props.userID)
-
    
     instance(config).then((response) => {
       this.setState({ data: response.data })
