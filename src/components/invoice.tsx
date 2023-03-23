@@ -477,7 +477,7 @@ export default class Invoice extends React.Component<IProps, IState> {
                   "quantity": 1,
                   "iva": this.state.ivaTotal,
                   "total": this.state.total,
-                  "invoice_date": (date.getMonth() + 1) + "-" + date.getDate() + "-" + date.getFullYear()
+                  "invoice_date": (date.getMonth() +1) + "-" + date.getDate() + "-" + date.getFullYear()
                 })
 
                 instance.put(this.state.url + "/api/putinvoice/" + this.state.userId, data)
