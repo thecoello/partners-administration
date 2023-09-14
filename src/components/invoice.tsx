@@ -1,5 +1,5 @@
 import React from "react";
-import RequestsRoutes from "../../http/requests"
+import RequestsRoutes from "../http/requests"
 
 interface IProps {
 
