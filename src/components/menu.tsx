@@ -1,14 +1,11 @@
 import React from "react";
 
-interface IState {}
+interface IState {
+}
 
 interface IProps {
-  _home?: any;
-  _invoices?: any;
-  _filesUpload?: any;
-  _createUser?: any;
-  _logout?: any;
-  userType?: any;
+  invoiceState: any;
+  userState: any;
 }
 
 export default class Menu extends React.Component<IProps, IState> {
@@ -31,8 +28,13 @@ export default class Menu extends React.Component<IProps, IState> {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link text-light " aria-current="page" href="#">
+                <a className="nav-link text-light " aria-current="page" onClick={this.props.invoiceState}>
                   Invoices
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link text-light " aria-current="page" onClick={this.props.userState}>
+                  Users
                 </a>
               </li>
             </ul>
