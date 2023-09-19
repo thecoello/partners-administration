@@ -15,10 +15,10 @@ export default class Invoice extends React.Component<IProps, IState> {
 
   render(): React.ReactNode {
     return (
-      <>
+      <div className="container">
       {/* {new InvoiceForm().form()} */}
       {<InvoiceTable />}
-      </>
+      </div>
     )
   }
 }

@@ -4,16 +4,38 @@
   font-family: 'Lato', sans-serif !important;
 }
 
+p{
+  font-weight: 400;
+}
+
+a{
+  cursor: pointer;
+}
+
+.btn{
+  margin: 0 0.1rem;
+  svg{
+    width: 70%;
+  }
+}
+
 body,html{
-  overflow: hidden;
   background: #000;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-nav{
+.navbar{
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
   .navbar-brand{
     padding: 0 2rem;
   }
+}
+
+.container{
+  padding: 10vh 0;
 }

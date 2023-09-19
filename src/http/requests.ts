@@ -2,16 +2,16 @@ import axios from "axios";
 
 export default class RequestsRoutes {
 
-    url = import.meta.url
+    private url = import.meta.env.VITE_URL
 
-    async get(route:String) {
-        
-        try {
-            const response = await axios.get(this.url + route);
-            return response;
-          } catch (error) {
-            return error;
-          }
+    public async get(route:String | null) {
+      return await axios.get(this.url + route)
+      .then((response)=>{
+        return response
+      })
+      .catch((error)=>{
+        return error
+      })
     }
 
 }
