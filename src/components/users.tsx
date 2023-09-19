@@ -1,15 +1,9 @@
 import axios from "axios"
 import React from "react"
-import FormData from "form-data"
-import qs from "qs"
+import UserForm from "./formsElements/userForm"
 
 axios.defaults.withCredentials = true
 
-
-const instance = axios.create({
-  baseURL: import.meta.env.VITE_URL,
-  withCredentials: true,
-})
 
 interface IProps { }
 
@@ -17,7 +11,7 @@ interface IState {
  
 }
 
-export default class createAndUpdateUser extends React.Component<IProps, IState> {
+export default class Users extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -25,13 +19,12 @@ export default class createAndUpdateUser extends React.Component<IProps, IState>
     }
   }
 
-  componentDidMount(): void {
-
-  }
 
   render(): React.ReactNode {
     return (
-        <p>hello</p>
+      <>
+      {new UserForm().form()}
+      </>
     )
   }
 }
