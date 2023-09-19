@@ -20,9 +20,6 @@ export default class Home extends React.Component<IProps, IState>{
     }
   }
 
-  componentDidMount(): void {
-
-  }
 
   render(): React.ReactNode {
     return (
