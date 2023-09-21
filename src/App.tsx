@@ -15,23 +15,30 @@ interface IState {
 
 export default class App extends React.Component<IProps, IState> {
 
-  eventsMenu = new MenuEvents();
-
   constructor(props: IProps) {
     super(props);
     this.state = {
       users: false,
       invoices: true,
     };
+    this.invoiceState = this.invoiceState.bind(this)
+    this.userState = this.userState.bind(this)  
+  }
 
-    this.eventsMenu.invoiceState = this.eventsMenu.invoiceState.bind(this)
-    this.eventsMenu.userState = this.eventsMenu.userState.bind(this)  
+  invoiceState() {
+    this.setState({ invoices: true })
+    this.setState({ users: false })
+  }
+
+  userState() {
+    this.setState({ invoices: false })
+    this.setState({ users: true })
   }
 
   render(): React.ReactNode {
     return (
       <>
-        <Menu invoiceState={this.eventsMenu.invoiceState} userState={this.eventsMenu.userState} />
+        <Menu invoiceState={this.invoiceState} userState={this.userState} />
         <div className="cotainerfluid">
           <div className="row">
             <div className="col-12" id="content-view">

@@ -2,16 +2,19 @@ import React from "react";
 import RequestsRoutes from "../../http/requests";
 import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
-import RemoveIcon from "@mui/icons-material/Remove";
 import InvoicePDF from "../invoiceComponents/invoicePDF";
-interface IProps {}
+
+interface IProps {
+  invoiceFormState: any
+}
 
 interface IState {
-  invoicesRows: JSX.Element[];
-  route: string | null;
-  firstPageURL: string | null;
-  prevPageURL: string | null;
-  nextPageURL: string | null;
+  invoicesRows: JSX.Element[]
+  route: string | null
+  firstPageURL: string | null
+  prevPageURL: string | null
+  nextPageURL: string | null
+  search: string
 }
 
 export default class InvoiceTable extends React.Component<IProps, IState> {
@@ -23,20 +26,24 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       firstPageURL: null,
       prevPageURL: null,
       nextPageURL: null,
+      search: ''
     };
   }
 
   getInvoices(): void {
     new RequestsRoutes().get(this.state.route).then((response) => {
+
       let invoicesRow: JSX.Element[] = [];
-      response.data.data.forEach((data: any, i: any) => {
+
+      response.data.invoices.data.forEach((data: any, i: any) => {
+
         invoicesRow.push(
-          <tr key={i} className="p-2">
+          <tr key={i} className="p-2 align-middle">
             <th scope="col">
               <h6 className="m-0">
                 <b>{data.company_name}</b>
               </h6>
-              <p className="m-0">{data.name}</p>
+              <p className="m-0" style={{fontSize: '0.8rem'}}>{data.name}</p>
             </th>
             <th scope="col">
               <p className="m-0">{data.invoice_number}</p>
@@ -52,45 +59,56 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               )}
             </th>
             <th scope="col">
-              <p>{data.category}</p>
+              <p className="m-0"><b>{data.pack_name}</b></p>
+              <p className="m-0" style={{fontSize: '0.8rem'}}>{data.location_name}</p>
             </th>
             <th scope="col">
-              <p>{data.email}</p>
+              <p className="m-0">{data.email}</p>
             </th>
             <th scope="col">
-              <p>{data.total}</p>
+              <p className="m-0">{data.total}{response.data.eventinfo[0].symbol}</p>
             </th>
             <th scope="col">
               <div className="d-flex">
-              <button type="button" className="btn btn-dark btn-sm" onClick={()=>{
-                  new InvoicePDF(data).generateInvoice()
-              }}>
-                <DownloadIcon />
-              </button>
-              <button type="button" className="btn btn-dark btn-sm">
-                <EditIcon />
-              </button>
+                <button
+                  type="button"
+                  className="btn btn-dark btn-sm"
+                  onClick={() => {
+                    new InvoicePDF(data).generateInvoice();
+                  }}
+                >
+                  <DownloadIcon />
+                </button>
+                <button type="button" className="btn btn-dark btn-sm">
+                  <EditIcon />
+                </button>
               </div>
             </th>
           </tr>
         );
+        
       });
+
       this.setState({ invoicesRows: invoicesRow });
-      response.data.first_page_url != null
+
+      console.log(response.data.invoices)
+
+      response.data.invoices.first_page_url != null
         ? this.setState({
-            firstPageURL: response.data.first_page_url.split("api/")[1],
+            firstPageURL: response.data.invoices.first_page_url.split("api/")[1],
           })
         : this.setState({ firstPageURL: null });
-      response.data.prev_page_url != null
+      response.data.invoices.prev_page_url != null
         ? this.setState({
-            prevPageURL: response.data.prev_page_url.split("api/")[1],
+            prevPageURL: response.data.invoices.prev_page_url.split("api/")[1],
           })
         : this.setState({ prevPageURL: null });
-      response.data.next_page_url != null
+      response.data.invoices.next_page_url != null
         ? this.setState({
-            nextPageURL: response.data.next_page_url.split("api/")[1],
+            nextPageURL: response.data.invoices.next_page_url.split("api/")[1],
           })
         : this.setState({ nextPageURL: null });
+
     });
   }
 
@@ -109,6 +127,42 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
   render(): React.ReactNode {
     return (
       <>
+        <div className="d-flex search mt-4 mb-4">
+
+          <h3 className="m-0">Invoices</h3>
+
+          <button onClick={this.props.invoiceFormState}
+              className="btn btn-outline-secondary btn-dark text-light ms-4"
+              type="button">
+              Create invoice
+            </button>
+            
+
+          <div className="input-group w-50 ms-4">
+            <input onChange={(e)=>{
+              this.setState({search: e.target.value})
+            }}
+            onKeyDown={(e)=>{
+              (e.code == "Enter" || e.code == "NumpadEnter") ? (this.state.search == '' ? this.setState({route: 'invoices'}) : this.setState({route:  "invoices/search/" + this.state.search})) : null
+            }}
+              type="text"
+              className="form-control"
+              placeholder="Find by Invoice Number or Company Name"
+            />
+            <button
+              className="btn btn-outline-secondary btn-dark text-light "
+              type="button"
+      
+              onClick={()=>{
+                
+                this.state.search ? this.setState({route:  "invoices/search/" + this.state.search}) : this.setState({route: 'invoices'})
+              }}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+
         <table className="table">
           <thead>
             <tr>
@@ -143,15 +197,26 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
                   className="page-link text-dark"
                   onClick={() => {
                     this.setState({ route: this.state.prevPageURL });
-                  }}> Preview page </a>
-              </li>) : null}
+                  }}
+                >
+                  {" "}
+                  Preview page{" "}
+                </a>
+              </li>
+            ) : null}
             {this.state.nextPageURL != null ? (
               <li className="page-item">
-                <a className="page-link text-dark"
+                <a
+                  className="page-link text-dark"
                   onClick={() => {
                     this.setState({ route: this.state.nextPageURL });
-                  }}> Next page </a>
-              </li>) : null}
+                  }}
+                >
+                  {" "}
+                  Next page{" "}
+                </a>
+              </li>
+            ) : null}
           </ul>
         </div>
       </>

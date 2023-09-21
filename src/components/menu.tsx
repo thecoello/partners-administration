@@ -19,7 +19,7 @@ export default class Menu extends React.Component<IProps, IState> {
 
   render(): React.ReactNode {
     return (
-      <nav className="navbar navbar-expand-lg bg-black bg-body-tertiary">
+      <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
           <a className="navbar-brand text-light" href="#">
             Sponsor Administration {this.currentYear()}

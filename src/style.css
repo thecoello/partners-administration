@@ -30,6 +30,10 @@ body, html {
   top: 0;
   left: 0;
   right: 0;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.8156862745);
+  -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px);
 }
 .navbar .navbar-brand {
   padding: 0 2rem;
