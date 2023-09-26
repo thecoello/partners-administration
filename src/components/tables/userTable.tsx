@@ -2,14 +2,14 @@ import React from "react";
 import RequestsRoutes from "../../http/requests";
 import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
-import InvoicePDF from "../invoiceComponents/invoicePDF";
+import { Delete } from "@mui/icons-material";
 
 interface IProps {
-  invoiceFormState: any
+  userFormState: any
 }
 
 interface IState {
-  invoicesRows: JSX.Element[]
+  usersRows: JSX.Element[]
   route: string | null
   firstPageURL: string | null
   prevPageURL: string | null
@@ -17,12 +17,12 @@ interface IState {
   search: string
 }
 
-export default class InvoiceTable extends React.Component<IProps, IState> {
+export default class UserTable extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      invoicesRows: [],
-      route: "invoices",
+      usersRows: [],
+      route: "users",
       firstPageURL: null,
       prevPageURL: null,
       nextPageURL: null,
@@ -30,57 +30,37 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
     };
   }
 
-  getInvoices(): void {
+  getUsers(): void {
     new RequestsRoutes().get(this.state.route).then((response) => {
 
-      let invoicesRow: JSX.Element[] = [];
+      let usersRow: JSX.Element[] = [];
+      response.data.data.forEach((data: any, i: any) => {
 
-      response.data.invoices.data.forEach((data: any, i: any) => {
-
-        invoicesRow.push(
+        usersRow.push(
           <tr key={i} className="p-2 align-middle">
             <th scope="col">
               <h6 className="m-0">
-                <b>{data.company_name}</b>
+                <b>{data.contact}</b>
               </h6>
-              <p className="m-0" style={{fontSize: '0.8rem'}}>{data.name}</p>
+            </th>
+     
+            <th scope="col">
+              <p className="m-0"><b>{data.name}</b></p>
             </th>
             <th scope="col">
-              <p className="m-0">{data.invoice_number}</p>
-
-              {data.payment_status != null ? (
-                <span className="badge rounded-pill text-bg-success">
-                  Payed
-                </span>
-              ) : (
-                <span className="badge rounded-pill text-bg-danger">
-                  Unpayed
-                </span>
-              )}
-            </th>
-            <th scope="col">
-              <p className="m-0"><b>{data.pack_name}</b></p>
-              <p className="m-0" style={{fontSize: '0.8rem'}}>{data.location_name}</p>
+              <p className="m-0">{data.user_type == 1 ? "Admin" : "User"}</p>
             </th>
             <th scope="col">
               <p className="m-0">{data.email}</p>
             </th>
             <th scope="col">
-              <p className="m-0">{data.total}{response.data.eventinfo[0].symbol}</p>
-            </th>
-            <th scope="col">
               <div className="d-flex">
-                <button
-                  type="button"
-                  className="btn btn-dark btn-sm"
-                  onClick={() => {
-                    new InvoicePDF(data).generateInvoice();
-                  }}
-                >
-                  <DownloadIcon />
-                </button>
+             
                 <button type="button" className="btn btn-dark btn-sm">
                   <EditIcon />
+                </button>
+                <button type="button" className="btn btn-dark btn-sm">
+                  <Delete />
                 </button>
               </div>
             </th>
@@ -89,21 +69,22 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
         
       });
 
-      this.setState({ invoicesRows: invoicesRow });
+      this.setState({ usersRows: usersRow });
 
-      response.data.invoices.first_page_url != null
+
+      response.data.first_page_url != null
         ? this.setState({
-            firstPageURL: response.data.invoices.first_page_url.split("api/")[1],
+            firstPageURL: response.data.first_page_url.split("api/")[1],
           })
         : this.setState({ firstPageURL: null });
-      response.data.invoices.prev_page_url != null
+      response.data.prev_page_url != null
         ? this.setState({
-            prevPageURL: response.data.invoices.prev_page_url.split("api/")[1],
+            prevPageURL: response.data.prev_page_url.split("api/")[1],
           })
         : this.setState({ prevPageURL: null });
-      response.data.invoices.next_page_url != null
+      response.data.next_page_url != null
         ? this.setState({
-            nextPageURL: response.data.invoices.next_page_url.split("api/")[1],
+            nextPageURL: response.data.next_page_url.split("api/")[1],
           })
         : this.setState({ nextPageURL: null });
 
@@ -115,11 +96,11 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
     prevState: Readonly<IState>,
     snapshot?: any
   ): void {
-    prevState.route != this.state.route ? this.getInvoices() : null;
+    prevState.route != this.state.route ? this.getUsers() : null;
   }
 
   componentDidMount(): void {
-    this.getInvoices();
+    this.getUsers();
   }
 
   render(): React.ReactNode {
@@ -127,12 +108,12 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       <>
         <div className="d-flex search mt-4 mb-4">
 
-          <h3 className="m-0">Invoices</h3>
+          <h3 className="m-0">Users</h3>
 
-          <button onClick={this.props.invoiceFormState}
+          <button onClick={this.props.userFormState}
               className="btn btn-outline-secondary btn-dark text-light ms-4"
               type="button">
-              Create invoice
+              Create user
             </button>
             
 
@@ -141,11 +122,11 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               this.setState({search: e.target.value})
             }}
             onKeyDown={(e)=>{
-              (e.code == "Enter" || e.code == "NumpadEnter") ? (this.state.search == '' ? this.setState({route: 'invoices'}) : this.setState({route:  "invoices/search/" + this.state.search})) : null
+              (e.code == "Enter" || e.code == "NumpadEnter") ? (this.state.search == '' ? this.setState({route: 'users'}) : this.setState({route:  "users/search/" + this.state.search})) : null
             }}
               type="text"
               className="form-control"
-              placeholder="Find by Invoice Number or Company Name"
+              placeholder="Find by User Number or Company Name"
             />
             <button
               className="btn btn-outline-secondary btn-dark text-light "
@@ -153,7 +134,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       
               onClick={()=>{
                 
-                this.state.search ? this.setState({route:  "invoices/search/" + this.state.search}) : this.setState({route: 'invoices'})
+                this.state.search ? this.setState({route:  "users/search/" + this.state.search}) : this.setState({route: 'users'})
               }}
             >
               Search
@@ -165,14 +146,13 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
           <thead>
             <tr>
               <th scope="col">Company Name</th>
-              <th scope="col">Invoice #</th>
-              <th scope="col">Pack</th>
+              <th scope="col">Name</th>
+              <th scope="col">User type</th>
               <th scope="col">Email</th>
-              <th scope="col">Total</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <tbody>{this.state.invoicesRows}</tbody>
+          <tbody>{this.state.usersRows}</tbody>
         </table>
 
         <div>

@@ -1,88 +1,130 @@
 import React from "react";
+import RequestsRoutes from "../../http/requests";
+import { stringify } from "qs";
 
-export default class UserForm extends React.Component {
+interface IProps {
+  userTableState: any;
+}
 
-  public form(): React.ReactNode {
+interface IState {
+  route: null | string,
+
+}
+
+export default class UserForm extends React.Component<IProps, IState> {
+
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      route: "users",
+    };
+  }
+
+  formSend(e: any) {
+    e.preventDefault();
+    new RequestsRoutes().post(this.state.route,e.target)
+    .then(response=>{
+
+      response.status === 200 ? alert("User created") :  Object.keys(response.response.data).map((key)=>{
+        alert(response.response.data[key])
+      })
+
+    })
+  }
+
+  public render(): React.ReactNode {
     return (
-      <form>
-        <h3>User Information</h3><br />
-        <div className="row">
-          <div className="col-4">
-            <div className="mb-3">
-              <label htmlFor="companyName" className="form-label">Company Name *</label>
-              <input type="text" className="form-control" id="companyName" aria-describedby="companyName" />
-            </div>
-          </div>
-          <div className="col-4">
-            <div className="mb-3">
-              <label htmlFor="Name" className="form-label">Name *</label>
-              <input type="text" className="form-control" id="Name" aria-describedby="Name" />
-            </div>
-          </div>
-          <div className="col-4">
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">Email *</label>
-              <input type="email" className="form-control" id="email" aria-describedby="email" />
-            </div>
-          </div>
-        </div>
+          <>
+            <div className="d-flex search mt-4 mb-4">
+              <h3 className="m-0">Create User</h3>
 
-        <div className="row">
-          <div className="col-4">
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password *</label>
-              <input type="password" className="form-control" id="password" aria-describedby="password" />
+              <button
+                onClick={this.props.userTableState}
+                className="btn btn-outline-secondary btn-dark text-light ms-4"
+                type="button"
+              >
+                Cancel
+              </button>
             </div>
-          </div>
-          <div className="col-4">
-            <div className="mb-3">
-              <label htmlFor="userType" className="form-label">User Type *</label>
-              <select className="form-select">
-                <option value=""></option>
-              </select>
-            </div>
-          </div>
-        </div>
 
-        <hr />
+            <form className="needs-validation" onSubmit={this.formSend.bind(this)}>
+              <div className="row">
+                <div className="col-4">
+                  <div className="mb-3">
+                    <label htmlFor="contact" className="form-label">
+                      Company Name *
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="contact"
+                      name="contact" required
+                    />
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="mb-3">
+                    <label htmlFor="name" className="form-label">
+                      Name *
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="name"
+                      name="name" required
+                    />
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      name="email" required
+                    />
+                  </div>
+                </div>
+              </div>
 
-        <h3>Pack Price</h3><br />
+              <div className="row">
+                <div className="col-4">
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                      Password *
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      name="password" required
+                    />
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="mb-3">
+                    <label htmlFor="user_type" className="form-label">
+                      User Type *
+                    </label>
+                    <select className="form-select" name="user_type" required>
+                       <option value="">Select option</option>
+                      <option value="0">User</option>
+                      <option value="1">Admin</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-        <div className="row">
-          <div className="col-3">
-            <div className="mb-3">
-              <label htmlFor="sponsorshipCategory" className="form-label">Sponsorship Category *</label>
-              <select className="form-select">
-                <option value=""></option>
-              </select>
-            </div>
-          </div>
-          <div className="col-3">
-            <div className="mb-3">
-              <label htmlFor="sponsorshipCategory" className="form-label">Location *</label>
-              <select className="form-select">
-                <option value=""></option>
-              </select>
-            </div>
-          </div>
-          <div className="col-3">
-            <div className="mb-3">
-              <label htmlFor=">pricetype" className="form-label">Price type *</label>
-              <input type="pricetype" className="form-control" id="pricetype" aria-describedby="pricetype" />
-            </div>
-          </div>
-          <div className="col-3">
-            <div className="mb-3">
-              <label htmlFor="price" className="form-label">Price *</label>
-              <select className="form-select" for="price">
-                <option value=""></option>
-              </select>            </div>
-          </div>
-        </div>
+              <hr />
 
-        <button type="submit" className="btn btn-dark">Submit</button>
-
-      </form>
-    )
+              <button type="submit" className="btn btn-dark">
+                Submit
+              </button>
+            </form>
+          </>
+          );
   }
 }
