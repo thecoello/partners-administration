@@ -8,9 +8,9 @@ export default class Forms extends React.Component{
   public render(): React.ReactNode {
     let options: Array<any> = []
     this.countries().forEach((country, i) => {
-      i === 0 ?  options.push(<option value="">{country}</option>) : options.push(<option value={country}>{country}</option>)
+      i === 0 ?  options.push(<option value="" key={i + 'country'}>{country}</option>) : options.push(<option key={i + 'country'} value={country}>{country}</option>)
     });
-    const selector = <select className="form-select">{options}</select>
+    const selector = <select className="form-select" key={'country-selector'}>{options}</select>
     return (selector)
   }
 

@@ -43,7 +43,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               <h6 className="m-0">
                 <b>{data.company_name}</b>
               </h6>
-              <p className="m-0" style={{fontSize: '0.8rem'}}>{data.name}</p>
+              <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.name}</p>
             </th>
             <th scope="col">
               <p className="m-0">{data.invoice_number}</p>
@@ -60,7 +60,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             </th>
             <th scope="col">
               <p className="m-0"><b>{data.pack_name}</b></p>
-              <p className="m-0" style={{fontSize: '0.8rem'}}>{data.location_name}</p>
+              <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.location_name}</p>
             </th>
             <th scope="col">
               <p className="m-0">{data.email}</p>
@@ -86,25 +86,25 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             </th>
           </tr>
         );
-        
+
       });
 
       this.setState({ invoicesRows: invoicesRow });
 
       response.data.invoices.first_page_url != null
         ? this.setState({
-            firstPageURL: response.data.invoices.first_page_url.split("api/")[1],
-          })
+          firstPageURL: response.data.invoices.first_page_url.split("api/")[1],
+        })
         : this.setState({ firstPageURL: null });
       response.data.invoices.prev_page_url != null
         ? this.setState({
-            prevPageURL: response.data.invoices.prev_page_url.split("api/")[1],
-          })
+          prevPageURL: response.data.invoices.prev_page_url.split("api/")[1],
+        })
         : this.setState({ prevPageURL: null });
       response.data.invoices.next_page_url != null
         ? this.setState({
-            nextPageURL: response.data.invoices.next_page_url.split("api/")[1],
-          })
+          nextPageURL: response.data.invoices.next_page_url.split("api/")[1],
+        })
         : this.setState({ nextPageURL: null });
 
     });
@@ -125,24 +125,24 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
   render(): React.ReactNode {
     return (
       <>
-        <div className="d-flex search mt-4 mb-4">
+        <div className="d-flex search mt-4 mb-4 justify-content-between">
 
-          <h3 className="m-0">Invoices</h3>
+          <div className="d-flex"><h3 className="m-0">Invoices</h3>
 
-          <button onClick={this.props.invoiceFormState}
+            <button onClick={this.props.invoiceFormState}
               className="btn btn-outline-secondary btn-dark text-light ms-4"
               type="button">
               Create invoice
-            </button>
-            
+            </button></div>
+
 
           <div className="input-group w-50 ms-4">
-            <input onChange={(e)=>{
-              this.setState({search: e.target.value})
+            <input onChange={(e) => {
+              this.setState({ search: e.target.value })
             }}
-            onKeyDown={(e)=>{
-              (e.code == "Enter" || e.code == "NumpadEnter") ? (this.state.search == '' ? this.setState({route: 'invoices'}) : this.setState({route:  "invoices/search/" + this.state.search})) : null
-            }}
+              onKeyDown={(e) => {
+                (e.code == "Enter" || e.code == "NumpadEnter") ? (this.state.search == '' ? this.setState({ route: 'invoices' }) : this.setState({ route: "invoices/search/" + this.state.search })) : null
+              }}
               type="text"
               className="form-control"
               placeholder="Find by Invoice Number or Company Name"
@@ -150,10 +150,10 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             <button
               className="btn btn-outline-secondary btn-dark text-light "
               type="button"
-      
-              onClick={()=>{
-                
-                this.state.search ? this.setState({route:  "invoices/search/" + this.state.search}) : this.setState({route: 'invoices'})
+
+              onClick={() => {
+
+                this.state.search ? this.setState({ route: "invoices/search/" + this.state.search }) : this.setState({ route: 'invoices' })
               }}
             >
               Search
@@ -161,62 +161,65 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
           </div>
         </div>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Company Name</th>
-              <th scope="col">Invoice #</th>
-              <th scope="col">Pack</th>
-              <th scope="col">Email</th>
-              <th scope="col">Total</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>{this.state.invoicesRows}</tbody>
-        </table>
+        <div className="rounded-4 shadow-lg p-4">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Company Name</th>
+                <th scope="col">Invoice #</th>
+                <th scope="col">Pack</th>
+                <th scope="col">Email</th>
+                <th scope="col">Total</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>{this.state.invoicesRows}</tbody>
+          </table>
 
-        <div>
-          <ul className="pagination">
-            {this.state.firstPageURL != null ? (
-              <li className="page-item ">
-                <a
-                  className="page-link bg-dark text-light"
-                  onClick={() => {
-                    this.setState({ route: this.state.firstPageURL });
-                  }}
-                >
-                  First page
-                </a>
-              </li>
-            ) : null}
-            {this.state.prevPageURL != null ? (
-              <li className="page-item">
-                <a
-                  className="page-link text-dark"
-                  onClick={() => {
-                    this.setState({ route: this.state.prevPageURL });
-                  }}
-                >
-                  {" "}
-                  Preview page{" "}
-                </a>
-              </li>
-            ) : null}
-            {this.state.nextPageURL != null ? (
-              <li className="page-item">
-                <a
-                  className="page-link text-dark"
-                  onClick={() => {
-                    this.setState({ route: this.state.nextPageURL });
-                  }}
-                >
-                  {" "}
-                  Next page{" "}
-                </a>
-              </li>
-            ) : null}
-          </ul>
+          <div>
+            <ul className="pagination">
+              {this.state.firstPageURL != null ? (
+                <li className="page-item ">
+                  <a
+                    className="page-link bg-dark text-light"
+                    onClick={() => {
+                      this.setState({ route: this.state.firstPageURL });
+                    }}
+                  >
+                    First page
+                  </a>
+                </li>
+              ) : null}
+              {this.state.prevPageURL != null ? (
+                <li className="page-item">
+                  <a
+                    className="page-link text-dark"
+                    onClick={() => {
+                      this.setState({ route: this.state.prevPageURL });
+                    }}
+                  >
+                    {" "}
+                    Preview page{" "}
+                  </a>
+                </li>
+              ) : null}
+              {this.state.nextPageURL != null ? (
+                <li className="page-item">
+                  <a
+                    className="page-link text-dark"
+                    onClick={() => {
+                      this.setState({ route: this.state.nextPageURL });
+                    }}
+                  >
+                    {" "}
+                    Next page{" "}
+                  </a>
+                </li>
+              ) : null}
+            </ul>
+          </div>
         </div>
+
       </>
     );
   }
