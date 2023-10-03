@@ -21,6 +21,7 @@ interface IState {
   locationInput: any
   priceTypeInput: any
   packData: any
+  userId: any
 }
 
 export default class InvoiceForm extends React.Component<IProps, IState> {
@@ -40,46 +41,42 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       categoryInput: null,
       locationInput: null,
       priceTypeInput: null,
-      packData: null
+      packData: null,
+      userId: ''
     };
   }
 
-  componentDidUpdate(prevProps: Readonly<IProps>,prevState: Readonly<IState>,snapshot?: any): void {
+  componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any): void {
     prevState.routePacks != this.state.routePacks ? this.getUsers() : null;
-
-    if((this.state.categoryInput != prevState.categoryInput) || (this.state.locationInput != prevState.locationInput) || (this.state.priceTypeInput != prevState.priceTypeInput)){
+    if ((this.state.categoryInput != prevState.categoryInput) || (this.state.locationInput != prevState.locationInput) || (this.state.priceTypeInput != prevState.priceTypeInput)) {
       this.priceCalculation()
-
     }
-
   }
 
   componentDidMount(): void {
     this.getPackInfo()
   }
 
-  priceCalculation():void{
-    this.state.packData.forEach(pack => {
-      if(pack.pack_name === this.state.categoryInput){
-        if(this.state.locationInput == 0 && this.state.priceTypeInput == '0'){
-          this.setState({price: pack.price_normal})
-        }
+  priceCalculation(): void {
+    this.state.packData.forEach((pack: any) => {
+      if (pack.pack_name === this.state.categoryInput) {
 
-        if(this.state.locationInput == 0 && this.state.priceTypeInput == '1'){
-          this.setState({price: pack.price_early})
+        if (this.state.locationInput == 0 && this.state.priceTypeInput == 0) {
+          this.setState({ price: pack.price_normal })
+        } else if (this.state.locationInput == 0 && this.state.priceTypeInput == 1) {
+          this.setState({ price: pack.price_early })
+        } else if (this.state.locationInput == 1 && this.state.priceTypeInput == 0) {
+          this.setState({ price: pack.price_all_normal })
+        } else if (this.state.locationInput == 1 && this.state.priceTypeInput == 1) {
+          this.setState({ price: pack.price_all_early })
         }
-
-        if(this.state.locationInput == 1 && this.state.priceTypeInput == '0'){
-          this.setState({price: pack.price_all_normal})
-        }
-
-        if(this.state.locationInput == 1 && this.state.priceTypeInput == '1'){
-          this.setState({price: pack.price_all_early})
-        }
-
+      } else if (!this.state.categoryInput || !this.state.locationInput || !this.state.priceTypeInput) {
+        this.setState({ price: 0 })
       }
     });
   }
+
+
 
   getUsers(): void {
     new RequestsRoutes().get(this.state.routePacks).then((response) => {
@@ -87,7 +84,9 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
 
       if (response.status === 200) {
         response.data.data.forEach((data: any, i: any) => {
-          usersRow.push(<tr key={i + 'user'} className="p-2 align-middle">
+          
+          if(data.user_type != 1){
+            usersRow.push(<tr key={i + 'user'} className={data.id == this.state.userId ? "p-2 align-middle bg-success text-light" : "p-2 align-middle"}>
             <th scope="col">
               <h6 className="m-0">
                 <b>{data.contact}</b>
@@ -106,14 +105,18 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
             </th>
             <th scope="col">
               <div className="d-flex">
-                <button onClick={()=>{
-                    this.setState({userData: data})
-                }} type="button" className="btn btn-dark btn-sm">
+                <button onClick={() => {
+                  this.setState({ userData: data })
+                  this.setState({ userId: data.id })
+                  this.getUsers()
+                }} type="button" className="btn-dark btn btn-sm">
                   <Check />
                 </button>
               </div>
             </th>
           </tr>);
+          }
+         
         });
         this.setState({ userFounded: true });
         this.setState({ usersRows: usersRow });
@@ -128,7 +131,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       let category: JSX.Element[] = [];
       let locations: JSX.Element[] = [];
 
-      this.setState({packData: response.data.packinfo})
+      this.setState({ packData: response.data.packinfo })
 
       response.data.packinfo.forEach((data: any, i: any) => {
         category.push(<option key={i + 'packinfo'} value={data.pack_name}>{data.pack_name}</option>);
@@ -156,6 +159,8 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
 
         <h3>Find User</h3>
         <form>
+
+          <input type="hidden" name="user_id" value={this.state.userId} />
           <div className="mb-3">
             <div className="input-group w-100">
 
@@ -183,24 +188,24 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
             <div className="col-3">
               <div className="mb-3">
                 <label htmlFor="sponsorshipCategory" className="form-label"> Sponsorship Category * </label>
-                <select onChange={(e)=>{       
-                    this.setState({categoryInput: e.target.value})
+                <select onChange={(e) => {
+                  this.setState({ categoryInput: e.target.value })
                 }} className="form-select" name="category" required> <option value="">Select option</option> {this.state.category} </select>
               </div>
             </div>
             <div className="col-3">
               <div className="mb-3">
                 <label htmlFor="sponsorshipCategory" className="form-label"> Location * </label>
-                <select onChange={(e)=>{
-                  this.setState({locationInput: e.target.value})
+                <select onChange={(e) => {
+                  this.setState({ locationInput: e.target.value })
                 }} className="form-select" name="location" required> <option value="">Select option</option> {this.state.locations} </select>
               </div>
             </div>
             <div className="col-3">
               <div className="mb-3">
                 <label htmlFor=">pricetype" className="form-label"> Price type * </label>
-                <select onChange={(e)=>{
-                   this.setState({priceTypeInput: e.target.value})
+                <select onChange={(e) => {
+                  this.setState({ priceTypeInput: e.target.value })
                 }} className="form-select" name="price" required>
                   <option value="">Select Option</option>
                   <option value="0">Regular</option>
@@ -211,7 +216,9 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
             <div className="col-3">
               <div className="mb-3">
                 <label htmlFor="price" className="form-label"> Price * </label>
-                <input value={this.state.price} type="text" className="form-control" id="price" aria-describedby="price" required />
+                <input value={this.state.price} onChange={(e) => {
+                  this.setState({ price: Number(e.target.value) })
+                }} type="text" className="form-control" id="price" aria-describedby="price" required />
               </div>
             </div>
           </div>
