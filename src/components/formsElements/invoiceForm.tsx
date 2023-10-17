@@ -4,7 +4,6 @@ import RequestsRoutes from "../../http/requests";
 import { Check } from "@mui/icons-material";
 
 interface IProps {
-  invoiceTableState: any;
 }
 interface IState {
   category: JSX.Element[]
@@ -152,7 +151,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       <>
         <div className="d-flex search mt-4 mb-4">
           <h3 className="m-0">Create Invoice</h3>
-          <button onClick={this.props.invoiceTableState} className="btn btn-outline-secondary btn-dark text-light ms-4" type="button" > Cancel </button>
+          <a href="/invoices" className="btn btn-outline-secondary btn-dark text-light ms-4" type="button" > Cancel </a>
         </div>
 
         <br />
@@ -169,7 +168,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
               <button className="btn btn-outline-secondary btn-dark text-light " type="button" onClick={() => { this.state.search ? this.setState({ routePacks: "users/search/" + this.state.search, }) : this.setState({ routePacks: "users" }); }} > Search </button>
             </div>
           </div>
-          {this.state.userFounded ? (<table className="table p-4">
+          {this.state.userFounded ? (<table className="table ">
             <thead>
               <tr>
                 <th scope="col">Company Name</th>
@@ -181,6 +180,13 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
             </thead>
             <tbody>{this.state.usersRows}</tbody>
           </table>) : null}
+
+          <br />
+          <h3>Upload contract</h3>
+                  <div className="mb-3">
+                    <label htmlFor="contract_file" className="form-label"> Company Name{" "} </label>
+                    <input type="file" className="form-control" id="contract_file" aria-describedby="companyName" />
+                  </div>
 
           <br />
           <h3>Pack Price</h3>

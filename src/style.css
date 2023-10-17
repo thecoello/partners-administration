@@ -18,6 +18,10 @@ a {
   width: 70%;
 }
 
+#root {
+  min-height: 100vh;
+}
+
 body, html {
   background: #000;
   background-position: center;

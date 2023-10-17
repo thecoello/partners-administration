@@ -5,7 +5,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Delete } from "@mui/icons-material";
 
 interface IProps {
-  userFormState: any;
 }
 
 interface IState {
@@ -106,13 +105,13 @@ export default class UserTable extends React.Component<IProps, IState> {
           <div className="d-flex">
             <h3 className="m-0">Users</h3>
 
-            <button
-              onClick={this.props.userFormState}
+            <a
+              href="./users/create"
               className="btn btn-outline-secondary btn-dark text-light ms-4"
               type="button"
             >
               Create user
-            </button>
+            </a>
           </div>
 
           <div className="input-group w-50 ms-4">
@@ -149,7 +148,7 @@ export default class UserTable extends React.Component<IProps, IState> {
           </div>
         </div>
 
-        <div className="rounded-4 shadow-lg p-4">
+        <div className="rounded-4 ">
           <table className="table">
             <thead>
               <tr>

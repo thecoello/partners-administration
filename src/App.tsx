@@ -1,49 +1,59 @@
 import React from "react";
-import Invoice from "./components/invoice";
 import Menu from "./components/menu";
-import axios from "axios";
-import Users from "./components/users";
-import MenuEvents from "./components/eventHandler/menuEvents";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import UserTable from "./components/tables/userTable";
+import UserForm from "./components/formsElements/userForm";
+import InvoiceTable from "./components/tables/invoiceTable";
+import InvoiceForm from "./components/formsElements/invoiceForm";
 
-interface IProps {
-}
+interface IProps { }
 
 interface IState {
-  users?: boolean;
-  invoices?: boolean;
+  loader?: boolean;
 }
 
 export default class App extends React.Component<IProps, IState> {
+  router: any;
 
   constructor(props: IProps) {
     super(props);
     this.state = {
-      users: false,
-      invoices: true,
-    };
-    this.invoiceState = this.invoiceState.bind(this)
-    this.userState = this.userState.bind(this)  
+      loader: true
+    }
+    this.router = createBrowserRouter([
+      {
+        path: "/",
+        element: <InvoiceTable />,
+      },
+      {
+        path: "/invoices",
+        element: <InvoiceTable />,
+      },
+      {
+        path: "/invoices/create",
+        element: <InvoiceForm />,
+      },
+      {
+        path: "/users",
+        element: <UserTable />,
+      },
+      {
+        path: "/users/create",
+        element: <UserForm />,
+      },
+    ]);
   }
-
-  invoiceState() {
-    this.setState({ invoices: true })
-    this.setState({ users: false })
-  }
-
-  userState() {
-    this.setState({ invoices: false })
-    this.setState({ users: true })
-  }
-
+ 
   render(): React.ReactNode {
     return (
       <>
-        <Menu invoiceState={this.invoiceState} userState={this.userState} />
+        <Menu />
         <div className="cotainerfluid">
           <div className="row">
             <div className="col-12" id="content-view">
-                {this.state.invoices ? <Invoice /> : null}
-                {this.state.users ? <Users /> : null}
+              <div className="container">
+                <RouterProvider router={this.router} />
+              </div>
             </div>
           </div>
         </div>

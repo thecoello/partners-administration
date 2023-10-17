@@ -3,7 +3,6 @@ import RequestsRoutes from "../../http/requests";
 import { stringify } from "qs";
 
 interface IProps {
-  userTableState: any;
 }
 
 interface IState {
@@ -15,9 +14,7 @@ export default class UserForm extends React.Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      route: "users",
-    };
+
   }
 
   formSend(e: any) {
@@ -38,13 +35,12 @@ export default class UserForm extends React.Component<IProps, IState> {
             <div className="d-flex search mt-4 mb-4">
               <h3 className="m-0">Create User</h3>
 
-              <button
-                onClick={this.props.userTableState}
+              <a href="/users"
                 className="btn btn-outline-secondary btn-dark text-light ms-4"
                 type="button"
               >
                 Cancel
-              </button>
+              </a>
             </div>
 
             <form className="needs-validation" onSubmit={this.formSend.bind(this)}>

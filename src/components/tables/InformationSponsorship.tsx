@@ -8,125 +8,24 @@ interface IProps {
 }
 
 interface IState {
-  invoicesRows: JSX.Element[]
-  route: string | null
-  firstPageURL: string | null
-  prevPageURL: string | null
-  nextPageURL: string | null
-  search: string
+
 }
 
 export default class InvoiceTable extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      invoicesRows: [],
-      route: "invoices",
-      firstPageURL: null,
-      prevPageURL: null,
-      nextPageURL: null,
-      search: ''
     };
   }
 
-  getInvoices(): void {
-    new RequestsRoutes().get(this.state.route).then((response) => {
 
-      let invoicesRow: JSX.Element[] = [];
-
-      response.data.invoices.data.forEach((data: any, i: any) => {
-
-        invoicesRow.push(
-          <tr key={i} className="p-2 align-middle">
-            <th scope="col">
-              <h6 className="m-0">
-                <b>{data.company_name}</b>
-              </h6>
-              <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.name}</p>
-            </th>
-            <th scope="col">
-              <p className="m-0">{data.invoice_number}</p>
-
-              {data.payment_status != null ? (
-                <span className="badge rounded-pill text-bg-success">
-                  Payed
-                </span>
-              ) : (
-                <span className="badge rounded-pill text-bg-danger">
-                  Unpayed
-                </span>
-              )}
-            </th>
-            <th scope="col">
-              <p className="m-0"><b>{data.pack_name}</b></p>
-              <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.location_name}</p>
-            </th>
-            <th scope="col">
-              <p className="m-0">{data.email}</p>
-            </th>
-            <th scope="col">
-              <p className="m-0">{data.total}{response.data.eventinfo[0].symbol}</p>
-            </th>
-            <th scope="col">
-              <div className="d-flex">
-                <button
-                  type="button"
-                  className="btn btn-dark btn-sm"
-                  onClick={() => {
-                    new InvoicePDF(data).generateInvoice();
-                  }}
-                >
-                  <DownloadIcon />
-                </button>
-                <button type="button" className="btn btn-dark btn-sm">
-                  <EditIcon />
-                </button>
-              </div>
-            </th>
-          </tr>
-        );
-
-      });
-
-      this.setState({ invoicesRows: invoicesRow });
-
-      response.data.invoices.first_page_url != null
-        ? this.setState({
-          firstPageURL: response.data.invoices.first_page_url.split("api/")[1],
-        })
-        : this.setState({ firstPageURL: null });
-      response.data.invoices.prev_page_url != null
-        ? this.setState({
-          prevPageURL: response.data.invoices.prev_page_url.split("api/")[1],
-        })
-        : this.setState({ prevPageURL: null });
-      response.data.invoices.next_page_url != null
-        ? this.setState({
-          nextPageURL: response.data.invoices.next_page_url.split("api/")[1],
-        })
-        : this.setState({ nextPageURL: null });
-
-    });
-  }
-
-  componentDidUpdate(
-    prevProps: Readonly<IProps>,
-    prevState: Readonly<IState>,
-    snapshot?: any
-  ): void {
-    prevState.route != this.state.route ? this.getInvoices() : null;
-  }
-
-  componentDidMount(): void {
-    this.getInvoices();
-  }
 
   render(): React.ReactNode {
     return (
       <>
         <div className="d-flex search mt-4 mb-4 justify-content-between">
 
-          <div className="d-flex"><h3 className="m-0">Invoices</h3>
+          <div className="d-flex"><h3 className="m-0">sponsorship Information</h3>
 
             <a href="/invoices/create"
               className="btn btn-outline-secondary btn-dark text-light ms-4"
