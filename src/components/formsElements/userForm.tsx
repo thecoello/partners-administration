@@ -1,126 +1,216 @@
-import React from "react";
-import RequestsRoutes from "../../http/requests";
-import { stringify } from "qs";
+import React from "react"
+import RequestsRoutes from "../../http/requests"
+import { useLocation } from "react-router"
+import { request } from "http"
+import { fontSize } from "@mui/system"
 
 interface IProps {
+  getUserId: any
 }
 
 interface IState {
-  route: null | string,
-
+  route: null | string
+  title: string
+  companyName: string
+  name: string
+  email: string
+  password: string
+  userType: string
 }
 
 export default class UserForm extends React.Component<IProps, IState> {
-
   constructor(props: IProps) {
-    super(props);
-
+    super(props)
+    this.state = {
+      route: "users",
+      title: "",
+      companyName: "",
+      name: "",
+      email: "",
+      password: "",
+      userType: "",
+    }
   }
 
-  formSend(e: any) {
-    e.preventDefault();
-    new RequestsRoutes().post(this.state.route,e.target)
-    .then(response=>{
-
-      response.status === 200 ? alert("User created") :  Object.keys(response.response.data).map((key)=>{
-        alert(response.response.data[key])
+  getUserData = (id: any) => {
+    new RequestsRoutes().get(this.state.route + "/" + id).then((response) => {
+      response.data.forEach((data: any) => {
+        this.setState({ companyName: data.contact })
+        this.setState({ name: data.name })
+        this.setState({ email: data.email })
+        this.setState({ userType: data.user_type })
       })
-
     })
+  }
+
+  formCreate(e: any) {
+    e.preventDefault()
+    new RequestsRoutes().post(this.state.route, e.target).then((response) => {
+      if(response.status === 200){
+        alert("User created")
+        window.location.href = "/users"
+      }
+    }).catch((error)=>{
+      alert(error)
+    })
+  }
+
+  formUpdate(e: any) {
+    e.preventDefault()
+    new RequestsRoutes()
+      .put(this.state.route + "/" + this.props.getUserId(), e.target).then((response) => {
+        if(response.status === 200){
+          alert("User Updated")
+          window.location.href = "/users"
+        }
+      }).catch((error)=>{
+        alert(error)
+      })
+  }
+
+  componentDidMount(): void {
+    if (this.props.getUserId()) {
+      this.setState({ title: "Update user" })
+      this.getUserData(this.props.getUserId())
+    } else {
+      this.setState({ title: "Create user" })
+    }
   }
 
   public render(): React.ReactNode {
     return (
-          <>
-            <div className="d-flex search mt-4 mb-4">
-              <h3 className="m-0">Create User</h3>
+      <>
+        <div className="d-flex search mt-4 mb-4">
+          <h3 className="m-0">{this.state.title}</h3>
+          <a
+            href="/users"
+            className="btn btn-outline-secondary btn-dark text-light ms-4"
+            type="button"
+          >
+            Cancel
+          </a>
+        </div>
 
-              <a href="/users"
-                className="btn btn-outline-secondary btn-dark text-light ms-4"
-                type="button"
-              >
-                Cancel
-              </a>
+        <form
+          className="needs-validation"
+          onSubmit={
+            this.props.getUserId()
+              ? this.formUpdate.bind(this)
+              : this.formCreate.bind(this)
+          }
+        >
+          <div className="row">
+            <div className="col-4">
+              <div className="mb-3">
+                <label htmlFor="contact" className="form-label">
+                  Company Name {this.props.getUserId() ? null : "*"}
+                </label>
+                <input
+                  onChange={(e) => {
+                    this.setState({ companyName: e.target.value })
+                  }}
+                  value={
+                    this.props.getUserId() ? this.state.companyName : undefined
+                  }
+                  required={this.props.getUserId() ? false : true}
+                  type="text"
+                  className="form-control"
+                  id="contact"
+                  name="contact"
+                />
+              </div>
             </div>
-
-            <form className="needs-validation" onSubmit={this.formSend.bind(this)}>
-              <div className="row">
-                <div className="col-4">
-                  <div className="mb-3">
-                    <label htmlFor="contact" className="form-label">
-                      Company Name *
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="contact"
-                      name="contact" required
-                    />
-                  </div>
-                </div>
-                <div className="col-4">
-                  <div className="mb-3">
-                    <label htmlFor="name" className="form-label">
-                      Name *
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="name"
-                      name="name" required
-                    />
-                  </div>
-                </div>
-                <div className="col-4">
-                  <div className="mb-3">
-                    <label htmlFor="email" className="form-label">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      className="form-control"
-                      id="email"
-                      name="email" required
-                    />
-                  </div>
-                </div>
+            <div className="col-4">
+              <div className="mb-3">
+                <label htmlFor="name" className="form-label">
+                  Name {this.props.getUserId() ? null : "*"}
+                </label>
+                <input
+                  onChange={(e) => {
+                    this.setState({ name: e.target.value })
+                  }}
+                  value={this.props.getUserId() ? this.state.name : undefined}
+                  required={this.props.getUserId() ? false : true}
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  name="name"
+                />
               </div>
-
-              <div className="row">
-                <div className="col-4">
-                  <div className="mb-3">
-                    <label htmlFor="password" className="form-label">
-                      Password *
-                    </label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="password"
-                      name="password" required
-                    />
-                  </div>
-                </div>
-                <div className="col-4">
-                  <div className="mb-3">
-                    <label htmlFor="user_type" className="form-label">
-                      User Type *
-                    </label>
-                    <select className="form-select" name="user_type" required>
-                       <option value="">Select option</option>
-                      <option value="0">User</option>
-                      <option value="1">Admin</option>
-                    </select>
-                  </div>
-                </div>
+            </div>
+            <div className="col-4">
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">
+                  Email {this.props.getUserId() ? null : "*"}
+                </label>
+                <input
+                  onChange={(e) => {
+                    this.setState({ email: e.target.value })
+                  }}
+                  value={this.props.getUserId() ? this.state.email : undefined}
+                  required={this.props.getUserId() ? false : true}
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  name="email"
+                />
               </div>
+            </div>
+          </div>
 
-              <hr />
+          <div className="row">
+            <div className="col-4">
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label">
+                  Password {this.props.getUserId() ? null : "*"}
+                </label>
+                <input
+                  onChange={(e) => {
+                    this.setState({ password: e.target.value })
+                  }}
+                  value={
+                    this.props.getUserId() ? this.state.password : undefined
+                  }
+                  required={this.props.getUserId() ? false : true}
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  name="password"
+                />
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="mb-3">
+                <label htmlFor="user_type" className="form-label">
+                  User Type {this.props.getUserId() ? null : "*"}
+                </label>
 
-              <button type="submit" className="btn btn-dark">
-                Submit
-              </button>
-            </form>
-          </>
-          );
+                <select
+                  onChange={(e) => {
+                    this.setState({ userType: e.target.value })
+                  }}
+                  value={
+                    this.props.getUserId() ? this.state.userType : undefined
+                  }
+                  className="form-select"
+                  name="user_type"
+                  required
+                >
+                  <option value="">Select option</option>
+                  <option value="0">User</option>
+                  <option value="1">Admin</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <button type="submit" className="btn btn-dark">
+            Submit
+          </button>
+        </form>
+      </>
+    )
   }
 }

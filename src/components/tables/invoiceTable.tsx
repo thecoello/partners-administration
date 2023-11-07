@@ -3,8 +3,11 @@ import RequestsRoutes from "../../http/requests";
 import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
 import InvoicePDF from "../invoiceComponents/invoicePDF";
+import { Link } from "react-router-dom";
+import { Warning } from "@mui/icons-material";
 
 interface IProps {
+  setInvoiceId: any
 }
 
 interface IState {
@@ -35,13 +38,13 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       let invoicesRow: JSX.Element[] = [];
 
       response.data.invoices.data.forEach((data: any, i: any) => {
-
         invoicesRow.push(
           <tr key={i} className="p-2 align-middle">
             <th scope="col">
-              <h6 className="m-0">
+      
+              {data.company_name ? <h6 className="m-0">
                 <b>{data.company_name}</b>
-              </h6>
+              </h6> : <p>Missing tax information </p>}
               <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.name}</p>
             </th>
             <th scope="col">
@@ -59,17 +62,17 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             </th>
             <th scope="col">
               <p className="m-0"><b>{data.pack_name}</b></p>
-              <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.location_name}</p>
+              <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.location}</p>
             </th>
             <th scope="col">
               <p className="m-0">{data.email}</p>
             </th>
             <th scope="col">
-              <p className="m-0">{data.total}{response.data.eventinfo[0].symbol}</p>
+              <p className="m-0">{data.total + response.data.eventinfo[0].symbol}</p>
             </th>
             <th scope="col">
               <div className="d-flex">
-                <button
+                {data.company_name ?  <button
                   type="button"
                   className="btn btn-dark btn-sm"
                   onClick={() => {
@@ -77,10 +80,14 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
                   }}
                 >
                   <DownloadIcon />
-                </button>
-                <button type="button" className="btn btn-dark btn-sm">
+                </button> : <div className="btn btn-warning btn-sm disabled"><Warning /></div>}
+               
+                <Link to={{ pathname: "/invoices/form" }} onClick={(e) => {
+                  this.props.setInvoiceId(data.id)
+                }} type="button" className="btn btn-dark btn-sm">
                   <EditIcon />
-                </button>
+                </Link>
+
               </div>
             </th>
           </tr>
@@ -127,13 +134,8 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
         <div className="d-flex search mt-4 mb-4 justify-content-between">
 
           <div className="d-flex"><h3 className="m-0">Invoices</h3>
-
-            <a href="/invoices/create"
-              className="btn btn-outline-secondary btn-dark text-light ms-4"
-              type="button">
-              Create invoice
-            </a></div>
-
+          
+            <a href="/invoices/form" className="btn btn-outline-secondary btn-dark text-light ms-4" type="button"> Create invoice </a></div>
 
           <div className="input-group w-50 ms-4">
             <input onChange={(e) => {
@@ -142,21 +144,12 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               onKeyDown={(e) => {
                 (e.code == "Enter" || e.code == "NumpadEnter") ? (this.state.search == '' ? this.setState({ route: 'invoices' }) : this.setState({ route: "invoices/search/" + this.state.search })) : null
               }}
-              type="text"
-              className="form-control"
-              placeholder="Find by Invoice Number or Company Name"
-            />
-            <button
-              className="btn btn-outline-secondary btn-dark text-light "
-              type="button"
-
+              type="text" className="form-control" placeholder="Find by Invoice Number or Company Name"/>
+            <button className="btn btn-outline-secondary btn-dark text-light " type="button"
               onClick={() => {
-
                 this.state.search ? this.setState({ route: "invoices/search/" + this.state.search }) : this.setState({ route: 'invoices' })
               }}
-            >
-              Search
-            </button>
+            >Search </button>
           </div>
         </div>
 
@@ -166,7 +159,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               <tr>
                 <th scope="col">Company Name</th>
                 <th scope="col">Invoice #</th>
-                <th scope="col">Pack</th>
+                <th scope="col">Pack and Location</th>
                 <th scope="col">Email</th>
                 <th scope="col">Total</th>
                 <th scope="col">Actions</th>
@@ -184,35 +177,23 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
                     onClick={() => {
                       this.setState({ route: this.state.firstPageURL });
                     }}
-                  >
-                    First page
-                  </a>
+                  > First page </a>
                 </li>
               ) : null}
               {this.state.prevPageURL != null ? (
                 <li className="page-item">
-                  <a
-                    className="page-link text-dark"
+                  <a className="page-link text-dark"
                     onClick={() => {
                       this.setState({ route: this.state.prevPageURL });
                     }}
-                  >
-                    {" "}
-                    Preview page{" "}
-                  </a>
+                  >{" "}Preview page{" "} </a>
                 </li>
               ) : null}
               {this.state.nextPageURL != null ? (
                 <li className="page-item">
-                  <a
-                    className="page-link text-dark"
-                    onClick={() => {
+                  <a className="page-link text-dark" onClick={() => {
                       this.setState({ route: this.state.nextPageURL });
-                    }}
-                  >
-                    {" "}
-                    Next page{" "}
-                  </a>
+                    }} >{" "}Next page{" "}</a>
                 </li>
               ) : null}
             </ul>

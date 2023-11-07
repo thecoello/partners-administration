@@ -1,15 +1,22 @@
 import React from "react";
 import Menu from "./components/menu";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import UserTable from "./components/tables/userTable";
 import UserForm from "./components/formsElements/userForm";
+
 import InvoiceTable from "./components/tables/invoiceTable";
 import InvoiceForm from "./components/formsElements/invoiceForm";
+import InformationTable from "./components/tables/InformationTable";
+import InformationForm from "./components/formsElements/informationForm";
 
-interface IProps { }
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+
+interface IProps { 
+}
 
 interface IState {
-  loader?: boolean;
+  userId: any
+  invoiceId: any
 }
 
 export default class App extends React.Component<IProps, IState> {
@@ -18,32 +25,62 @@ export default class App extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      loader: true
+      userId: "",
+      invoiceId: ""
     }
+    
+
     this.router = createBrowserRouter([
       {
         path: "/",
-        element: <InvoiceTable />,
+        element: <InvoiceTable setInvoiceId={this.setInvoiceId} />,
       },
       {
         path: "/invoices",
-        element: <InvoiceTable />,
+        element: <InvoiceTable setInvoiceId={this.setInvoiceId} />,
       },
       {
-        path: "/invoices/create",
-        element: <InvoiceForm />,
+        path: "/invoices/form",
+        element: <InvoiceForm getInvoiceId={this.getInvoiceId} />,
       },
       {
         path: "/users",
-        element: <UserTable />,
+        element: <UserTable setUserID={this.setUserId} />,
       },
       {
-        path: "/users/create",
-        element: <UserForm />,
+        path: "/users/form",
+        element:  <UserForm getUserId={this.getUserId}/>,
       },
+      {
+        path: "/informationtable",
+        element: <InformationTable />,
+      },
+      {
+        path: "/informationtable/create",
+        element: <InformationForm  />,
+      },
+
     ]);
+
+
   }
- 
+  
+  setUserId=(id:any)=>{
+    this.setState({userId: id})
+  }
+
+  getUserId=()=>{
+    return this.state.userId
+  }
+
+  setInvoiceId=(id:any)=>{
+    this.setState({invoiceId: id})
+  }
+
+  getInvoiceId=()=>{
+    return this.state.invoiceId
+  }
+
   render(): React.ReactNode {
     return (
       <>

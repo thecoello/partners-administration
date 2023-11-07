@@ -32,7 +32,7 @@ export default class Menu extends React.Component<IProps, IState> {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a href="/standinformation" className="nav-link text-light " aria-current="page">
+                  <a href="/informationtable" className="nav-link text-light " aria-current="page">
                     Stands information
                   </a>
                 </li>
