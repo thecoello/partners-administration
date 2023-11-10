@@ -1,22 +1,6 @@
 import React from "react"
 import RequestsRoutes from "../../http/requests"
-import { useLocation } from "react-router"
-import { request } from "http"
-import { fontSize } from "@mui/system"
-
-interface IProps {
-  getUserId: any
-}
-
-interface IState {
-  route: null | string
-  title: string
-  companyName: string
-  name: string
-  email: string
-  password: string
-  userType: string
-}
+import { IState, IProps } from "../../models/users/model.usersForm"
 
 export default class UserForm extends React.Component<IProps, IState> {
   constructor(props: IProps) {

@@ -3,19 +3,8 @@ import RequestsRoutes from "../../http/requests"
 import EditIcon from "@mui/icons-material/Edit"
 import { Delete } from "@mui/icons-material"
 import { Link } from "react-router-dom"
+import { IProps, IState } from "../../models/users/model.usersTable"
 
-interface IProps {
-  setUserID: any
-}
-
-interface IState {
-  usersRows: JSX.Element[]
-  route: string | null
-  firstPageURL: string | null
-  prevPageURL: string | null
-  nextPageURL: string | null
-  search: string
-}
 
 export default class UserTable extends React.Component<IProps, IState> {
   constructor(props: IProps) {

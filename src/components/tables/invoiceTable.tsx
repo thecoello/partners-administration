@@ -5,19 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import InvoicePDF from "../invoiceComponents/invoicePDF";
 import { Link } from "react-router-dom";
 import { Warning } from "@mui/icons-material";
-
-interface IProps {
-  setInvoiceId: any
-}
-
-interface IState {
-  invoicesRows: JSX.Element[]
-  route: string | null
-  firstPageURL: string | null
-  prevPageURL: string | null
-  nextPageURL: string | null
-  search: string
-}
+import { IProps, IState } from "../../models/invoices/model.invoiceTable";
 
 export default class InvoiceTable extends React.Component<IProps, IState> {
   constructor(props: IProps) {
@@ -44,7 +32,9 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       
               {data.company_name ? <h6 className="m-0">
                 <b>{data.company_name}</b>
-              </h6> : <p>Missing tax information </p>}
+              </h6> : <h6 className="m-0">
+                <b><Warning /> Missing tax information</b>
+              </h6>}
               <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.name}</p>
             </th>
             <th scope="col">
@@ -61,7 +51,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               )}
             </th>
             <th scope="col">
-              <p className="m-0"><b>{data.pack_name}</b></p>
+              <p className="m-0"><b>{data.category}</b></p>
               <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.location}</p>
             </th>
             <th scope="col">
@@ -69,6 +59,8 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             </th>
             <th scope="col">
               <p className="m-0">{data.total + response.data.eventinfo[0].symbol}</p>
+              <p className="m-0" style={{ fontSize: '0.8rem' }}>Price type: {data.pricetype}</p>
+
             </th>
             <th scope="col">
               <div className="d-flex">

@@ -1,33 +1,11 @@
 import React from "react";
 import Forms from "./selectors";
 import RequestsRoutes from "../../http/requests";
-import { Check } from "@mui/icons-material";
-
-interface IProps {
-  getInvoiceId: any
-}
-interface IState {
-  category: JSX.Element[]
-  locations: JSX.Element[]
-  routePacks: string | null
-  routeUser: string | null
-  search: string
-  usersRows: JSX.Element[]
-  userFounded: boolean
-  userData: any
-  price: number
-  packName: String
-  categoryInput: any
-  locationInput: any
-  priceTypeInput: any
-  categoryValue: any
-  locationValue: any
-  priceTypeValue: any
-  packData: any
-  userId: any
-  route: any
-  title: String
-}
+import { Check, Warning, WarningAmber } from "@mui/icons-material";
+import { IProps, IState } from "../../models/invoices/model.invoicesForm";
+import UserTable from "../tables/userTable";
+import InvoiceTable from "../tables/invoiceTable";
+import InvoicePDF from "../invoiceComponents/invoicePDF";
 
 export default class InvoiceForm extends React.Component<IProps, IState> {
   constructor(props: IProps) {
@@ -52,7 +30,8 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       packData: null,
       userId: '',
       route: "invoices",
-      title: ""
+      title: "",
+      invoiceTable: [],
     };
   }
 
@@ -67,9 +46,104 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
     this.getPackInfo()
     if (this.props.getInvoiceId()) {
       this.setState({ title: "Update Invoice" })
+      this.getInvoiceData(this.props.getInvoiceId())
     } else {
       this.setState({ title: "Create Invoice" })
     }
+  }
+
+  getInvoiceData = (id: any) => {
+    new RequestsRoutes().get(this.state.route + "/" + id).then((response) => {
+      let invoiceTable: JSX.Element[] = [];
+
+
+      response.data.invoices.data.forEach((data: any, i: number) => {
+        console.log(data)
+        invoiceTable.push(
+
+          <div key={i + "invoice"} className="card">
+            <div className="card-body">
+
+              <div className="row">
+                <div className="col-4">            <h2 className="m-0">Invoice {data.invoice_number}</h2>
+                  {data.payment_status != null ? (
+                    <span className="badge rounded-pill text-bg-success">
+                      Payed
+                    </span>
+                  ) : (
+                    <span className="badge rounded-pill text-bg-danger">
+                      Unpayed
+                    </span>
+                  )}
+                </div>
+                <div className="col-4">            <p className="m-0"><b>{data.invoice_date != null ? null : <Warning />} Invoice date:</b> {data.invoice_date != null ? data.invoice_date : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.payment_method != null ? null : <Warning />} Payment method:</b> {data.payment_method != null ? data.payment_method : <span>Missing information</span>}</p>
+                </div>
+                <div className="col-2">
+                  <button onClick={() => {
+                    new InvoicePDF(data).generateInvoice();
+                  }} className="btn btn-dark m-1 w-100">Download Invoice</button>
+                </div>
+                <div className="col-2">
+
+
+                  <a target="_blank" href={'http://localhost:8000/' + data.contract_file} className="btn btn-outline-dark m-1 w-100">Download contract</a>
+                </div>
+              </div>
+
+              <hr />
+
+              <div className="row">
+                <div className="col-3">
+                <span className="badge rounded-pill text-bg-dark mb-1">
+                Tax Information
+                    </span>
+                  <p className="m-0"><b> {data.company_name != null ? null : <Warning />} Company name:</b> {data.company_name != null ? data.company_name : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.vat != null ? null : <Warning />} VAT:</b> {data.vat != null ? data.vat : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.address != null ? null : <Warning />} Address:</b> {data.address != null ? data.address : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.zip != null ? null : <Warning />} Zip:</b> {data.zip != null ? data.zip : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.country != null ? null : <Warning />} Country:</b> {data.country != null ? data.country : <span>Missing information</span>}</p>
+                </div>
+
+                <div className="col-3">
+                <span className="badge rounded-pill text-bg-dark mb-1">
+                Pack Information
+                    </span>
+                  <p className="m-0"><b>{data.category != null ? null : <Warning />} Cateogry:</b> {data.category != null ? data.category : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.location != null ? null : <Warning />} Location:</b> {data.location != null ? data.location : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.pricetype != null ? null : <Warning />} Pricetype:</b> {data.pricetype != null ? data.pricetype : <span>Missing information</span>}</p>
+
+                </div>
+
+                <div className="col-3">
+                <span className="badge rounded-pill text-bg-dark mb-1">
+                User Information
+                    </span>
+                  <p className="m-0"><b>{data.contact != null ? null : <Warning />} Company name:</b> {data.contact != null ? data.contact : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.name != null ? null : <Warning />} Name:</b> {data.name != null ? data.name : <span>Missing information</span>}</p>
+                  <p className="m-0"><b>{data.email != null ? null : <Warning />} Email:</b> {data.email != null ? data.email : <span>Missing information</span>}</p>
+
+                </div>
+
+                <div className="col-3">
+                <span className="badge rounded-pill text-bg-dark mb-1">
+                  Description and price
+                    </span>
+                  <p className="m-0"><b>{data.category && data.location && data.pricetype != null ? null : <Warning />} </b> {data.category && data.location && data.pricetype != null ? data.quantity + " - " + data.category + " - " + data.location + " - (" + data.pricetype + ")" : <span>Missing information</span>}</p>
+                  <hr />
+                  <h5 className="m-1"><b>{data.subtotal != null ? null : <Warning />} Subtotal:</b> {data.subtotal != null ? data.subtotal : <span>Missing information</span>}</h5>
+                  <h5 className="m-1"><b>{data.iva != null ? null : <Warning />} IVA:</b> {data.iva != null ? data.iva : <span>Missing information</span>}</h5>
+                  <h5 className="m-1"><b>{data.total != null ? null : <Warning />} Total:</b> {data.total != null ? data.total : <span>Missing information</span>}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        )
+      });
+
+      this.setState({ invoiceTable: invoiceTable })
+    })
   }
 
   priceCalculation(): void {
@@ -90,8 +164,6 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       }
     });
   }
-
-
 
   getUsers(): void {
     new RequestsRoutes().get(this.state.routePacks).then((response) => {
@@ -145,31 +217,25 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
     new RequestsRoutes().get(this.state.routePacks).then((response) => {
       let category: JSX.Element[] = [];
       let locations: JSX.Element[] = [];
-
       this.setState({ packData: response.data.packinfo })
-
       response.data.packinfo.forEach((data: any, i: any) => {
         category.push(<option key={i + 'packinfo'} value={data.pack_name}>{data.pack_name}</option>);
       });
-
       response.data.locations.forEach((data: any, i: any) => {
         locations.push(<option key={i + 'location'} value={data.type}>{data.location_name}</option>);
       });
-
       this.setState({ category: category });
       this.setState({ locations: locations });
     });
   }
 
-
   formCreate(e: any) {
     e.preventDefault()
-
     if (this.state.userId) {
       new RequestsRoutes().post(this.state.route, e.target).then((response) => {
         if (response.status === 200) {
           alert("Invoice created")
-          window.location.href = "/invoices"
+          window.location.href = this.state.route
         }
       }).catch((error) => {
         alert(error)
@@ -180,12 +246,13 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
   }
 
   formUpdate(e: any) {
+    e.preventDefault()
     if (this.state.userId) {
       new RequestsRoutes()
         .put(this.state.route + "/" + this.props.getInvoiceId(), e.target).then((response) => {
           if (response.status === 200) {
             alert("Invoice Updated")
-            window.location.href = "/invoices"
+            window.location.href = this.state.route
           }
         }).catch((error) => {
           alert(error)
@@ -195,18 +262,19 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
     }
   }
 
-
   public render(): React.ReactNode {
     return (
       <>
+
+        {this.props.getInvoiceId() ? this.state.invoiceTable : null}
+
         <div className="d-flex search mt-4 mb-4">
           <h3 className="m-0">{this.state.title}</h3>
           <a href="/invoices" className="btn btn-outline-secondary btn-dark text-light ms-4" type="button" > Cancel </a>
         </div>
 
-        <br />
+        <h5>Find and select user</h5>
 
-        <h3>Find and select user</h3>
         <form encType="multipart/form-data" onSubmit={
           this.props.getInvoiceId()
             ? this.formUpdate.bind(this)
@@ -239,21 +307,18 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
             <tbody>{this.state.usersRows}</tbody>
           </table>) : null}
 
-          <br />
-          <h3>Upload contract *</h3>
           <div className="mb-3">
-            <input type="file" className="form-control" name="contract_file" id="contract_file" aria-describedby="contract_file" required/>
+            <label htmlFor="contract_file" className="form-label"> Upload contract </label>
+            <input type="file" className="form-control" name="contract_file" id="contract_file" aria-describedby="contract_file" required />
           </div>
 
-          <br />
-          <h3>Sponsorship pack price</h3>
           <div className="row">
             <div className="col-3">
               <div className="mb-3">
                 <label htmlFor="category-null" className="form-label"> Sponsorship Category * </label>
                 <select onChange={(e) => {
                   this.setState({ categoryInput: e.target.value })
-                  this.setState({ categoryValue: e.target.selectedOptions})
+                  this.setState({ categoryValue: e.target.options[e.target.options.selectedIndex].text })
                 }} className="form-select" name="category-null" id="category-null" aria-describedby="category-null" required> <option value="">Select option</option> {this.state.category} </select>
               </div>
             </div>
@@ -262,7 +327,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
                 <label htmlFor="location-null" className="form-label"> Location * </label>
                 <select onChange={(e) => {
                   this.setState({ locationInput: e.target.value })
-                  this.setState({ locationValue: e.target.selectedOptions})
+                  this.setState({ locationValue: e.target.options[e.target.options.selectedIndex].text })
 
                 }} className="form-select" name="location-null" id="location-null" aria-describedby="location-null" required> <option value="">Select option</option> {this.state.locations} </select>
               </div>
@@ -272,9 +337,8 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
                 <label htmlFor="pricetype-null" className="form-label"> Price type * </label>
                 <select onChange={(e) => {
 
-                  console.log(e.target)
                   this.setState({ priceTypeInput: e.target.value })
-                  this.setState({ priceTypeValue: e.target.selectedIndex})
+                  this.setState({ priceTypeValue: e.target.options[e.target.options.selectedIndex].text })
 
                   this
                 }} className="form-select" name="pricetype-null" id="pricetype-null" aria-describedby="pricetype-null" required>
