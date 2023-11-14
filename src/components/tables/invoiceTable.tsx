@@ -75,6 +75,12 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
                 >
                   <DownloadIcon />
                 </button> : <div className="btn btn-warning btn-sm disabled"><Warning /></div>}
+
+                <Link to={{ pathname: "/invoices/updatepartner" }} onClick={(e) => {
+                  this.props.setInvoiceId(data.id)
+                }} type="button" className="btn btn-primary btn-sm">
+                  <EditIcon />
+                </Link>
                
                 <Link to={{ pathname: "/invoices/form" }} onClick={(e) => {
                   this.props.setInvoiceId(data.id)

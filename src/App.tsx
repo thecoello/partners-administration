@@ -10,6 +10,7 @@ import InformationTable from "./components/tables/InformationTable";
 import InformationForm from "./components/formsElements/informationForm";
 
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import InvoiceFormPartner from "./components/formsElements/invoiceFormPartner";
 
 interface IProps { 
 }
@@ -44,6 +45,10 @@ export default class App extends React.Component<IProps, IState> {
         element: <InvoiceForm getInvoiceId={this.getInvoiceId} />,
       },
       {
+        path: "/invoices/updatepartner",
+        element: <InvoiceFormPartner getInvoiceId={this.getInvoiceId} />,
+      },
+      {
         path: "/users",
         element: <UserTable setUserID={this.setUserId} />,
       },
@@ -59,6 +64,7 @@ export default class App extends React.Component<IProps, IState> {
         path: "/informationtable/create",
         element: <InformationForm getUserId={this.getUserId} />,
       },
+    
 
     ]);
 
