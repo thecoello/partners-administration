@@ -21,16 +21,18 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
   }
 
   getInvoices(): void {
-    new RequestsRoutes().get(this.state.route).then((response) => {
+    new RequestsRoutes().get(this.state.route + '').then((response) => {
 
       let invoicesRow: JSX.Element[] = [];
+
+      const event = response.data.eventinfo[0]
 
       response.data.invoices.data.forEach((data: any, i: any) => {
         invoicesRow.push(
           <tr key={i} className="p-2 align-middle">
             <th scope="col">
       
-              {data.company_name ? <h6 className="m-0">
+              {data.company_name && data.address && data.zip && data.country && data.vat ? <h6 className="m-0">
                 <b>{data.company_name}</b>
               </h6> : <h6 className="m-0">
                 <b><Warning /> Missing tax information</b>
@@ -40,7 +42,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             <th scope="col">
               <p className="m-0">{data.invoice_number}</p>
 
-              {data.payment_status != null ? (
+              {data.payment_status == "Payed"? (
                 <span className="badge rounded-pill text-bg-success">
                   Payed
                 </span>
@@ -64,11 +66,11 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             </th>
             <th scope="col">
               <div className="d-flex">
-                {data.company_name ?  <button
+                {data.company_name && data.address && data.zip && data.country && data.vat ?  <button
                   type="button"
                   className="btn btn-dark btn-sm"
                   onClick={() => {
-                    new InvoicePDF(data).generateInvoice();
+                    new InvoicePDF(data,event).generateInvoice();
                   }}
                 >
                   <DownloadIcon />

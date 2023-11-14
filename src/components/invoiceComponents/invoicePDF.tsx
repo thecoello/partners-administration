@@ -1,27 +1,37 @@
 import jsPDF from "jspdf";
 import { renderToString } from 'react-dom/server';
 import Logo from '../../assets/logo.png'
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import { HtmlHTMLAttributes } from "react";
 
 export default class InvoicePDF{
 
   data: any;
+  event: any;
 
-  constructor(data:any){
+  constructor(data:any, event: any){
     this.data = data
+    this.event = event
+
   }
 
    generateInvoice(){
     const doc = new jsPDF('p', 'pt');
     const name = "invoice_" + this.data.invoice_number
-    doc.html(renderToString(this.invoice(this.data)), {
+    doc.html(renderToString(this.invoice(this.data, this.event)), {
  
       async callback(doc) {
         doc.save(name);
       }
     });
   }
+  
+  sellerBankInfo(event:any){
+    return {__html: event.seller_bankinfo}
+  }
 
-  private invoice = (data: any) => {
+
+  private invoice = (data: any, event: any) => {
     return (
       <div style={{ "width": "595px", "margin": "30px 0" }}>
         <div style={{ "width": "495px", "margin": "0 auto", "display": "flex", "flexDirection": "column", "justifyContent": "space-between" }}>
@@ -33,11 +43,11 @@ export default class InvoicePDF{
             </div>
             <div className="col-4">
               <p style={{ "fontSize": "0.5em", "margin": "5px 0", "textTransform": "uppercase" }}>
-                <b>{data.name}</b> <br />
-                {data.address} <br />
-                {data.zip} &nbsp; {}<br />
-                {data.country} <br />
-                CIF:&nbsp;{data.vat}</p>
+                <b>{event.seller_name}</b> <br />
+                {event.seller_address} <br />
+                {event.seller_zip} &nbsp; {}<br />
+                {event.seller_country} <br />
+                CIF:&nbsp;{event.seller_vat}</p>
             </div>
           </div>
 
@@ -59,8 +69,6 @@ export default class InvoicePDF{
 
             </div>
           </div>
-          <br />
-
 
           {/* BODY */}
 
@@ -86,25 +94,27 @@ export default class InvoicePDF{
 
             <div className="row text-left">
               <div className="col-8">
-                <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}><b>{data.category}</b></p>
-                <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>{data.location}</p>
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}><b>{data.category}</b></p>
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>{data.location}</p>
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>{data.pricetype}</p>
+
               </div>
               <div className="col-2">
                 <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "center" }}>1</p>
               </div>
-              <div className="col-2"><p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{data.subtotal}&nbsp;{data.currency}</p></div>
+              <div className="col-2"><p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{data.subtotal}&nbsp;{event.symbol}</p></div>
             </div>
 
             <div className="row text-left" style={{ "borderTop": "1px solid #222222" }}>
               <div className="col-8">
               </div>
               <div className="col-2">
-                <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>Subtotal:</p>
-                {data.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0" }}>IVA: ({data.iva} %)</p> : null}
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>Subtotal:</p>
+                {data.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>IVA: ({event.iva} %)</p> : null}
               </div>
               <div className="col-2">
-                <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{data.subtotal}&nbsp;{data.currency}</p>
-                {data.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{data.ivaTotal}&nbsp;{data.currency}</p> : null}
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0", "textAlign": "right" }}>{data.subtotal}&nbsp;{event.symbol}</p>
+                {data.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "2px 0", "textAlign": "right" }}>{data.iva}&nbsp;{event.symbol}</p> : null}
               </div>
             </div>
 
@@ -115,26 +125,19 @@ export default class InvoicePDF{
                 <p style={{ "fontSize": "1em", "margin": "10px 0", "textAlign": "left" }}>Total</p>
               </div>
               <div className="col-2" style={{ "borderTop": "0.5px solid #222222", "textAlign": "right" }}>
-                <p style={{ "fontSize": "1em", "margin": "10px 0", "textAlign": "right" }}>{data.total}&nbsp;{data.currency}</p>
+                <p style={{ "fontSize": "1em", "margin": "10px 0", "textAlign": "right" }}>{data.total}&nbsp;{event.symbol}</p>
 
               </div>
             </div>
 
-            <br />
-            <br />
+  
 
             <div className="row text-left">
 
               <div className="col-12">
-                <p style={{ "fontSize": "0.6em", "textAlign": "left" }}>
-                  <b>Recipient Account: </b>ES50 2100 2502 7513 0020 0716 SWIFT: CAIXESBBXXX <br />
-                  <b>Bank:</b> CAIXABANK, S.A. <br />
-                  <b>Bank address:</b> Calle Dr. Esquerdo,97 (28007 Madrid) Recipient Name: TASMAN GRAPHICS <br />
-                  <b>Company Information:</b> <br />
-                  Tasman Graphics, S.L. <br />
-                  Calle Pamplona 22, Local <br />
-                  28039 Madrid <br />
-                  SPAIN</p>
+                <p style={{ "fontSize": "0.6em", "textAlign": "left" }} dangerouslySetInnerHTML={this.sellerBankInfo(event)}>
+                  
+                </p>
               </div>
             </div>
           </div>
@@ -142,7 +145,7 @@ export default class InvoicePDF{
           {/* FOOTER */}
           <div className="row" style={{ "position": "relative", "top": "170px" }}>
             <div className="col-12">
-              <p style={{ "fontSize": "0.5em", "padding": "10px 0", "background": "#f7f7f7", "textAlign": "center" }}>{data.footerText}</p>
+              <p style={{ "fontSize": "0.5em", "padding": "10px 0", "background": "#f7f7f7", "textAlign": "center" }}>{event.seller_footer}</p>
             </div>
           </div>
 

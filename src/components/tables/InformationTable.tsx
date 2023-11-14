@@ -1,9 +1,12 @@
 import React from "react";
 import RequestsRoutes from "../../http/requests";
 import { Link } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit"
 
 interface IProps {
+  setUserID: any
 }
+
 
 interface IState {
   invoicesRows: JSX.Element[]
@@ -38,34 +41,38 @@ export default class InformationTable extends React.Component<IProps, IState> {
       let invoicesRow: JSX.Element[] = [];
 
       response.data.invoices.data.forEach((data: any, i: any) => {
-
-        invoicesRow.push(
-          <tr key={i} className="p-2 align-middle">
-            <th scope="col">
-              <h6 className="m-0">
-                <b>{data.company_name}</b>
-              </h6>
-              <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.name}</p>
-            </th>
-
-            <th scope="col">
-              <p className="m-0"><b>{data.pack_name}</b></p>
-              <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.location_name}</p>
-            </th>
-            <th scope="col">
-              <p className="m-0">{data.email}</p>
-            </th>
-
-            <th scope="col">
-              <div className="d-flex">
-
-                <Link to={{pathname:"/informationtable/create"}} state={{userId: 'hello'}} className="btn btn-dark btn-sm" />
-                
-                
-              </div>
-            </th>
-          </tr>
-        );
+        if (data.user_type != 1 && data.company_name && data.address && data.zip && data.country && data.vat){
+          invoicesRow.push(
+            <tr key={i} className="p-2 align-middle">
+              <th scope="col">
+                <h6 className="m-0">
+                  <b>{data.company_name}</b>
+                </h6>
+                <p className="m-0" style={{ fontSize: '0.8rem' }}>{data.name}</p>
+              </th>
+  
+              <th scope="col">
+              <p className="m-0"><b>{data.invoice_number}</b></p>
+                <p className="m-0" style={{ fontSize: '0.8rem' }}> {data.category} - {data.location}</p>
+              </th>
+              <th scope="col">
+                <p className="m-0">{data.email}</p>
+              </th>
+  
+              <th scope="col">
+                <div className="d-flex">
+                  
+                  <Link to={{pathname:"/informationtable/create"}} onClick={(e) => {
+                                      this.props.setUserID(data.id)
+                  }} type="button" className="btn btn-dark btn-sm">
+                    <EditIcon />
+                  </Link>
+                </div>
+              </th>
+            </tr>
+          );
+        }
+        
 
       });
 

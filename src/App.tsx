@@ -53,11 +53,11 @@ export default class App extends React.Component<IProps, IState> {
       },
       {
         path: "/informationtable",
-        element: <InformationTable />,
+        element: <InformationTable setUserID={this.setUserId}  />,
       },
       {
         path: "/informationtable/create",
-        element: <InformationForm  />,
+        element: <InformationForm getUserId={this.getUserId} />,
       },
 
     ]);
