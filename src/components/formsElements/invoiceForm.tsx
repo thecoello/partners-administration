@@ -98,7 +98,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
 
             <div className="row">
               <div className="col-4">            <h2 className="m-0">Invoice {invoice.invoice_number}</h2>
-                {invoice.payment_status == "Payed"  ? (
+                {invoice.payment_status == "Payed" ? (
                   <span className="badge rounded-pill text-bg-success">
                     Payed
                   </span>
@@ -110,6 +110,8 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
               </div>
               <div className="col-4">            <p className="m-0"><b>{invoice.invoice_date != null ? null : <Warning />} Invoice date:</b> {invoice.invoice_date != null ? invoice.invoice_date : <span>Missing information</span>}</p>
                 <p className="m-0"><b>{invoice.payment_method != null ? null : <Warning />} Payment method:</b> {invoice.payment_method != null ? invoice.payment_method : <span>Missing information</span>}</p>
+                {invoice.voucher ? <a target="_blank" href={'http://localhost:8000/' + invoice.voucher} className="btn btn-success mt-2">Proof of payment</a> : null}
+
               </div>
               <div className="col-2">
                 {invoice.company_name && invoice.address && invoice.zip && invoice.country && invoice.vat ? <button onClick={() => {
@@ -321,47 +323,49 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
 
         <form encType="multipart/form-data" className="needs-validation" onSubmit={this.props.getInvoiceId() ? this.formUpdate.bind(this) : this.formCreate.bind(this)}>
 
-        
 
-          {this.props.getInvoiceId() ? 
-         <>
-          <div className="row">
-          <div className="col-6">
-            <div className="mb-3">
-            <label htmlFor="country" className="form-label"> Payment status </label>
-            <select className="form-select" onChange={(e) => {
-              this.setState({ paymentStatus: e.target.value })
-            }} value={this.props.getInvoiceId() ? this.state.paymentStatus : ''} name="payment_status">
-              <option value="">Select option</option>
-              <option value="Payed">Payed</option>
-              <option value="Unpayed">Unpayed</option>
-            </select>
-          </div>
-          </div>
-          <div className="col-6">
-            <div className="mb-3">
-            <label htmlFor="country" className="form-label"> Payment method </label>
-            <select className="form-select" onChange={(e) => {
-              this.setState({ paymentMethod: e.target.value })
-            }} value={this.props.getInvoiceId() ? this.state.paymentMethod : ''} name="payment_method" >
-              <option value="">Select option</option>
-              <option value="Bank transfer">Bank transfer</option>
-              <option value="PayPal">PayPal</option>
-            </select>
-          </div>
-          </div>
-        </div>
-          
-          <div className="col bg-dark p-4 mt-2 mb-2 rounded">
-            <div className="mb-3">
-              <label htmlFor="coupons" className="form-label text-light"><h4>Add Coupons</h4> (For multiple coupons separate them by comma) </label>
-              <input type="text" className="form-control" onChange={(e) => {
-                this.setState({ coupons: e.target.value })
-              }} value={this.props.getInvoiceId() ? this.state.coupons : ''} name="coupons" id="coupons" aria-describedby="coupons" />
-            </div>
-          </div>
-         </> 
-          : null}
+
+          {this.props.getInvoiceId() ?
+            <>
+              <div className="row">
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label htmlFor="country" className="form-label"> Payment status </label>
+                    <select className="form-select" onChange={(e) => {
+                      this.setState({ paymentStatus: e.target.value })
+                    }} value={this.props.getInvoiceId() ? this.state.paymentStatus : ''} name="payment_status">
+                      <option value="">Select option</option>
+                      <option value="Payed">Payed</option>
+                      <option value="Unpayed">Unpayed</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="mb-3">
+                    <label htmlFor="country" className="form-label"> Payment method </label>
+                    <select className="form-select" onChange={(e) => {
+                      this.setState({ paymentMethod: e.target.value })
+                    }} value={this.props.getInvoiceId() ? this.state.paymentMethod : ''} name="payment_method" >
+                      <option value="">Select option</option>
+                      <option value="Bank transfer">Bank transfer</option>
+                      <option value="PayPal">PayPal</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div className="col bg-dark p-4 mt-2 mb-2 rounded">
+                <div className="mb-3">
+                  <label htmlFor="coupons" className="form-label text-light"><h4>Add Coupons</h4> (For multiple coupons separate them by comma) </label>
+                  <input type="text" className="form-control" onChange={(e) => {
+                    this.setState({ coupons: e.target.value })
+                  }} value={this.props.getInvoiceId() ? this.state.coupons : ''} name="coupons" id="coupons" aria-describedby="coupons" />
+                </div>
+              </div>
+            </>
+            : null}
 
           <input type="hidden" name="user_id" value={this.state.userId} />
           <input type="hidden" name="category" value={this.state.categoryValue} />
@@ -441,6 +445,16 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
               <div id="collapseTwo" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div className="accordion-body">
                   <h3>Partner Invoice Information </h3>
+
+                  <div className="card mb-4 bg-green">
+                    <div className="card-body">
+                      <div className="mb-3">
+                        <label htmlFor="voucher" className="form-label"> Upload the proof of payment </label>
+                        <input type="file" className="form-control" name="voucher" id="voucher" aria-describedby="voucher"  />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="mb-3">
                     <label htmlFor="company_name" className="form-label"> Company Name </label>
                     <input type="text" className="form-control" onChange={(e) => {

@@ -47,7 +47,7 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
 
   componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any): void {
     prevState.routePacks != this.state.routePacks ? this.getUsers() : null;
-   
+
 
     if (this.props.getInvoiceId() && this.state.invoiceData != prevState.invoiceData) {
       this.setState({ userId: this.state.invoiceData.user_id })
@@ -92,7 +92,7 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
 
             <div className="row">
               <div className="col-4">            <h2 className="m-0">Invoice {invoice.invoice_number}</h2>
-                {invoice.payment_status == "Payed"  ? (
+                {invoice.payment_status == "Payed" ? (
                   <span className="badge rounded-pill text-bg-success">
                     Payed
                   </span>
@@ -101,6 +101,7 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
                     Unpayed
                   </span>
                 )}
+
               </div>
               <div className="col-4">            <p className="m-0"><b>{invoice.invoice_date != null ? null : <Warning />} Invoice date:</b> {invoice.invoice_date != null ? invoice.invoice_date : <span>Missing information</span>}</p>
                 <p className="m-0"><b>{invoice.payment_method != null ? null : <Warning />} Payment method:</b> {invoice.payment_method != null ? invoice.payment_method : <span>Missing information</span>}</p>
@@ -109,6 +110,8 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
                 {invoice.company_name && invoice.address && invoice.zip && invoice.country && invoice.vat ? <button onClick={() => {
                   new InvoicePDF(invoice, event).generateInvoice();
                 }} className="btn btn-dark m-1 w-100">Download Invoice</button> : <p className="text-danger">In order to generate the invoice, the tax information is required</p>}
+
+
 
               </div>
               <div className="col-2">
@@ -224,13 +227,10 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
     });
   }
 
-
-
-
   formUpdate(e: any) {
     e.preventDefault()
     if (this.state.userId) {
-      new RequestsRoutes().put(this.state.route + "/user/" + this.props.getInvoiceId(), e.target).then((response) => {
+      new RequestsRoutes().putPost(this.state.route + "/user/" + this.props.getInvoiceId(), e.target).then((response) => {
         if (response.status === 200) {
           alert("Invoice Updated")
           window.location.href = "/" + this.state.route
@@ -255,46 +255,52 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
           <a href="/invoices" className="btn btn-outline-secondary btn-dark text-light ms-4" type="button" > Cancel </a>
         </div>
 
-        <form className="needs-validation" onSubmit={this.formUpdate.bind(this)}>       
+        <form encType="multipart/form-data" className="needs-validation" onSubmit={this.formUpdate.bind(this)}>
+      
+        {this.state.companyName && this.state.address && this.state.zip && this.state.country && this.state.vat ? <div className="card mb-4 bg-green">
+            <div className="card-body">
+              <div className="mb-3">
+                <label htmlFor="voucher" className="form-label"> Upload your proof of payment </label>
+                <input type="file" className="form-control" name="voucher" id="voucher" aria-describedby="voucher"/>
+              </div>
+            </div>
+          </div> : null  }
 
-                  <div className="mb-3">
-                    <label htmlFor="company_name" className="form-label"> Company Name </label>
-                    <input type="text" className="form-control" onChange={(e) => {
-                      this.setState({ companyName: e.target.value })
-                    }} value={this.props.getInvoiceId() ? this.state.companyName : ''} name="company_name" id="company_name" aria-describedby="company_name" required/>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="address" className="form-label"> Address </label>
-                    <input type="text" className="form-control" onChange={(e) => {
-                      this.setState({ address: e.target.value })
-                    }} value={this.props.getInvoiceId() ? this.state.address : ''} name="address" id="address" aria-describedby="addresss" required/>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="zip" className="form-label"> ZIP/Postal Code </label>
-                    <input type="text" className="form-control" onChange={(e) => {
-                      this.setState({ zip: e.target.value })
-                    }} value={this.props.getInvoiceId() ? this.state.zip : ''} name="zip" id="zip" aria-describedby="zip" required/>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="country" className="form-label"> Country </label>
-                    <select className="form-select" onChange={(e) => {
-                      this.setState({ country: e.target.value })
-                    }} value={this.props.getInvoiceId() ? this.state.country : ''} name="country" key={'country-selector'} required>
-                      <CountrySelector />
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="vat" className="form-label"> Vat Number </label>
-                    <input type="text" className="form-control" onChange={(e) => {
-                      this.setState({ vat: e.target.value })
-                    }} value={this.props.getInvoiceId() ? this.state.vat : ''} name="vat" id="vat" aria-describedby="vat" required/>
-                  </div>
+          <h5 className="mb-4 mt-4"><b>Remember that it is necessary for this invoice to be valid for accounting purposes to provide all the information required in this form, please do not leave any field empty.</b></h5>
 
-    
-
-       
-        
-          <br /><br />
+          <div className="mb-3">
+            <label htmlFor="company_name" className="form-label"> Company Name </label>
+            <input type="text" className="form-control" onChange={(e) => {
+              this.setState({ companyName: e.target.value })
+            }} value={this.props.getInvoiceId() ? this.state.companyName : ''} name="company_name" id="company_name" aria-describedby="company_name" required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="address" className="form-label"> Address </label>
+            <input type="text" className="form-control" onChange={(e) => {
+              this.setState({ address: e.target.value })
+            }} value={this.props.getInvoiceId() ? this.state.address : ''} name="address" id="address" aria-describedby="addresss" required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="zip" className="form-label"> ZIP/Postal Code </label>
+            <input type="text" className="form-control" onChange={(e) => {
+              this.setState({ zip: e.target.value })
+            }} value={this.props.getInvoiceId() ? this.state.zip : ''} name="zip" id="zip" aria-describedby="zip" required />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="country" className="form-label"> Country </label>
+            <select className="form-select" onChange={(e) => {
+              this.setState({ country: e.target.value })
+            }} value={this.props.getInvoiceId() ? this.state.country : ''} name="country" key={'country-selector'} required>
+              <CountrySelector />
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="vat" className="form-label"> Vat Number </label>
+            <input type="text" className="form-control" onChange={(e) => {
+              this.setState({ vat: e.target.value })
+            }} value={this.props.getInvoiceId() ? this.state.vat : ''} name="vat" id="vat" aria-describedby="vat" required />
+            <p style={{'fontSize':'0.9rem'}}>If you do not have or do not need a VAT number for this invoice to be valid for accounting purposes, place a dash (-) in the VAT number field.</p>
+          </div>
           <button type="submit" className="btn btn-dark"> Submit </button>
         </form>
       </>
