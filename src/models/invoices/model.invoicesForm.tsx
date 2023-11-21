@@ -6,33 +6,34 @@ interface IState {
   locations: JSX.Element[]
   invoiceTable: JSX.Element[]
   usersRows: JSX.Element[]
-  routePacks: string | null 
-  routeUser: string | null
-  search: string
+  routePacks: any | null 
+  routeUser: any | null
+  search: any
   userFounded: boolean
   userData: any
   price: number
-  packName: string
+  packName: any
   categoryInput: any
   locationInput: any
   priceTypeInput: any
-  categoryValue: string
-  locationValue: string
-  priceTypeValue: string
+  categoryValue: any
+  locationValue: any
+  priceTypeValue: any
   packData: any
   userId: any
   route: any
-  title: string
+  title: any
   invoiceData: any
   eventData: any
-  companyName: string
-  address: string
-  zip: string
-  country: string
-  vat: string
-  coupons: string
+  companyName: any
+  address: any
+  zip: any
+  country: any
+  vat: any
+  coupons: any
   paymentStatus: any
-  paymentMethod: string
+  paymentMethod: any
+  loaded: any
 }
 
 export type {IProps, IState}

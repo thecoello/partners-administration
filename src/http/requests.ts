@@ -33,7 +33,6 @@ export default class RequestsRoutes {
     public async put(route:String | null,data: any) {
       return await axios.put(this.url + route, data,{headers:{
         'Content-Type': 'application/json'
-
       }})
       .then((response)=>{
         console.log(data)
@@ -48,21 +47,17 @@ export default class RequestsRoutes {
     public async putPost(route:String | null,data: any) {
 
       let formData = new FormData(data)
-      formData.append('_method','PUT')
-      
-      return await axios.post(this.url + route,formData,{headers:{
+        
+      return await axios.post(this.url + route,formData,{headers: {
         'Content-Type': 'multipart/form-data'
       }},)
       .then((response)=>{
-        console.log(data)
         return response
       })
       .catch((error)=>{
         return error
       })
-      
     }
-
 
     public async delete(route:String | null) {
 

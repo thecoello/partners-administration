@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit"
 
 interface IProps {
-  setUserID: any
+  setInvoiceD: any
 }
 
 
@@ -63,7 +63,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
                 <div className="d-flex">
                   
                   <Link to={{pathname:"/informationtable/create"}} onClick={(e) => {
-                                      this.props.setUserID(data.id)
+                                      this.props.setInvoiceD(data.id)
                   }} type="button" className="btn btn-dark btn-sm">
                     <EditIcon />
                   </Link>
