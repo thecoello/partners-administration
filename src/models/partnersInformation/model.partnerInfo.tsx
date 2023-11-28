@@ -1,0 +1,34 @@
+export default class StandsPartnerInfo {
+  id?: number
+  invoice_id?: number
+  logo?: string
+  headline_1?: string
+  city_1?: string
+  bullet1_1?: string
+  bullet2_1?: string
+  bullet3_1?: string
+  headline_2?: string
+  city_2?: string
+  bullet1_2?: string
+  bullet2_2?: string
+  bullet3_2?: string
+  headline_3?: string
+  city_3?: string
+  bullet1_3?: string
+  bullet2_3?: string
+  bullet3_3?: string
+  companyname?: string
+  document1?: string
+  document2?: string
+  document3?: string
+  video1?: string
+  video2?: string
+  contactemail?: string
+  companydescription?: string
+  companywebsite?: string
+  socialmedia1?: string
+  socialmedia2?: string
+  socialmedia3?: string
+  socialmedia4?: string
+  socialmedia5?: string
+}

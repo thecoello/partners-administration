@@ -33,14 +33,13 @@ export default class InformationTable extends React.Component<IProps, IState> {
 
   }
 
-
-
   getInvoices(): void {
     new RequestsRoutes().get(this.state.route).then((response) => {
 
       let invoicesRow: JSX.Element[] = [];
 
       response.data.invoices.data.forEach((data: any, i: any) => {
+        console.log(data)
         if (data.user_type != 1 && data.company_name && data.address && data.zip && data.country && data.vat){
           invoicesRow.push(
             <tr key={i} className="p-2 align-middle">
@@ -61,12 +60,14 @@ export default class InformationTable extends React.Component<IProps, IState> {
   
               <th scope="col">
                 <div className="d-flex">
-                  
-                  <Link to={{pathname:"/informationtable/create"}} onClick={(e) => {
+
+                {data.voucher && data.payment_status == "Payed" ? <Link to={{pathname:"/informationtable/create"}} onClick={(e) => {
                                       this.props.setInvoiceD(data.id)
                   }} type="button" className="btn btn-dark btn-sm">
                     <EditIcon />
-                  </Link>
+                  </Link>  : null }
+                  
+                  
                 </div>
               </th>
             </tr>
@@ -178,7 +179,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
                     }}
                   >
                     {" "}
-                    Preview page{" "}
+                    Previous page{" "}
                   </a>
                 </li>
               ) : null}

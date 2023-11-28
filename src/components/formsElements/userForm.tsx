@@ -1,40 +1,44 @@
 import React from "react"
 import RequestsRoutes from "../../http/requests"
-import { IState, IProps } from "../../models/users/model.usersForm"
+import User from "../../models/users/model.users"
+
+interface IProps {
+  getUserId: any
+}
+
+interface IState {
+  route: null | string
+  title: string
+  loaded: boolean
+}
 
 export default class UserForm extends React.Component<IProps, IState> {
+
+  _user = new User()
+
   constructor(props: IProps) {
     super(props)
     this.state = {
       route: "users",
       title: "",
-      companyName: "",
-      name: "",
-      email: "",
-      password: "",
-      userType: "",
+      loaded: false
     }
   }
 
   getUserData = (id: any) => {
     new RequestsRoutes().get(this.state.route + "/" + id).then((response) => {
-      response.data.forEach((data: any) => {
-        this.setState({ companyName: data.contact })
-        this.setState({ name: data.name })
-        this.setState({ email: data.email })
-        this.setState({ userType: data.user_type })
-      })
+      this._user = response.data[0]
     })
   }
 
   formCreate(e: any) {
     e.preventDefault()
     new RequestsRoutes().post(this.state.route, e.target).then((response) => {
-      if(response.status === 200){
+      if (response.status === 200) {
         alert("User created")
         window.location.href = "/users"
       }
-    }).catch((error)=>{
+    }).catch((error) => {
       alert(error)
     })
   }
@@ -43,11 +47,11 @@ export default class UserForm extends React.Component<IProps, IState> {
     e.preventDefault()
     new RequestsRoutes()
       .put(this.state.route + "/" + this.props.getUserId(), e.target).then((response) => {
-        if(response.status === 200){
+        if (response.status === 200) {
           alert("User Updated")
           window.location.href = "/users"
         }
-      }).catch((error)=>{
+      }).catch((error) => {
         alert(error)
       })
   }
@@ -56,14 +60,24 @@ export default class UserForm extends React.Component<IProps, IState> {
     if (this.props.getUserId()) {
       this.setState({ title: "Update user" })
       this.getUserData(this.props.getUserId())
+      this.loadTime()
     } else {
       this.setState({ title: "Create user" })
+      this.loadTime()
     }
   }
 
-  public render(): React.ReactNode {
-    return (
-      <>
+  loadTime() {
+    this.setState({ loaded: false })
+    setTimeout(() => {
+      this.setState({ loaded: true })
+    }, 500);
+  }
+
+  preRender() {
+    let user: JSX.Element[] = []
+    user.push(
+      <div key={`${Math.floor((Math.random() * 1000))}-min`}>
         <div className="d-flex search mt-4 mb-4">
           <h3 className="m-0">{this.state.title}</h3>
           <a
@@ -83,7 +97,7 @@ export default class UserForm extends React.Component<IProps, IState> {
               : this.formCreate.bind(this)
           }
         >
-          <div className="row">
+          <div className="row" >
             <div className="col-4">
               <div className="mb-3">
                 <label htmlFor="contact" className="form-label">
@@ -91,10 +105,10 @@ export default class UserForm extends React.Component<IProps, IState> {
                 </label>
                 <input
                   onChange={(e) => {
-                    this.setState({ companyName: e.target.value })
+                    this._user.contact = e.target.value
                   }}
-                  value={
-                    this.props.getUserId() ? this.state.companyName : undefined
+                  defaultValue={
+                    this.props.getUserId() ? this._user.contact : undefined
                   }
                   required={this.props.getUserId() ? false : true}
                   type="text"
@@ -111,9 +125,9 @@ export default class UserForm extends React.Component<IProps, IState> {
                 </label>
                 <input
                   onChange={(e) => {
-                    this.setState({ name: e.target.value })
+                    this._user.name = e.target.value
                   }}
-                  value={this.props.getUserId() ? this.state.name : undefined}
+                  defaultValue={this.props.getUserId() ? this._user.name : undefined}
                   required={this.props.getUserId() ? false : true}
                   type="text"
                   className="form-control"
@@ -129,9 +143,9 @@ export default class UserForm extends React.Component<IProps, IState> {
                 </label>
                 <input
                   onChange={(e) => {
-                    this.setState({ email: e.target.value })
+                    this._user.email = e.target.value
                   }}
-                  value={this.props.getUserId() ? this.state.email : undefined}
+                  defaultValue={this.props.getUserId() ? this._user.email : undefined}
                   required={this.props.getUserId() ? false : true}
                   type="email"
                   className="form-control"
@@ -150,10 +164,10 @@ export default class UserForm extends React.Component<IProps, IState> {
                 </label>
                 <input
                   onChange={(e) => {
-                    this.setState({ password: e.target.value })
+                    this._user.password = e.target.value
                   }}
-                  value={
-                    this.props.getUserId() ? this.state.password : undefined
+                  defaultValue={
+                    this.props.getUserId() ? this._user.password : undefined
                   }
                   required={this.props.getUserId() ? false : true}
                   type="password"
@@ -171,10 +185,10 @@ export default class UserForm extends React.Component<IProps, IState> {
 
                 <select
                   onChange={(e) => {
-                    this.setState({ userType: e.target.value })
+                    this._user.user_type = Number(e.target.value)
                   }}
-                  value={
-                    this.props.getUserId() ? this.state.userType : undefined
+                  defaultValue={
+                    this.props.getUserId() ? this._user.user_type : undefined
                   }
                   className="form-select"
                   name="user_type"
@@ -187,13 +201,27 @@ export default class UserForm extends React.Component<IProps, IState> {
               </div>
             </div>
           </div>
-
           <hr />
 
           <button type="submit" className="btn btn-dark">
             Submit
           </button>
         </form>
+      </div>
+    )
+
+    return user
+  }
+
+
+
+  public render(): React.ReactNode {
+
+    return (
+      <>
+        {(this.state.loaded && this._user) ? this.preRender() : <div className="d-flex align-items-center justify-content-center" style={{ width: '100%', height: '80vh' }}><div className="spinner-border text-dark" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div></div>}
       </>
     )
   }

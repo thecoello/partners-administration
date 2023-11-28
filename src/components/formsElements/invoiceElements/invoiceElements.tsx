@@ -1,22 +1,34 @@
 import { Check, Warning } from "@mui/icons-material";
-import InvoicePDF from "../../invoiceComponents/invoicePDF";
-import CountrySelector from "../CountrySelector";
+import InvoicePDF from "./invoicePDF";
+import CountrySelector from "./CountrySelector";
 import Invoice from "../../../models/invoices/model.invoice";
+import Packs from "../../../models/event/model.packs";
+import User from "../../../models/users/model.users";
+import Event from "../../../models/event/model.event";
 
 export default class InvoiceElements {
 
-  infoInvoice(condition: any, informationToShow: any, informationTitle: any) {
+  _userId?: number
+
+  setUserId(id?: number) {
+    this._userId = id
+  }
+
+  getUserID() {
+    return this._userId
+  }
+
+  infoInvoice(condition: any, informationToShow: any, informationTitle: any, symbol: any) {
     if (condition) {
-      return <><b>{informationTitle + ': '} </b> {informationToShow}</>
+      return <><b>{informationTitle + ': '} </b> {informationToShow} {symbol}</>
     } else {
       return <><b>{informationTitle + ': '} </b> <span>Missing information</span> <Warning /> </>
     }
   }
 
-  invoiceResume(data: any) {
+  invoiceResume(data: Invoice, event: Event) {
     let invoiceTable: JSX.Element[] = [];
-
-    data?.invoices.data.forEach((dataInvoice:any) => {
+    [data].forEach((dataInvoice: any) => {
       invoiceTable.push(
         <div key={"invoice" + dataInvoice.invoice_number} className="card">
           <div className="card-body">
@@ -26,13 +38,13 @@ export default class InvoiceElements {
                 {dataInvoice.payment_status == "Payed" ? <span className="badge rounded-pill text-bg-success"> Payed</span> : <span className="badge rounded-pill text-bg-danger"> Unpayed </span>}
               </div>
               <div className="col-4">
-                <p className="m-0">{this.infoInvoice(dataInvoice.invoice_date != null && dataInvoice.invoice_date != undefined, dataInvoice.invoice_date, "Invoice date")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.paymentmethod != null && dataInvoice.paymentmethod != undefined, dataInvoice.paymentmethod, "Payment method")}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.invoice_date != null && dataInvoice.invoice_date != undefined, dataInvoice.invoice_date, "Invoice date",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.payment_method != null && dataInvoice.payment_method != undefined, dataInvoice.payment_method, "Payment method", null)}</p>
                 {dataInvoice.voucher ? <a target="_blank" href={'http://localhost:8000/' + dataInvoice.voucher} className="btn btn-success mt-2">Proof of payment</a> : null}
               </div>
               <div className="col-2">
                 {dataInvoice.company_name && dataInvoice.address && dataInvoice.zip && dataInvoice.country && dataInvoice.vat ? <button onClick={() => {
-                  new InvoicePDF(dataInvoice, null).generateInvoice();
+                  new InvoicePDF(dataInvoice, event).generateInvoice();
                 }} className="btn btn-dark m-1 w-100">Download Invoice</button> : <p className="text-danger">In order to generate the invoice, the tax information is required</p>}
               </div>
               <div className="col-2">
@@ -45,33 +57,34 @@ export default class InvoiceElements {
                 <span className="badge rounded-pill text-bg-dark mb-1">
                   Tax Information
                 </span>
-                <p className="m-0">{this.infoInvoice(dataInvoice.company_name != null && dataInvoice.company_name != undefined, dataInvoice.company_name, "Company name")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.vat != null && dataInvoice.vat != undefined, dataInvoice.vat, "VAT")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.address != null && dataInvoice.address != undefined, dataInvoice.address, "Address")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.zip != null && dataInvoice.zip != undefined, dataInvoice.zip, "Zip")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.country != null && dataInvoice.country != undefined, dataInvoice.country, "Country")}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.company_name != null && dataInvoice.company_name != undefined, dataInvoice.company_name, "Company name",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.vat != null && dataInvoice.vat != undefined, dataInvoice.vat, "VAT",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.address != null && dataInvoice.address != undefined, dataInvoice.address, "Address",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.zip != null && dataInvoice.zip != undefined, dataInvoice.zip, "Zip",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.country != null && dataInvoice.country != undefined, dataInvoice.country, "Country",null)}</p>
               </div>
               <div className="col-3">
                 <span className="badge rounded-pill text-bg-dark mb-1">
                   Pack Information
                 </span>
-                <p className="m-0">{this.infoInvoice(dataInvoice.category != null && dataInvoice.category != undefined, dataInvoice.category, "Category")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.location != null && dataInvoice.location != undefined, dataInvoice.location, "Location")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.pricetype != null && dataInvoice.pricetype != undefined, dataInvoice.pricetype, "Pricetype")}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.category != null && dataInvoice.category != undefined, dataInvoice.category, "Category",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.location != null && dataInvoice.location != undefined, dataInvoice.location, "Location",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.pricetype != null && dataInvoice.pricetype != undefined, dataInvoice.pricetype, "Pricetype",null)}</p>
               </div>
               <div className="col-3">
                 <span className="badge rounded-pill text-bg-dark mb-1">User Information</span>
-                <p className="m-0">{this.infoInvoice(dataInvoice.contact != null && dataInvoice.contact != undefined, dataInvoice.contact, "Company name")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.name != null && dataInvoice.name != undefined, dataInvoice.name, "Name")}</p>
-                <p className="m-0">{this.infoInvoice(dataInvoice.email != null && dataInvoice.email != undefined, dataInvoice.email, "Email")}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.contact != null && dataInvoice.contact != undefined, dataInvoice.contact, "Company name",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.name != null && dataInvoice.name != undefined, dataInvoice.name, "Name",null)}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.email != null && dataInvoice.email != undefined, dataInvoice.email, "Email",null)}</p>
               </div>
               <div className="col-3">
                 <span className="badge rounded-pill text-bg-dark mb-1">Description and price</span>
-                <p className="m-0">{this.infoInvoice(dataInvoice.pricetype, dataInvoice.pricetype, "Price type")}</p>
+                <p className="m-0">{this.infoInvoice(dataInvoice.pricetype, dataInvoice.pricetype, "Price type",null)}</p>
                 <hr />
-                <h5 className="m-0">{this.infoInvoice(dataInvoice.subtotal, dataInvoice.subtotal, "Subtotal")}</h5>
-                <h5 className="m-0">{this.infoInvoice(dataInvoice.company_name && dataInvoice.country, dataInvoice.iva, "IVA")}</h5>
-                <h5 className="m-0">{this.infoInvoice(dataInvoice.company_name && dataInvoice.country, dataInvoice.total, "Total")}</h5>
+                <h5 className="m-0">{this.infoInvoice(dataInvoice.subtotal, dataInvoice.subtotal, "Subtotal",null)}{ event.symbol}</h5>
+                {dataInvoice.iva ? <h5 className="m-0">{this.infoInvoice(dataInvoice.company_name && dataInvoice.country, dataInvoice.iva, "IVA", event.symbol)}</h5> : null}
+                
+                <h5 className="m-0">{this.infoInvoice(dataInvoice.company_name && dataInvoice.country, dataInvoice.total, "Total", event.symbol)}</h5>
                 <hr />
                 <p>{dataInvoice.company_name != undefined && dataInvoice.country != undefined ? null : "It is necessary to fill in the tax information to calculate the total price."}</p>
               </div>
@@ -87,74 +100,78 @@ export default class InvoiceElements {
     return invoiceTable
   }
 
-  taxinfoInputs(data: any, title:any, model: Invoice){
+  taxinfoInputs(title: any, model: Invoice, invoiceID: any) {
 
-    return(
+    return (
       <>
-         { data?.voucher ? <div className="card mb-4 bg-green">
-              <div className="card-body">
-                <div className="mb-3">
-                  <label htmlFor="voucher" className="form-label"> <h5>Upload your proof of payment here</h5> </label>
-                  <input type="file" className="form-control" name="voucher" id="voucher" aria-describedby="voucher" />
-                </div>
-              </div>
-            </div> : null}
+        {model?.company_name && model?.address && model?.zip && model?.country ? <div className="card mb-4 bg-green">
+          <div className="card-body">
+            <div className="mb-3">
+              <label htmlFor="voucher" className="form-label"> <h5>Upload your proof of payment here</h5> </label>
+              <input type="file" className="form-control" name="voucher" id="voucher" aria-describedby="voucher" />
+            </div>
+          </div>
+        </div> : null}
 
-            <input type="hidden" name="subtotal" />
+        {model?.company_name && model?.address && model?.zip && model?.country ? <><h3 className="m-0">You have already provided your tax information</h3> <p>If you have missed any information, you can update it.</p></> : null}
 
-            {data?.company_name &&  data?.address  &&  data?.zip  &&  data?.country  ? <><h3 className="m-0">You have already provided your tax information</h3> <p>If you have missed any information, you can update it.</p></> : <h3 className="m-0">{title}</h3>}
+        <h6 className="mb-4 mt-4 p-4 rounded bg-dark text-light border">Remember that it is necessary for this invoice to be valid for accounting purposes to provide all the information required in this form, please do not leave any field empty.</h6>
 
-            <h6 className="mb-4 mt-4 p-4 rounded bg-dark text-light border">Remember that it is necessary for this invoice to be valid for accounting purposes to provide all the information required in this form, please do not leave any field empty.</h6>
-
-            <div className="mb-3">
-              <label htmlFor="company_name" className="form-label"> Company Name </label>
-              <input type="text" onChange={(e)=>{model.company_name = e.target.value}} placeholder={model.company_name} className="form-control" name="company_name" id="company_name" aria-describedby="company_name" required />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="address" className="form-label"> Address </label>
-              <input type="text" onChange={(e)=>{model.address = e.target.value}} placeholder={model.address} className="form-control" name="address" id="address" aria-describedby="address" required />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="zip" className="form-label"> ZIP/Postal Code </label>
-              <input type="text" onChange={(e)=>{model.zip = e.target.value}} placeholder={model.zip} className="form-control" name="zip" id="zip" aria-describedby="zip" required />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="country" className="form-label"> Country </label>
-              <select onChange={(e)=>{model.country = e.target.value}} value={model.country} className="form-select" name="country" key={'country-selector'} required>
-                <CountrySelector />
-              </select>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="vat" className="form-label"> Vat Number </label>
-              <input type="text" onChange={(e)=>{model.vat = e.target.value}} placeholder={model.vat}  className="form-control" name="vat" id="vat" aria-describedby="vat" required />
-              <p style={{ 'fontSize': '0.9rem' }}>If you do not have or do not need a VAT number for this invoice to be valid for accounting purposes, place a dash (-) in the VAT NUMBER field.</p>
-            </div>
+        <div className="mb-3">
+          <label htmlFor="company_name" className="form-label"> Company Name </label>
+          <input type="text" defaultValue={model.company_name} className="form-control" name="company_name" id="company_name" aria-describedby="company_name" required={!invoiceID || !model.contact? false  : true} />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="address" className="form-label"> Address </label>
+          <input type="text" onChange={(e) => { model.address = e.target.value }} defaultValue={model.address} className="form-control" name="address" id="address" aria-describedby="address" required={!invoiceID || !model.contact? false  : true}  />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="zip" className="form-label"> ZIP/Postal Code </label>
+          <input type="text" onChange={(e) => { model.zip = e.target.value }} defaultValue={model.zip} className="form-control" name="zip" id="zip" aria-describedby="zip" required={!invoiceID || !model.contact? false  : true}  />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="country" className="form-label"> Country </label>
+          <select onChange={(e) => { model.country = e.target.value }} defaultValue={model.country} className="form-select" name="country" key={`${Math.floor((Math.random() * 1000))}-min`} required={!invoiceID || !model.contact? false  : true} >
+            <CountrySelector />
+          </select>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="vat" className="form-label"> Vat Number </label>
+          <input type="text" onChange={(e) => { model.vat = e.target.value }} defaultValue={model.vat} className="form-control" name="vat" id="vat" aria-describedby="vat" required={!invoiceID || !model.contact? false  : true} />
+          <p style={{ 'fontSize': '0.9rem' }}>If you do not have or do not need a VAT number for this invoice to be valid for accounting purposes, place a dash (-) in the VAT NUMBER field.</p>
+        </div>
       </>
     )
   }
 
-  getCategory(data: any) {
+  getCategory(data: Packs) {
     let category: JSX.Element[] = []
-    data?.packinfo.forEach((_data: any, i: any) => {
+    data.packinfo?.forEach((_data: any, i: any) => {
       category.push(<option key={i + 'packinfo'} value={_data?.pack_name}>{_data?.pack_name}</option>);
     });
     return category
   }
 
-  getLocations(data:any) {
-      let locations: JSX.Element[] = [];
-      data?.locations.forEach((_data: any, i: any) => {
-        locations.push(<option key={i + 'location'} value={_data?.type}>{_data?.location_name}</option>);
-      });
-      return locations
+  getLocations(data: Packs) {
+    let locations: JSX.Element[] = [];
+    data.locations?.forEach((_data: any, i: any) => {
+      locations.push(<option key={i + 'location'} value={_data?.type}>{_data?.location_name}</option>);
+    });
+    return locations
   }
 
-  getUsers(data:any, userId:any) {
+  getUsers(user: Array<User>, invoice: Invoice, userIdMethod: any) {
     let usersRow: JSX.Element[] = []
-      if (data?.status === 200) {
-        data?.data.data.forEach((data: any, i: any) => {
-          if (data?.user_type != 1) {
-            usersRow.push(<tr key={i + 'user'} className={data?.id == userId ? "p-2 align-middle bg-success text-light" : "p-2 align-middle"}>
+
+    user.forEach((_data: any) => {
+      _data.forEach((data: any)  => {
+        if (data?.user_type != 1) {
+          usersRow.push(
+            <tr key={`${Math.floor((Math.random() * 1000))}-min`} className={
+  
+              data?.id == invoice.user_id ? "p-2 align-middle bg-success text-light" : this.getUserID() == data?.id ? "p-2 align-middle bg-primary text-light" : "p-2 align-middle"
+  
+            }>
               <th scope="col">
                 <h6 className="m-0">
                   <b>{data?.contact}</b>
@@ -174,18 +191,22 @@ export default class InvoiceElements {
               <th scope="col">
                 <div className="d-flex">
                   <button onClick={() => {
-                    userId.bind(data?.id)
+                    this.setUserId(data.id)
+                    this.getUserID
+                    userIdMethod()
                   }} type="button" className="btn-dark btn btn-sm">
                     <Check />
                   </button>
                 </div>
               </th>
-            </tr>)
-          }
-        })
-      }
+            </tr>
+          )
+        }
+      });
+    });
+
     return (
-      <table className="table ">
+      <table className="table">
         <thead>
           <tr>
             <th scope="col">Company Name</th>
@@ -199,6 +220,4 @@ export default class InvoiceElements {
       </table>
     )
   }
-
-
 }

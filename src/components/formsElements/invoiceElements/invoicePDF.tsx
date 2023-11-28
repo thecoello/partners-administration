@@ -1,24 +1,23 @@
 import jsPDF from "jspdf";
 import { renderToString } from 'react-dom/server';
-import Logo from '../../assets/logo.png'
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
-import { HtmlHTMLAttributes } from "react";
+import Logo from '../../../assets/logo.png'
+import Invoice from "../../../models/invoices/model.invoice";
+import Event from "../../../models/event/model.event";
 
 export default class InvoicePDF{
 
-  data: any;
-  event: any;
+  _invoice = new Invoice()
+  _event = new Event()
 
-  constructor(data:any, event: any){
-    this.data = data
-    this.event = event
-
+  constructor(_invoice:any, _event: any){
+    this._invoice = _invoice
+    this._event = _event
   }
 
    generateInvoice(){
     const doc = new jsPDF('p', 'pt');
-    const name = "invoice_" + this.data.invoice_number
-    doc.html(renderToString(this.invoice(this.data, this.event)), {
+    const name = "invoice_" + this._invoice.invoice_number
+    doc.html(renderToString(this.invoice(this._invoice, this._event)), {
  
       async callback(doc) {
         doc.save(name);
@@ -31,7 +30,7 @@ export default class InvoicePDF{
   }
 
 
-  private invoice = (data: any, event: any) => {
+  private invoice = (_invoice: any, event: any) => {
     return (
       <div style={{ "width": "595px", "margin": "30px 0" }}>
         <div style={{ "width": "495px", "margin": "0 auto", "display": "flex", "flexDirection": "column", "justifyContent": "space-between" }}>
@@ -56,16 +55,16 @@ export default class InvoicePDF{
           <div className="row" style={{ "background": "#f7f7f7", "display": "flex", "alignItems": "center" }}>
             <div className="col">
               <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textTransform": "uppercase" }}>
-                <b>{data.company_name}</b> <br />
-                {data.address} <br />
-                {data.zip} <br />
-                {data.country} <br />
-                <b>NIF/VAT: {data.vat}</b> <br /></p>
+                <b>{_invoice.company_name}</b> <br />
+                {_invoice.address} <br />
+                {_invoice.zip} <br />
+                {_invoice.country} <br />
+                <b>NIF/VAT: {_invoice.vat}</b> <br /></p>
             </div>
             <div className="col">
-              <p style={{ "fontSize": "1em", "margin": "0px 0" }}><b>INVOICE NUMBER: {data.invoice_number}</b></p>
-              <p style={{ "fontSize": "0.6em", "margin": "0px 0" }}>INVOICE DATE: <b>{data.invoice_date}</b></p>
-              <p style={{ "fontSize": "0.6em", "margin": "0px 0" }}>DUE DATE: <b>{data.invoice_date}</b></p>
+              <p style={{ "fontSize": "1em", "margin": "0px 0" }}><b>INVOICE NUMBER: {_invoice.invoice_number}</b></p>
+              <p style={{ "fontSize": "0.6em", "margin": "0px 0" }}>INVOICE DATE: <b>{_invoice.invoice_date}</b></p>
+              <p style={{ "fontSize": "0.6em", "margin": "0px 0" }}>DUE DATE: <b>{_invoice.invoice_date}</b></p>
 
             </div>
           </div>
@@ -94,15 +93,15 @@ export default class InvoicePDF{
 
             <div className="row text-left">
               <div className="col-8">
-                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}><b>{data.category}</b></p>
-                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>{data.location}</p>
-                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>{data.pricetype}</p>
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}><b>{_invoice.category}</b></p>
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>{_invoice.location}</p>
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>{_invoice.pricetype}</p>
 
               </div>
               <div className="col-2">
                 <p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "center" }}>1</p>
               </div>
-              <div className="col-2"><p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{data.subtotal}&nbsp;{event.symbol}</p></div>
+              <div className="col-2"><p style={{ "fontSize": "0.6em", "margin": "10px 0", "textAlign": "right" }}>{_invoice.subtotal}&nbsp;{event.symbol}</p></div>
             </div>
 
             <div className="row text-left" style={{ "borderTop": "1px solid #222222" }}>
@@ -110,11 +109,11 @@ export default class InvoicePDF{
               </div>
               <div className="col-2">
                 <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>Subtotal:</p>
-                {data.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>IVA: ({event.iva} %)</p> : null}
+                {_invoice.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "2px 0" }}>IVA: ({event.iva} %)</p> : null}
               </div>
               <div className="col-2">
-                <p style={{ "fontSize": "0.6em", "margin": "2px 0", "textAlign": "right" }}>{data.subtotal}&nbsp;{event.symbol}</p>
-                {data.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "2px 0", "textAlign": "right" }}>{data.iva}&nbsp;{event.symbol}</p> : null}
+                <p style={{ "fontSize": "0.6em", "margin": "2px 0", "textAlign": "right" }}>{_invoice.subtotal}&nbsp;{event.symbol}</p>
+                {_invoice.country === "Spain" ? <p style={{ "fontSize": "0.6em", "margin": "2px 0", "textAlign": "right" }}>{_invoice.iva}&nbsp;{event.symbol}</p> : null}
               </div>
             </div>
 
@@ -125,7 +124,7 @@ export default class InvoicePDF{
                 <p style={{ "fontSize": "1em", "margin": "10px 0", "textAlign": "left" }}>Total</p>
               </div>
               <div className="col-2" style={{ "borderTop": "0.5px solid #222222", "textAlign": "right" }}>
-                <p style={{ "fontSize": "1em", "margin": "10px 0", "textAlign": "right" }}>{data.total}&nbsp;{event.symbol}</p>
+                <p style={{ "fontSize": "1em", "margin": "10px 0", "textAlign": "right" }}>{_invoice.total}&nbsp;{event.symbol}</p>
 
               </div>
             </div>

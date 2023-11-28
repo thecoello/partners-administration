@@ -5,7 +5,6 @@ export default class RequestsRoutes {
     private url = import.meta.env.VITE_URL
 
     public async get(route:String | null) {
-
       return await axios.get(this.url + route)
       .then((response)=>{
         return response
@@ -13,7 +12,6 @@ export default class RequestsRoutes {
       .catch((error)=>{
         return error
       })
-      
     }
 
     public async post(route:String | null,data: any) {
@@ -26,7 +24,6 @@ export default class RequestsRoutes {
       .catch((error)=>{
         return error
       })
-      
     }
 
 
@@ -35,20 +32,16 @@ export default class RequestsRoutes {
         'Content-Type': 'application/json'
       }})
       .then((response)=>{
-        console.log(data)
         return response
       })
       .catch((error)=>{
         return error
       })
-      
     }
 
     public async putPost(route:String | null,data: any) {
 
-      let formData = new FormData(data)
-        
-      return await axios.post(this.url + route,formData,{headers: {
+      return await axios.post(this.url + route,data,{headers: {
         'Content-Type': 'multipart/form-data'
       }},)
       .then((response)=>{
@@ -60,7 +53,6 @@ export default class RequestsRoutes {
     }
 
     public async delete(route:String | null) {
-
       return await axios.delete(this.url + route)
       .then((response)=>{
         return response
@@ -68,7 +60,6 @@ export default class RequestsRoutes {
       .catch((error)=>{
         return error
       })
-      
     }
 
 }

@@ -3,10 +3,26 @@ import RequestsRoutes from "../../http/requests"
 import EditIcon from "@mui/icons-material/Edit"
 import { Delete } from "@mui/icons-material"
 import { Link } from "react-router-dom"
-import { IProps, IState } from "../../models/users/model.usersTable"
+import User from "../../models/users/model.users"
+
+interface IProps {
+  setUserID: any
+}
+
+interface IState {
+  usersRows: JSX.Element[]
+  route: string | null
+  firstPageURL: string | null
+  prevPageURL: string | null
+  nextPageURL: string | null
+  search: string
+}
 
 
 export default class UserTable extends React.Component<IProps, IState> {
+
+  _user?: Array<User>
+
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -19,60 +35,21 @@ export default class UserTable extends React.Component<IProps, IState> {
     }
   }
 
+  componentDidUpdate(
+    prevProps: Readonly<IProps>,
+    prevState: Readonly<IState>,
+    snapshot?: any
+  ): void {
+    prevState.route != this.state.route ? this.getUsers() : null
+  }
+
+  componentDidMount(): void {
+    this.getUsers()
+  }
+
   getUsers(): void {
     new RequestsRoutes().get(this.state.route).then((response) => {
-      let usersRow: JSX.Element[] = []
-      response.data.data.forEach((data: any, i: any) => {
-        usersRow.push(
-          <tr key={i} className="p-2 align-middle">
-            <th scope="col">
-              <h6 className="m-0">
-                <b>{data.contact}</b>
-              </h6>
-            </th>
-            <th scope="col">
-              <p className="m-0">
-                <b>{data.name}</b>
-              </p>
-            </th>
-            <th scope="col">
-              <p className="m-0">{data.user_type == 1 ? "Admin" : "User"}</p>
-            </th>
-            <th scope="col">
-              <p className="m-0">{data.email}</p>
-            </th>
-            <th scope="col">
-              <div className="d-flex">
-
-                <Link to={{ pathname: "/users/form" }} onClick={(e) => {
-                  this.props.setUserID(data.id)
-                }} type="button" className="btn btn-dark btn-sm">
-                  <EditIcon />
-                </Link>
-
-                <button onClick={(e) => {
-                  e.preventDefault()
-                  if(confirm("Are you sure you want to delete the user " + data.name)){
-                    new RequestsRoutes().delete("users/" + data.id)
-                  .then((response) => {                    
-                    if(response.status === 200){
-                      alert("User "+ data.name +" delete")
-                      window.location.reload()
-                    }
-                  }).catch((error)=>{
-                    alert(error)
-                  })
-                  }
-                }} type="button" className="btn btn-dark btn-sm">
-                  <Delete />
-                </button>
-              </div>
-            </th>
-          </tr>
-        )
-      })
-
-      this.setState({ usersRows: usersRow })
+      this._user = response.data.data
 
       response.data.first_page_url != null
         ? this.setState({
@@ -92,17 +69,61 @@ export default class UserTable extends React.Component<IProps, IState> {
     })
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<IProps>,
-    prevState: Readonly<IState>,
-    snapshot?: any
-  ): void {
-    prevState.route != this.state.route ? this.getUsers() : null
+  preRender() {
+    let usersRow: JSX.Element[] = []
+    this._user?.forEach((user: User, i: any) => {
+      usersRow.push(
+        <tr key={i} className="p-2 align-middle">
+          <th scope="col">
+            <h6 className="m-0">
+              <b>{user.contact}</b>
+            </h6>
+          </th>
+          <th scope="col">
+            <p className="m-0">
+              <b>{user.name}</b>
+            </p>
+          </th>
+          <th scope="col">
+            <p className="m-0">{user.user_type == 1 ? "Admin" : "User"}</p>
+          </th>
+          <th scope="col">
+            <p className="m-0">{user.email}</p>
+          </th>
+          <th scope="col">
+            <div className="d-flex">
+
+              <Link to={{ pathname: "/users/form" }} onClick={(e) => {
+                this.props.setUserID(user.id)
+              }} type="button" className="btn btn-dark btn-sm">
+                <EditIcon />
+              </Link>
+
+              <button onClick={(e) => {
+                e.preventDefault()
+                if (confirm("Are you sure you want to delete the user " + user.name)) {
+                  new RequestsRoutes().delete("users/" + user.id)
+                    .then((response) => {
+                      if (response.status === 200) {
+                        alert("User " + user.name + " delete")
+                        window.location.reload()
+                      }
+                    }).catch((error) => {
+                      alert(error)
+                    })
+                }
+              }} type="button" className="btn btn-dark btn-sm">
+                <Delete />
+              </button>
+            </div>
+          </th>
+        </tr>
+      )
+    })
+    return usersRow
   }
 
-  componentDidMount(): void {
-    this.getUsers()
-  }
+
 
   render(): React.ReactNode {
     return (
@@ -127,7 +148,7 @@ export default class UserTable extends React.Component<IProps, IState> {
                     })
                   : null
               }}
-              type="text" className="form-control" placeholder="Find by User name, email or Company Name"/>
+              type="text" className="form-control" placeholder="Find by User name, email or Company Name" />
             <button
               className="btn btn-outline-secondary btn-dark text-light" type="button"
               onClick={() => {
@@ -152,7 +173,7 @@ export default class UserTable extends React.Component<IProps, IState> {
                 <th scope="col">Actions</th>
               </tr>
             </thead>
-            <tbody>{this.state.usersRows}</tbody>
+            <tbody>{this.preRender()}</tbody>
           </table>
 
           <div>
@@ -170,7 +191,7 @@ export default class UserTable extends React.Component<IProps, IState> {
                   <a className="page-link text-dark"
                     onClick={() => {
                       this.setState({ route: this.state.prevPageURL })
-                    }}>{" "}Preview page{" "} </a>
+                    }}>{" "}Previous page{" "} </a>
                 </li>
               ) : null}
               {this.state.nextPageURL != null ? (
