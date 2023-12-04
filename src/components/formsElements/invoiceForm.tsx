@@ -2,7 +2,7 @@ import React from "react"
 import RequestsRoutes from "../../http/requests"
 import InvoiceElements from "./invoiceElements/invoiceElements"
 import Invoice from "../../models/invoices/model.invoice"
-import Packs from "../../models/event/model.packs"
+import Packs from "../../models/event/model.packsAndLocations"
 import User from "../../models/users/model.users"
 import Event from "../../models/event/model.event"
 
@@ -195,7 +195,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
 
         <form encType="multipart/form-data" className="needs-validation" onSubmit={this.props.getInvoiceId() ? this.formUpdate.bind(this) : this.formCreate.bind(this)}>
 
-          {this.props.getInvoiceId() ?
+          {this.props.getInvoiceId() && this._invoice.voucher?.length ?
             <>
               <div className="row">
                 <div className="col-6">
@@ -220,7 +220,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
                 </div>
               </div>
 
-              {this.props.getInvoiceId() ? <div className="col bg-dark p-4 mt-2 mb-2 rounded">
+              {this.props.getInvoiceId() && this._invoice.voucher?.length > 0 ? <div className="col bg-dark p-4 mt-2 mb-2 rounded">
                 <div className="mb-3">
                   <label htmlFor="coupons" className="form-label text-light"><h4>Add Coupons</h4> (For multiple coupons separate them by comma) </label>
                   <input type="text" className="form-control" onChange={(e) => { this._invoice.coupons = e.target.value }} defaultValue={this._invoice.coupons} name="coupons" id="coupons" aria-describedby="coupons" />

@@ -39,7 +39,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
       let invoicesRow: JSX.Element[] = [];
 
       response.data.invoices.data.forEach((data: any, i: any) => {
-        console.log(data)
+        
         if (data.user_type != 1 && data.company_name && data.address && data.zip && data.country && data.vat){
           invoicesRow.push(
             <tr key={i} className="p-2 align-middle">
@@ -53,9 +53,12 @@ export default class InformationTable extends React.Component<IProps, IState> {
               <th scope="col">
               <p className="m-0"><b>{data.invoice_number}</b></p>
                 <p className="m-0" style={{ fontSize: '0.8rem' }}> {data.category} - {data.location}</p>
+                {data.voucher && data.payment_status == "Payed" ?null: <p className="badge rounded-pill text-bg-danger m-0" style={{fontSize: '0.8rem'}}>Payment is required in order to add sponsor information  </p>}
               </th>
               <th scope="col">
                 <p className="m-0">{data.email}</p>
+                
+                  
               </th>
   
               <th scope="col">
@@ -65,7 +68,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
                                       this.props.setInvoiceD(data.id)
                   }} type="button" className="btn btn-dark btn-sm">
                     <EditIcon />
-                  </Link>  : null }
+                  </Link>  : null}
                   
                   
                 </div>

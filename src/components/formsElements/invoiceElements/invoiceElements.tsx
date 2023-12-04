@@ -2,7 +2,7 @@ import { Check, Warning } from "@mui/icons-material";
 import InvoicePDF from "./invoicePDF";
 import CountrySelector from "./CountrySelector";
 import Invoice from "../../../models/invoices/model.invoice";
-import Packs from "../../../models/event/model.packs";
+import Packs from "../../../models/event/model.packsAndLocations";
 import User from "../../../models/users/model.users";
 import Event from "../../../models/event/model.event";
 
@@ -107,7 +107,7 @@ export default class InvoiceElements {
         {model?.company_name && model?.address && model?.zip && model?.country ? <div className="card mb-4 bg-green">
           <div className="card-body">
             <div className="mb-3">
-              <label htmlFor="voucher" className="form-label"> <h5>Upload your proof of payment here</h5> </label>
+              <label htmlFor="voucher" className="form-label"> <h5>Upload the proof of payment here</h5> </label>
               <input type="file" className="form-control" name="voucher" id="voucher" aria-describedby="voucher" />
             </div>
           </div>

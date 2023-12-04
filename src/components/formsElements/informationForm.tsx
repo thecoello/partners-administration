@@ -44,7 +44,6 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
       this._invoice = response.data.invoice[0]
       this._locations = response.data.locations
 
-      console.log(this._standInfo)
 
       this._locations?.forEach((location: any) => {
         if (location.location_name == this._invoice.location) {

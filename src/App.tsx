@@ -11,6 +11,7 @@ import InformationForm from "./components/formsElements/informationForm";
 
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import InvoiceFormPartner from "./components/formsElements/invoiceFormPartner";
+import EventInfoForm from "./components/formsElements/enventInfoForm";
 
 interface IProps { 
 }
@@ -63,6 +64,10 @@ export default class App extends React.Component<IProps, IState> {
       {
         path: "/informationtable/create",
         element: <InformationForm getInvoiceId={this.getUserId} />,
+      },
+      {
+        path: "/eventinformation",
+        element: <EventInfoForm />,
       },
     
 

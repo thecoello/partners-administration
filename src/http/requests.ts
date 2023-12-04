@@ -5,7 +5,9 @@ export default class RequestsRoutes {
     private url = import.meta.env.VITE_URL
 
     public async get(route:String | null) {
-      return await axios.get(this.url + route)
+      return await axios.get(this.url + route,{headers:{
+        'Authorization': localStorage.getItem('token_auth')
+      }})
       .then((response)=>{
         return response
       })
@@ -16,7 +18,8 @@ export default class RequestsRoutes {
 
     public async post(route:String | null,data: any) {
       return await axios.post(this.url + route, data,{headers:{
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        'Authorization': localStorage.getItem('token_auth')
       }})
       .then((response)=>{
         return response
@@ -29,7 +32,8 @@ export default class RequestsRoutes {
 
     public async put(route:String | null,data: any) {
       return await axios.put(this.url + route, data,{headers:{
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token_auth')
       }})
       .then((response)=>{
         return response
@@ -42,7 +46,8 @@ export default class RequestsRoutes {
     public async putPost(route:String | null,data: any) {
 
       return await axios.post(this.url + route,data,{headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        'Authorization': localStorage.getItem('token_auth')
       }},)
       .then((response)=>{
         return response
@@ -53,7 +58,9 @@ export default class RequestsRoutes {
     }
 
     public async delete(route:String | null) {
-      return await axios.delete(this.url + route)
+      return await axios.delete(this.url + route,{headers:{
+        'Authorization': localStorage.getItem('token_auth')
+      }})
       .then((response)=>{
         return response
       })

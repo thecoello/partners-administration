@@ -41,6 +41,11 @@ export default class Menu extends React.Component<IProps, IState> {
                     Users
                   </a>
                 </li>
+                <li className="nav-item">
+                  <a href="/eventinformation" className="nav-link text-light " aria-current="page">
+                    Event information
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
