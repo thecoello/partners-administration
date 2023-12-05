@@ -1,72 +1,125 @@
-import axios from "axios";
+import axios from 'axios';
 
 export default class RequestsRoutes {
 
-    private url = import.meta.env.VITE_URL
+  private url = import.meta.env.VITE_URL
 
-    public async get(route:String | null) {
-      return await axios.get(this.url + route,{headers:{
-        'Authorization': localStorage.getItem('token_auth')
-      }})
-      .then((response)=>{
-        return response
-      })
-      .catch((error)=>{
-        return error
-      })
-    }
-
-    public async post(route:String | null,data: any) {
-      return await axios.post(this.url + route, data,{headers:{
+  public async login(route: String | null, data: any) {
+    return await axios.post(this.url + route, data, {
+      headers: {
         'Content-Type': 'multipart/form-data',
-        'Authorization': localStorage.getItem('token_auth')
-      }})
-      .then((response)=>{
+      }
+    })
+      .then((response) => {
         return response
       })
-      .catch((error)=>{
+      .catch((error) => {
         return error
       })
+  }
+  
+
+  public async authUser() {
+    if(localStorage.getItem('Authorization')){
+      return await axios.get(this.url + 'authuser', {
+        headers: {
+          'Authorization': localStorage.getItem('Authorization')
+        }
+      })
+        .then((response) => {
+          return response
+        })
+        .catch((error) => {
+          return error
+        })
+    }
+  }
+
+  public async get(route: String | null) {
+    if(localStorage.getItem('Authorization')){
+      return await axios.get(this.url + route, {
+        headers: {
+          'Authorization': localStorage.getItem('Authorization')
+        }
+      })
+        .then((response) => {
+          return response
+        })
+        .catch((error) => {
+          return error
+        })
+    }
+  }
+
+  public async post(route: String | null, data: any) {
+    if(localStorage.getItem('Authorization')){
+      return await axios.post(this.url + route, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': localStorage.getItem('Authorization')
+        }
+      })
+        .then((response) => {
+          return response
+        })
+        .catch((error) => {
+          return error
+        })
     }
 
+  }
 
-    public async put(route:String | null,data: any) {
-      return await axios.put(this.url + route, data,{headers:{
-        'Content-Type': 'application/json',
-        'Authorization': localStorage.getItem('token_auth')
-      }})
-      .then((response)=>{
-        return response
+
+  public async put(route: String | null, data: any) {
+    if(localStorage.getItem('Authorization')){
+      return await axios.put(this.url + route, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('Authorization')
+        }
       })
-      .catch((error)=>{
-        return error
-      })
+        .then((response) => {
+          return response
+        })
+        .catch((error) => {
+          return error
+        })
+      }
+    
+  }
+
+  public async putPost(route: String | null, data: any) {
+    if(localStorage.getItem('Authorization')){
+      return await axios.post(this.url + route, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': localStorage.getItem('Authorization')
+        }
+      },)
+        .then((response) => {
+          return response
+        })
+        .catch((error) => {
+          return error
+        })
     }
+    
+  }
 
-    public async putPost(route:String | null,data: any) {
-
-      return await axios.post(this.url + route,data,{headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': localStorage.getItem('token_auth')
-      }},)
-      .then((response)=>{
-        return response
+  public async delete(route: String | null) {
+    if(localStorage.getItem('Authorization')){
+      return await axios.delete(this.url + route, {
+        headers: {
+          'Authorization': localStorage.getItem('Authorization')
+        }
       })
-      .catch((error)=>{
-        return error
-      })
+        .then((response) => {
+          return response
+        })
+        .catch((error) => {
+          return error
+        })
     }
-
-    public async delete(route:String | null) {
-      return await axios.delete(this.url + route,{headers:{
-        'Authorization': localStorage.getItem('token_auth')
-      }})
-      .then((response)=>{
-        return response
-      })
-      .catch((error)=>{
-        return error
-      })
-    }
-
+    
+  }
 }

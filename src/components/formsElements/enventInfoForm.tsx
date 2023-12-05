@@ -309,7 +309,7 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
 
       <div className="row border p-2 rounded mt-3">
 
-        <form className="needs-validation col-12" onSubmit={this.formPricePackUpdate.bind(this)}>
+        <form className="needs-validation col-12 pb-4" onSubmit={this.formPricePackUpdate.bind(this)}>
           <div className="row">
             <div className="col-3">
               <div className="mb-3">
@@ -352,21 +352,21 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
               </div>
             </div>
 
-            <div className="col-1 d-flex align-items-center justify-content-center m-0 p-0">
+          </div>
+          <div className="row">
+            <div className="col-12 d-flex">
               <button onClick={() => {
                 this.setState({ idPackAndPrice: this._packinformation[0].id })
-              }} type="submit" className="btn btn-dark m-0 p-2" style={{ fontSize: '0.8rem' }}>
+              }} type="submit" className="btn btn-dark m-0 p-2">
                 Update price
-
               </button>
             </div>
-
           </div>
         </form>
 
         <hr />
 
-        <form className="needs-validation col-12" onSubmit={this.formPricePackUpdate.bind(this)}>
+        <form className="needs-validation col-12 pb-4" onSubmit={this.formPricePackUpdate.bind(this)}>
           <div className="row">
             <div className="col-3">
               <div className="mb-3">
@@ -409,21 +409,21 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
               </div>
             </div>
 
-            <div className="col-1 d-flex align-items-center justify-content-center m-0 p-0">
+          </div>
+          <div className="row">
+            <div className="col-12 d-flex">
               <button onClick={() => {
                 this.setState({ idPackAndPrice: this._packinformation[1].id })
-              }} type="submit" className="btn btn-dark m-0 p-2" style={{ fontSize: '0.8rem' }}>
+              }} type="submit" className="btn btn-dark m-0 p-2">
                 Update price
-
               </button>
             </div>
-
           </div>
         </form>
 
         <hr />
 
-        <form className="needs-validation col-12" onSubmit={this.formPricePackUpdate.bind(this)}>
+        <form className="needs-validation col-12 pb-4" onSubmit={this.formPricePackUpdate.bind(this)}>
           <div className="row">
             <div className="col-3">
               <div className="mb-3">
@@ -465,22 +465,22 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
                 <input defaultValue={this._packinformation[2].price_all_early} type="text" className="form-control" id="pack_name" name="price_all_early" />
               </div>
             </div>
+          </div>
 
-            <div className="col-1 d-flex align-items-center justify-content-center m-0 p-0">
+          <div className="row">
+            <div className="col-12 d-flex">
               <button onClick={() => {
                 this.setState({ idPackAndPrice: this._packinformation[2].id })
-              }} type="submit" className="btn btn-dark m-0 p-2" style={{ fontSize: '0.8rem' }}>
+              }} type="submit" className="btn btn-dark m-0 p-2">
                 Update price
-
               </button>
             </div>
-
           </div>
         </form>
+        <hr />           
 
-        <hr />
 
-        <form className="needs-validation col-12" onSubmit={this.formPricePackUpdate.bind(this)}>
+        <form className="needs-validation col-12 pb-4" onSubmit={this.formPricePackUpdate.bind(this)}>
           <div className="row">
             <div className="col-3">
               <div className="mb-3">
@@ -522,16 +522,16 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
                 <input defaultValue={this._packinformation[3].price_all_early} type="text" className="form-control" id="pack_name" name="price_all_early" />
               </div>
             </div>
+          </div>
 
-            <div className="col-1 d-flex align-items-center justify-content-center m-0 p-0">
+          <div className="row">
+            <div className="col-12 d-flex">
               <button onClick={() => {
                 this.setState({ idPackAndPrice: this._packinformation[3].id })
-              }} type="submit" className="btn btn-dark m-0 p-2" style={{ fontSize: '0.8rem' }}>
+              }} type="submit" className="btn btn-dark m-0 p-2">
                 Update price
-
               </button>
             </div>
-
           </div>
         </form>
 

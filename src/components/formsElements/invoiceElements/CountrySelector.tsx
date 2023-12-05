@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export default class CountrySelector extends React.Component{
 
@@ -8,7 +8,7 @@ export default class CountrySelector extends React.Component{
   public render(): React.ReactNode {
     let options: Array<any> = []
     this.countries().forEach((country, i) => {
-      i === 0 ?  options.push(<option value="" key={i + 'country'}>{country}</option>) : options.push(<option key={i + 'country'} value={country}>{country}</option>)
+      i === 0 ?  options.push(<option value='' key={i + 'country'}>{country}</option>) : options.push(<option key={i + 'country'} value={country}>{country}</option>)
     });
     const selector = options
     return (selector)

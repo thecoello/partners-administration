@@ -45,7 +45,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       categoryInput: '',
       locationInput: '',
       priceTypeInput: '',
-      route: "invoices",
+      route: "invoice",
       title: "",
       loaded: false,
       userId: 0
@@ -137,7 +137,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       new RequestsRoutes().post(this.state.route, e.target).then((response) => {
         if (response.status === 200) {
           alert("Invoice created")
-          window.location.href = "/" + this.state.route
+          window.location.href = "/"
         }
       }).catch((error) => {
         alert(error)
