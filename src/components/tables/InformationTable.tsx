@@ -2,6 +2,7 @@ import React from 'react';
 import RequestsRoutes from '../../http/requests';
 import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit'
+import ExportExcel from '../formsElements/invoiceElements/exportExcel';
 
 interface IProps {
   setInvoiceD: any
@@ -18,6 +19,7 @@ interface IState {
   nextPageURL: string | null
   search: string
   userId: any
+  standInformation: any
 }
 
 export default class InformationTable extends React.Component<IProps, IState> {
@@ -30,7 +32,8 @@ export default class InformationTable extends React.Component<IProps, IState> {
       prevPageURL: null,
       nextPageURL: null,
       search: '',
-      userId: 'Hello'
+      userId: '',
+      standInformation: ''
     };
 
   }
@@ -54,8 +57,15 @@ export default class InformationTable extends React.Component<IProps, IState> {
        this.getInvoices('invoices/' + this.props.userIdLogged())
       }else{
         this.getInvoices('invoices');
+        this.getAllSponsorInformation('standsinformation')
       }
 
+  }
+
+  getAllSponsorInformation(route: any):any{
+    new RequestsRoutes().get(route).then((response)=> {
+      this.setState({standInformation: response.data})
+    })
   }
 
   getInvoices(route: any): void {
@@ -132,10 +142,18 @@ export default class InformationTable extends React.Component<IProps, IState> {
       <>
         <div className='d-flex search mt-4 mb-4 justify-content-between'>
 
-          <div className='d-flex'><h3 className='m-0'>Sponsor information</h3></div>
+          <div className='d-flex'><h3 className='m-0'>Sponsor information</h3> &nbsp;&nbsp;
+          
+          {this.props.userType() == 1 ? <a onClick={() => {
+
+                  new ExportExcel().exportStandInformation(this.state.standInformation)
+                 
+                }} className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a>: null}
+          </div>
 
 
-          <div className='input-group w-50 ms-4'>
+
+          {this.props.userType() == 1 ? <div className='input-group w-50 ms-4'>
             <input onChange={(e) => {
               this.setState({ search: e.target.value })
             }}
@@ -157,7 +175,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
             >
               Search
             </button>
-          </div>
+          </div> : null}
         </div>
 
         <div className='rounded-4 '>

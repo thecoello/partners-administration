@@ -21,6 +21,7 @@ interface IProps {
 interface IState {
   userId: any
   userType: number | null
+  userName: string | null
   userIdLogged: number | null
   invoiceId: any
   logged: boolean
@@ -38,7 +39,8 @@ export default class App extends React.Component<IProps, IState> {
       userIdLogged: null,
       invoiceId: '',
       logged: false,
-      loaded: false
+      loaded: false,
+      userName: ''
     }
   }
 
@@ -85,9 +87,14 @@ export default class App extends React.Component<IProps, IState> {
 
   authUser() {
     new RequestsRoutes().authUser().then((response) => {
-      if(response){
+        
+      if(response.status == 200){
         this.setState({ userType: response.data.user_type })
+        this.setState({ userName: response.data.name })
         this.setState({ userIdLogged: response.data.id })
+      }else{
+        localStorage.removeItem('Authorization')
+        localStorage.removeItem('user_id')
       }
     });
   }
@@ -137,7 +144,7 @@ export default class App extends React.Component<IProps, IState> {
 
   preRender() {
     return (
-      <><Menu userType={this.state.userType} />
+      <><Menu userName={this.state.userName} userType={this.state.userType} />
         <div className='cotainerfluid'>
           <div className='row'>
             <div className='col-12' id='content-view'>

@@ -102,17 +102,14 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
               <label htmlFor='logo' className='form-label'><b>Company or Solution Logo</b> <span style={{ 'fontSize': '0.8rem' }}>that you want to be displayed
                 on your booth. Please upload a vectorized format (eps. Illustrator) or a high resolution image (jpg, png,
                 tiff). <b>Less than 5MB</b></span></label>
-
-              {this._standInfo?.logo ?
+              <div className='row'>
+                <div className='col-12'>
+                {this._standInfo?.logo ?
                 <>
-                  <h4 className='border rounded p-4 mb-4'>Logo uploaded! you can preview it here  <a href={'http://localhost:8000/' + this._standInfo?.logo} target='_blank' type='button' className='btn btn-primary'>Download logo</a></h4>
+                  <p className='badge rounded-pill text-bg-success'>Logo available&nbsp; <a className='text-light' href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.logo} target='_blank' type='button'><b>Download logo</b></a></p>
                   <p>If you need to update the logo you can upload it again</p>
                 </>
                 : null}
-
-
-              <div className='row'>
-                <div className='col-12'>
                   <input className='form-control' type='file' name='logo' id='logo' />
                 </div>
               </div>
@@ -238,33 +235,42 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
               <label htmlFor='htmlFormFileMultiple' className='form-label'><b>Documents (maximum of 3 documents of less than 5MB
                 each)</b></label>
 
-              <div className='col border rounded p-4 mb-4'>
+              <div className='col border rounded p-4 mb-4 text-center'>
                 {this._standInfo?.document1 ?
                   <>
-                    <p className='border rounded p-4 mb-4 text-center'><b>Document 1 uploaded!</b> <br /> You can preview it here  <br /><br /><a href={'http://localhost:8000/' + this._standInfo?.document1} target='_blank' type='button' className='btn btn-primary'>Get Document 1</a></p>
-                    <p>If you need to update the document 1 you can upload it again</p>
+                    <span className='badge rounded-pill text-bg-success'><b>Document 1 available&nbsp;</b>
+                    <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document1} target='_blank' type='button' className='text-light'>Download</a>
+                    </span>
+                    <br /><br />
+                    <p style={{fontSize: '0.8rem'}}>If you need to update the document 1 you can upload it again</p>
                   </>
                   : null}
                 <p><b>Document 1</b></p>
                 <input className='form-control' type='file' name='document1' id='document1' multiple/>
               </div>
 
-              <div className='col border rounded p-4 mb-4'>
+              <div className='col border rounded p-4 mb-4 text-center'>
               {this._standInfo?.document2 ?
                   <>
-                    <p className='border rounded p-4 mb-4 text-center'><b>Document 2 uploaded!</b> <br /> You can preview it here  <br /><br /><a href={'http://localhost:8000/' + this._standInfo?.document2} target='_blank' type='button' className='btn btn-primary'>Get Document 2</a></p>
-                    <p>If you need to update the document 1 you can upload it again</p>
+                    <span className='badge rounded-pill text-bg-success'><b>Document 2 available&nbsp;</b>
+                    <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document2} target='_blank' type='button' className='text-light'>Download</a>
+                    </span>
+                    <br /><br />
+                    <p style={{fontSize: '0.8rem'}}>If you need to update the document 2 you can upload it again</p>
                   </>
                   : null}
                 <p><b>Document 2</b></p>
                 <input className='form-control' type='file' name='document2' id='document2' multiple />
               </div>
 
-              <div className='col border rounded p-4 mb-4'>
+              <div className='col border rounded p-4 mb-4 text-center'>
               {this._standInfo?.document3 ?
                   <>
-                    <p className='border rounded p-4 mb-4 text-center'><b>Document 3 uploaded!</b> <br /> You can preview it here  <br /><br /><a href={'http://localhost:8000/' + this._standInfo?.document3} target='_blank' type='button' className='btn btn-primary'>Get Document 3</a></p>
-                    <p>If you need to update the document 3 you can upload it again</p>
+                    <span className='badge rounded-pill text-bg-success'><b>Document 3 available&nbsp;</b>
+                    <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document3} target='_blank' type='button' className='text-light'>Download</a>
+                    </span>
+                    <br /><br />
+                    <p style={{fontSize: '0.8rem'}}>If you need to update the document 3 you can upload it again</p>
                   </>
                   : null}
                 <p><b>Document 3</b></p>

@@ -7,6 +7,7 @@ interface IState {
 
 interface IProps {
   userType: any
+  userName: any
 }
 
 export default class Menu extends React.Component<IProps, IState> {
@@ -56,8 +57,12 @@ export default class Menu extends React.Component<IProps, IState> {
             
             </div>
 
+            <span className='text-light'>{this.props.userName}</span>
+
+            &nbsp;&nbsp;
+
             <a  className='btn btn-light' href='/' onClick={(e)=>{
-                if(confirm('Are you sure you want to log out?')){
+                if(confirm('Are you sure you want to Sign out?')){
                   localStorage.removeItem('Authorization')
                   localStorage.removeItem('user_id')
                 }

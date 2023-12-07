@@ -65,7 +65,7 @@ export default class InvoicePDF{
             <div className='col'>
               <p style={{ 'fontSize': '1em', 'margin': '0px 0' }}><b>INVOICE NUMBER: {_invoice.invoice_number}</b></p>
               <p style={{ 'fontSize': '0.6em', 'margin': '0px 0' }}>INVOICE DATE: <b>{_invoice.invoice_date}</b></p>
-              <p style={{ 'fontSize': '0.6em', 'margin': '0px 0' }}>DUE DATE: <b>{new Date(_invoice.invoice_date.toString().split('/')[2],_invoice.invoice_date.toString().split('/')[1],_invoice.invoice_date.toString().split('/')[0]).toLocaleDateString()}</b></p>
+              <p style={{ 'fontSize': '0.6em', 'margin': '0px 0' }}>DUE DATE: <b>{_invoice.invoice_date}</b></p>
 
             </div>
           </div>
@@ -122,10 +122,10 @@ export default class InvoicePDF{
               <div className='col-8'>
               </div>
               <div className='col-2' style={{ 'borderTop': '0.5px solid #222222' }}>
-                <p style={{ 'fontSize': '1em', 'margin': '10px 0', 'textAlign': 'left' }}>Total</p>
+                <p style={{ 'fontSize': '0.8em', 'margin': '10px 0', 'textAlign': 'left' }}> <b>Total</b></p>
               </div>
               <div className='col-2' style={{ 'borderTop': '0.5px solid #222222', 'textAlign': 'right' }}>
-                <p style={{ 'fontSize': '1em', 'margin': '10px 0', 'textAlign': 'right' }}>{this.priceFormat.format(_invoice.total)}</p>
+                <p style={{ 'fontSize': '0.8em', 'margin': '10px 0', 'textAlign': 'right' }}> <b>{this.priceFormat.format(_invoice.total)}</b> </p>
 
               </div>
             </div>

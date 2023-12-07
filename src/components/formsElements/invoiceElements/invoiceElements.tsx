@@ -41,7 +41,7 @@ export default class InvoiceElements {
               <div className='col-4'>
                 <p className='m-0'>{this.infoInvoice(dataInvoice.invoice_date != null && dataInvoice.invoice_date != undefined, dataInvoice.invoice_date, 'Invoice date',null)}</p>
                 <p className='m-0'>{this.infoInvoice(dataInvoice.payment_method != null || dataInvoice.payment_method != undefined, dataInvoice.payment_method, 'Payment method', null)}</p>
-                {dataInvoice.voucher ? <a target='_blank' href={'http://localhost:8000/' + dataInvoice.voucher} className='btn btn-success mt-2'>Proof of payment</a> : null}
+                {dataInvoice.voucher ? <a target='_blank' href={import.meta.env.VITE_URL_SIMPLE + dataInvoice.voucher} className='btn btn-success mt-2'>Proof of payment</a> : null}
               </div>
               <div className='col-2'>
                 {dataInvoice.company_name && dataInvoice.address && dataInvoice.zip && dataInvoice.country && dataInvoice.vat ? <button onClick={() => {
@@ -49,7 +49,7 @@ export default class InvoiceElements {
                 }} className='btn btn-dark m-1 w-100'>Download Invoice</button> : <p className='text-danger'>In order to generate the invoice, the tax information is required</p>}
               </div>
               <div className='col-2'>
-                <a target='_blank' href={'http://localhost:8000/' + dataInvoice.contract_file} className='btn btn-outline-dark m-1 w-100'>Download contract</a>
+                <a target='_blank' href={import.meta.env.VITE_URL_SIMPLE + dataInvoice.contract_file} className='btn btn-outline-dark m-1 w-100'>Download contract</a>
               </div>
             </div>
             <hr />

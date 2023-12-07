@@ -166,6 +166,9 @@ export default class UserForm extends React.Component<IProps, IState> {
                   onChange={(e) => {
                     this._user.password = e.target.value
                   }}
+                  defaultValue={
+                    this.props.getUserId() ? this._user.password : undefined
+                  }
                   required={this.props.getUserId() ? false : true}
                   type='password'
                   className='form-control'

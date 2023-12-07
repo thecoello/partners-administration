@@ -4,9 +4,10 @@ import DownloadIcon from '@mui/icons-material/Download';
 import EditIcon from '@mui/icons-material/Edit';
 import InvoicePDF from '../formsElements/invoiceElements/invoicePDF';
 import { Link } from 'react-router-dom';
-import { Warning } from '@mui/icons-material';
+import { Square, Warning } from '@mui/icons-material';
 import Invoice from '../../models/invoices/model.invoice';
 import Event from '../../models/event/model.event';
+import ExportExcel from '../formsElements/invoiceElements/exportExcel';
 
 interface IProps {
   setInvoiceId: any
@@ -20,6 +21,7 @@ interface IState {
   prevPageURL: string | null
   nextPageURL: string | null
   search: string
+  invoiceDataExport?: any
 }
 
 export default class InvoiceTable extends React.Component<IProps, IState> {
@@ -34,7 +36,8 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       firstPageURL: null,
       prevPageURL: null,
       nextPageURL: null,
-      search: ''
+      search: '',
+      invoiceDataExport: undefined
     };
   }
 
@@ -46,7 +49,6 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       }
 
   }
-
 
   getInvoices(route: any): void {
     new RequestsRoutes().get(route).then((response) => {
@@ -179,6 +181,11 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
           <div className='d-flex'><h3 className='m-0'>Invoices</h3>
 
           {this.props.userType() == 1 ? <a href='/invoices/form' className='btn btn-outline-secondary btn-dark text-light ms-4' type='button'> Create invoice </a>: null}
+
+          {this.props.userType() == 1 ? <a onClick={() => {
+                  new ExportExcel().exportInvoice(this._invoices, this._event)
+                 
+                }} className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a>: null}
 
           </div> 
 

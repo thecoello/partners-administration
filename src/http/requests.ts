@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default class RequestsRoutes {
 
-  private url = import.meta.env.VITE_URL
+  private url = import.meta.env.VITE_API_URL
 
   public async login(route: String | null, data: any) {
     return await axios.post(this.url + route, data, {
