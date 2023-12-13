@@ -14,6 +14,8 @@ interface IState {
   invoiceShow: boolean
   locationShow: boolean
   pricePackShow: boolean
+  resetEvent: boolean
+  showAuth: boolean
 }
 
 export default class EventInfoForm extends React.Component<IProps, IState> {
@@ -30,7 +32,9 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
       idPackAndPrice: undefined,
       invoiceShow: true,
       locationShow: false,
-      pricePackShow: false
+      pricePackShow: false,
+      resetEvent: false,
+      showAuth: false
     }
   }
 
@@ -66,7 +70,7 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
     e.preventDefault()
     new RequestsRoutes().put('eventinfo', e.target).then((response) => {
       if (response.status === 200) {
-        alert("Stand Information created")
+        alert("Booth Information created")
         this.getEventInformation()
       }
     })
@@ -477,7 +481,7 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
             </div>
           </div>
         </form>
-        <hr />           
+        <hr />
 
 
         <form className="needs-validation col-12 pb-4" onSubmit={this.formPricePackUpdate.bind(this)}>
@@ -540,6 +544,88 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
     </div>)
   }
 
+  autorizathion(e: any) {
+    e.preventDefault()
+
+    const form = new FormData()
+
+    new RequestsRoutes().login('login', e.target).then((response) => {
+      if (response.status === 200) {
+        if (response.data.Authorization === window.localStorage.getItem('Authorization')) {
+          new RequestsRoutes().authUser().then((response) => {
+            form.append("id",response.data.id)
+            if (response.status === 200) {
+              if (confirm("Are you sure you want to reset the event, this action cannot be reversed")) {
+                new RequestsRoutes().post('resetevent',form).then((response)=> {
+                  console.log(response)
+                  if(response.status === 200){
+                    alert("Event reseted")
+                    window.location.href = "/"
+                  }else{
+                    alert(response.statusText)
+                  }
+                })
+              }
+            } 
+          }).catch((error) => {
+            alert(error)
+          }) 
+        } else {
+          alert('You are not the user logged, please use your credentials')
+        }
+
+      }else{
+        alert("Email or password wrong")
+      }
+    }).catch((error) => {
+      alert(error)
+    })
+  }
+
+  resetEvent() {
+    return (<div className="row justify-content-center">
+      <h4>Reset event</h4>
+
+      <div className="row border p-2 rounded mt-3">
+
+        <div className="col-4">
+          <p><b>Here you can restart the event:</b> <br />
+            -Invoice number will be set to 0. <br />
+            -All invoices will be deleted. <br />
+            -All Booth information will be deleted. <br />
+            -Users will not be deleted.</p>
+
+          <button onClick={() => {
+            this.setState({ showAuth: true })
+          }} type="submit" className="btn btn-danger">
+            Reset event
+          </button>
+        </div>
+
+        {this.state.showAuth ? <form encType='multipart/form-data' onSubmit={this.autorizathion.bind(this)} className='needs-validation d-flex align-items-start justify-content-center flex-column w-50 border rounded p-4 mt-4 mb-4'>
+          <div className='w-100'>
+            <p><b>Authorization is required to restart the event</b></p>
+
+            <div className='mb-3 w-100'>
+              <input name='email' type='email' className='form-control' id='email' placeholder='Email' aria-describedby='email' required />
+            </div>
+            <div className='mb-3 w-100'>
+              <input name='password' type='password' className='form-control' placeholder='Password' id='password' required />
+            </div>
+
+            <button type='submit' className='btn btn-dark w-100'>Confirm Reset</button>
+          </div>
+        </form> : null}
+
+      </div>
+
+
+
+
+
+    </div>)
+  }
+
   preRender() {
     return (
       <>
@@ -551,6 +637,8 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
                 this.setState({ invoiceShow: true })
                 this.setState({ locationShow: false })
                 this.setState({ pricePackShow: false })
+                this.setState({ resetEvent: false })
+
               }} className={this.state.invoiceShow ? "nav-link active" : "nav-link"} aria-current="page" href="#">Event information</a>
             </li>
             <li className="nav-item">
@@ -558,6 +646,8 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
                 this.setState({ invoiceShow: false })
                 this.setState({ locationShow: true })
                 this.setState({ pricePackShow: false })
+                this.setState({ resetEvent: false })
+
               }} className={this.state.locationShow ? "nav-link active" : "nav-link"} href="#">Locations</a>
             </li>
             <li className="nav-item">
@@ -565,7 +655,19 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
                 this.setState({ invoiceShow: false })
                 this.setState({ locationShow: false })
                 this.setState({ pricePackShow: true })
+                this.setState({ resetEvent: false })
+
               }} className={this.state.pricePackShow ? "nav-link active" : "nav-link"} href="#">Prices & Packs information</a>
+            </li>
+
+            <li className="nav-item">
+              <a onClick={() => {
+                this.setState({ invoiceShow: false })
+                this.setState({ locationShow: false })
+                this.setState({ pricePackShow: false })
+                this.setState({ resetEvent: true })
+
+              }} className={this.state.resetEvent ? "nav-link active" : "nav-link"} href="#">Reset event</a>
             </li>
 
           </ul>
@@ -574,6 +676,7 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
             {this.state.invoiceShow ? this.invoiceInformation() : null}
             {this.state.locationShow ? this.locationInformation() : null}
             {this.state.pricePackShow ? this.pricePackInformation() : null}
+            {this.state.resetEvent ? this.resetEvent() : null}
 
           </div>
         </div>

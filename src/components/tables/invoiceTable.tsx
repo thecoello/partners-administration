@@ -42,11 +42,11 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
   }
 
   componentDidMount(): void {
-    if(this.props.userType() != 1 ){
-       this.getInvoices('invoices/' + this.props.userIdLogged())
-      }else{
-        this.getInvoices('invoices');
-      }
+    if (this.props.userType() != 1) {
+      this.getInvoices('invoices/' + this.props.userIdLogged())
+    } else {
+      this.getInvoices('invoices');
+    }
 
   }
 
@@ -81,11 +81,11 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
     snapshot?: any
   ): void {
 
-    if(prevState.route != this.state.route && this.props.userType() == 1){
+    if (prevState.route != this.state.route && this.props.userType() == 1) {
       this.getInvoices(this.state.route)
     }
 
-    if(prevState.route != this.state.route && this.props.userType() == 0){
+    if (prevState.route != this.state.route && this.props.userType() == 0) {
       this.getInvoices(this.state.route)
     }
 
@@ -106,7 +106,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             </h6> : <h6 className='m-0'>
               <b><Warning /> Missing tax information</b>
             </h6>}
-            <p className='m-0' style={{ fontSize: '0.8rem' }}>{data.name}</p>
+            <p className='m-0' style={{ fontSize: '0.8rem' }}>{data.name} </p>
           </th>
           <th scope='col'>
             <p className='m-0'>{data.invoice_number}</p>
@@ -115,24 +115,21 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               <><span className='badge rounded-pill text-bg-success'>
                 Payed
               </span>
-
-              {data.voucher ? <span className='badge rounded-pill text-bg-warning'>
-                  Proof of payment
-                </span> :null }
               </>
             ) : (
               <>
-              <span className='badge rounded-pill text-bg-danger'>
-                Unpayed
-              </span>
-              {data.voucher ? <span className='badge rounded-pill text-bg-warning'>
-              Proof of payment
-            </span> :null }
-          </>
+                <span className='badge rounded-pill text-bg-danger'>
+                  Unpayed
+                </span>
+              </>
             )}
+
+            {data.voucher ? <span className='badge rounded-pill text-bg-success'>
+              Payment available
+            </span> : null}
           </th>
           <th scope='col'>
-            <p className='m-0'><b>{data.category}</b></p>
+            <p className='m-0'><b>{data.contact} - {data.category}</b></p>
             <p className='m-0' style={{ fontSize: '0.8rem' }}>{data.location}</p>
           </th>
           <th scope='col'>
@@ -153,7 +150,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
                 }}
               >
                 <DownloadIcon />
-              </button> : <div className='btn btn-warning btn-sm disabled'><Warning /></div>}
+              </button> : <div className='btn btn-warning btn-sm' title="In order to generate the invoice, the tax information is required"><Warning /></div>}
 
               {this.props.userType() == 1 ? <Link to={{ pathname: '/invoices/form' }} onClick={(e) => {
                 this.props.setInvoiceId(data.id)
@@ -163,7 +160,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
                 this.props.setInvoiceId(data.id)
               }} type='button' className='btn btn-primary btn-sm'>
                 <EditIcon />
-              </Link> }
+              </Link>}
             </div>
           </th>
         </tr>
@@ -180,14 +177,27 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
 
           <div className='d-flex'><h3 className='m-0'>Invoices</h3>
 
-          {this.props.userType() == 1 ? <a href='/invoices/form' className='btn btn-outline-secondary btn-dark text-light ms-4' type='button'> Create invoice </a>: null}
+            {this.props.userType() == 1 ? <a href='/invoices/form' className='btn btn-outline-secondary btn-dark text-light ms-4' type='button'> Assign price to user </a> : null}
 
-          {this.props.userType() == 1 ? <a onClick={() => {
+            {this.props.userType() == 1 ? <div className="dropdown">
+              <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Export options
+              </button>
+              <ul className="dropdown-menu">
+                <li><a className="dropdown-item" onClick={() => {
+                  new ExportExcel().exportUserInformation(this._invoices)
+
+                }}>Export users information</a></li>
+                <li><a className="dropdown-item" onClick={() => {
                   new ExportExcel().exportInvoice(this._invoices, this._event)
-                 
-                }} className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a>: null}
 
-          </div> 
+                }}>Export invoices</a></li>
+              </ul>
+            </div> : null}
+
+
+
+          </div>
 
           {this.props.userType() == 1 ? <div className='input-group w-50 ms-4'>
             <input onChange={(e) => {

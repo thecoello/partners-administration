@@ -49,6 +49,40 @@ export default class ExportExcel {
   }
 
 
+  async exportUserInformation(data?: Array<Invoice>){
+
+    const  workbook = new Excel.Workbook();
+    const worksheet = workbook.addWorksheet('Users');
+
+    const invoiceColumns:any = [
+    {key: "Invoice number", header: "Invoice number"},
+    {key: "Company name", header: "Company name"},
+    {key: "Category", header: "Category"},
+    {key: "Location", header: "Location"},
+    {key: "Name", header: "Name"},
+    {key: "Email", header: "Email"},
+    ]
+  
+    worksheet.columns = invoiceColumns;
+
+    data?.forEach((invoice:Invoice, i:any) => {
+      worksheet.addRow([invoice.invoice_number,
+      invoice.contact,
+      invoice.category,
+      invoice.location,
+      invoice.name,
+      invoice.email
+    ])
+    })
+
+
+    await workbook.xlsx.writeBuffer()
+    .then(buffer => saveAs(new Blob([buffer]), new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/'+ new Date().getFullYear() + '_userInformation.xlsx'))
+    .catch(err => console.log('Error writing excel export', err))
+      
+  }
+
+
   async exportStandInformation(data: Array<any>){
     const  workbook = new Excel.Workbook();
     const worksheet = workbook.addWorksheet('StandInformation');
@@ -91,8 +125,6 @@ export default class ExportExcel {
     data?.forEach((standInfo:any, i:any) => {
       worksheet.addRow([standInfo.invoice_number,standInfo.location,standInfo.logo,standInfo.city_1,standInfo.headline_1,standInfo.bullet1_1,standInfo.bullet2_1,standInfo.bullet3_1,standInfo.city_2,standInfo.headline_2,standInfo.bullet1_2,standInfo.bullet2_2,standInfo.bullet3_2,standInfo.city_3,standInfo.headline_3,standInfo.bullet1_3,standInfo.bullet2_3,standInfo.bullet3_3,standInfo.companyname,standInfo.document1,standInfo.document2,standInfo.document3,standInfo.video1,standInfo.video2, standInfo.contactemail,standInfo.companydescription,standInfo.companywebsite,standInfo.socialmedia1,standInfo.socialmedia2,standInfo.socialmedia3,standInfo.socialmedia4,standInfo.socialmedia5])      
     });
-
-
 
     await workbook.xlsx.writeBuffer()
     .then(buffer => saveAs(new Blob([buffer]), new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/'+ new Date().getFullYear() + '_StandInformation.xlsx'))

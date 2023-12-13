@@ -21,6 +21,8 @@ export default class Login extends React.Component<IProps, IState> {
       if (response.status === 200) {
         localStorage.setItem('Authorization',response.data.Authorization)
         window.location.reload()
+      }else{
+        alert("Wrong email or password")
       }
     }).catch((error) => {
       alert(error)

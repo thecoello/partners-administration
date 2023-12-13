@@ -3,6 +3,7 @@ import RequestsRoutes from '../../http/requests';
 import StandsPartnerInfo from '../../models/partnersInformation/model.partnerInfo';
 import Invoice from '../../models/invoices/model.invoice';
 import Locations from '../../models/event/model.locations';
+import User from '../../models/users/model.users';
 
 interface IProps {
   getInvoiceId: any
@@ -19,6 +20,7 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
   _standInfo: StandsPartnerInfo = new StandsPartnerInfo()
   _invoice: Invoice = new Invoice()
   _locations: Array<Locations> = []
+  _user: User = new User()
 
   constructor(props: IProps) {
     super(props);
@@ -43,10 +45,11 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
       this._standInfo = response.data.standinformation[0]
       this._invoice = response.data.invoice[0]
       this._locations = response.data.locations
+      this._user = response.data.user[0]
 
-
-      this._locations?.forEach((location: any) => {
+      this._locations?.forEach((location: Locations) => {
         if (location.location_name == this._invoice.location) {
+          console.log(location.type)
           this.setState({ locationType: location.type })
         }
       });
@@ -58,7 +61,7 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
     if (this.props.getInvoiceId()) {
       new RequestsRoutes().post(this.state.route, e.target).then((response) => {
         if (response.status === 200) {
-          alert('Stand Information created')
+          alert('Booth Information created')
           this.getStandInformation(this.props.getInvoiceId())
         }
       }).catch((error) => {
@@ -74,7 +77,7 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
     if (this.props.getInvoiceId()) {
       new RequestsRoutes().putPost('standinformationput/' + this.props.getInvoiceId(), e.target).then((response) => {
         if (response.status === 200) {
-          alert('Stand Information updated')
+          alert('Booth Information updated')
           this.getStandInformation(this.props.getInvoiceId())
         }
       }).catch((error) => {
@@ -96,7 +99,34 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
 
           <div className='row border rounded p-4 mb-4'>
 
-            <h4>Stand information</h4>
+            <div className='row'>
+              <div className='col-4'>
+                <p><b>Invoice:</b> {this._invoice.invoice_number}</p>
+              </div>
+              <div className='col-4'>
+                <p><b>Company name:</b> {this._invoice.company_name}</p>
+              </div>
+              <div className='col-4'>
+                <p><b>Email (for invoice):</b> {this._user.email}</p>
+              </div>
+            </div>
+
+<hr />
+
+            <div className='row'>
+            <div className='col-4'>
+                <p><b>Category:</b> {this._invoice.category}</p>
+              </div>
+              <div className='col-8'>
+                <p><b>Location(s):</b> {this._invoice.location}</p>
+              </div>
+            </div>
+          </div>
+
+
+          <div className='row border rounded p-4 mb-4'>
+
+            <h4>Booth information</h4>
 
             <div className='mb-3'>
               <label htmlFor='logo' className='form-label'><b>Company or Solution Logo</b> <span style={{ 'fontSize': '0.8rem' }}>that you want to be displayed
@@ -104,13 +134,27 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
                 tiff). <b>Less than 5MB</b></span></label>
               <div className='row'>
                 <div className='col-12'>
-                {this._standInfo?.logo ?
-                <>
-                  <p className='badge rounded-pill text-bg-success'>Logo available&nbsp; <a className='text-light' href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.logo} target='_blank' type='button'><b>Download logo</b></a></p>
-                  <p>If you need to update the logo you can upload it again</p>
-                </>
-                : null}
-                  <input className='form-control' type='file' name='logo' id='logo' />
+                  {this._standInfo?.logo ?
+                    <>
+                      <p className='badge rounded-pill text-bg-success'>Logo available&nbsp; <a className='text-light' href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.logo} target='_blank' type='button'><b>Download logo</b></a></p>
+                      <p>If you need to update the logo you can upload it again</p>
+                    </>
+                    : null}
+                  <input onChange={(e: any) => {
+
+                    const fileExt = e.target.value.split('.')[e.target.value.split('.').length - 1].toUpperCase()
+
+                    if (!["EPS", "AI", "JPG", "JPEG", "PNG", "TIFF", "PDF"].includes(fileExt)) {
+                      e.target.value = ''
+                      alert('The Logo file must be a EPS, AI, JPG, JPEG, PNG, TIFF or a PDF file.')
+                    }
+
+                    if (Math.round(e.target.files[0].size / 1024) > 5000) {
+                      e.target.value = ''
+                      alert('Logo file size should not exceed 5MB')
+                    }
+
+                  }} className='form-control' type='file' name='logo' id='logo' />
                 </div>
               </div>
             </div>
@@ -228,53 +272,92 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
             <h4>Event App information</h4>
             <div className='mb-3'>
               <label htmlFor='companyname' className='form-label'><b>Company name</b></label>
-              <input type='text' name='companyname' className='form-control' id='companyname' defaultValue={this._standInfo?.companyname} />
+              <input type='text' name='companyname' className='form-control' id='companyname' defaultValue={this._standInfo?.companyname ? this._standInfo?.companyname : this._invoice.company_name} />
             </div>
 
             <div className='mb-3 row'>
               <label htmlFor='htmlFormFileMultiple' className='form-label'><b>Documents (maximum of 3 documents of less than 5MB
-                each)</b></label>
+                each PDF or DOCX)</b></label>
 
               <div className='col border rounded p-4 mb-4 text-center'>
                 {this._standInfo?.document1 ?
                   <>
                     <span className='badge rounded-pill text-bg-success'><b>Document 1 available&nbsp;</b>
-                    <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document1} target='_blank' type='button' className='text-light'>Download</a>
+                      <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document1} target='_blank' type='button' className='text-light'>Download</a>
                     </span>
                     <br /><br />
-                    <p style={{fontSize: '0.8rem'}}>If you need to update the document 1 you can upload it again</p>
+                    <p style={{ fontSize: '0.8rem' }}>If you need to update the document 1 you can upload it again</p>
                   </>
                   : null}
                 <p><b>Document 1</b></p>
-                <input className='form-control' type='file' name='document1' id='document1' multiple/>
+                <input onChange={(e: any) => {
+
+                  const fileExt = e.target.value.split('.')[e.target.value.split('.').length - 1].toUpperCase()
+
+                  if (!["PDF", "DOCX"].includes(fileExt)) {
+                    e.target.value = ''
+                    alert('The Document 1 file must be PDF or DOCX file.')
+                  }
+                  if (Math.round(e.target.files[0].size / 1024) > 5000) {
+                    e.target.value = ''
+                    alert('The Document 1 file size should not exceed 5MB')
+                  }
+
+                }} className='form-control' type='file' name='document1' id='document1' multiple />
               </div>
 
               <div className='col border rounded p-4 mb-4 text-center'>
-              {this._standInfo?.document2 ?
+                {this._standInfo?.document2 ?
                   <>
                     <span className='badge rounded-pill text-bg-success'><b>Document 2 available&nbsp;</b>
-                    <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document2} target='_blank' type='button' className='text-light'>Download</a>
+                      <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document2} target='_blank' type='button' className='text-light'>Download</a>
                     </span>
                     <br /><br />
-                    <p style={{fontSize: '0.8rem'}}>If you need to update the document 2 you can upload it again</p>
+                    <p style={{ fontSize: '0.8rem' }}>If you need to update the document 2 you can upload it again</p>
                   </>
                   : null}
                 <p><b>Document 2</b></p>
-                <input className='form-control' type='file' name='document2' id='document2' multiple />
+                <input onChange={(e: any) => {
+
+                  const fileExt = e.target.value.split('.')[e.target.value.split('.').length - 1].toUpperCase()
+
+                  if (!["PDF", "DOCX"].includes(fileExt)) {
+                    e.target.value = ''
+                    alert('The Document 2 file must be PDF or DOCX file.')
+                  }
+                  if (Math.round(e.target.files[0].size / 1024) > 5000) {
+                    e.target.value = ''
+                    alert('The Document 2 file size should not exceed 5MB')
+                  }
+
+                }} className='form-control' type='file' name='document2' id='document2' multiple />
               </div>
 
               <div className='col border rounded p-4 mb-4 text-center'>
-              {this._standInfo?.document3 ?
+                {this._standInfo?.document3 ?
                   <>
                     <span className='badge rounded-pill text-bg-success'><b>Document 3 available&nbsp;</b>
-                    <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document3} target='_blank' type='button' className='text-light'>Download</a>
+                      <a href={import.meta.env.VITE_URL_SIMPLE + this._standInfo?.document3} target='_blank' type='button' className='text-light'>Download</a>
                     </span>
                     <br /><br />
-                    <p style={{fontSize: '0.8rem'}}>If you need to update the document 3 you can upload it again</p>
+                    <p style={{ fontSize: '0.8rem' }}>If you need to update the document 3 you can upload it again</p>
                   </>
                   : null}
                 <p><b>Document 3</b></p>
-                <input className='form-control' type='file' name='document3' id='document3' multiple />
+                <input onChange={(e: any) => {
+
+                  const fileExt = e.target.value.split('.')[e.target.value.split('.').length - 1].toUpperCase()
+
+                  if (!["PDF", "DOCX"].includes(fileExt)) {
+                    e.target.value = ''
+                    alert('The Document 3 file must be PDF or DOCX file.')
+                  }
+                  if (Math.round(e.target.files[0].size / 1024) > 5000) {
+                    e.target.value = ''
+                    alert('The Document 3 file size should not exceed 5MB')
+                  }
+
+                }} className='form-control' type='file' name='document3' id='document3' multiple />
               </div>
             </div>
 
@@ -288,7 +371,7 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
 
             <div className='mb-3'>
               <label htmlFor='contactemail' className='form-label'><b>Contact email</b></label>
-              <input type='email' className='form-control' name='contactemail' id='contactemail' defaultValue={this._standInfo?.contactemail} />
+              <input type='email' className='form-control' name='contactemail' id='contactemail' defaultValue={this._standInfo?.contactemail ? this._standInfo?.contactemail : this._user.email} />
             </div>
 
             <div className='mb-3'>

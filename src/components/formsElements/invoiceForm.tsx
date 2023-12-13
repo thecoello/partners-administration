@@ -6,7 +6,7 @@ import Packs from "../../models/event/model.packsAndLocations"
 import User from "../../models/users/model.users"
 import Event from "../../models/event/model.event"
 
-interface IState{
+interface IState {
   routePacks: string
   routeUser: string
   search: string
@@ -52,57 +52,57 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
     }
   }
 
-  getSetUserId=()=>{
-    this.setState({userId: this._invoiceElements.getUserID()})
+  getSetUserId = () => {
+    this.setState({ userId: this._invoiceElements.getUserID() })
   }
 
-   componentDidMount(): void {
+  componentDidMount(): void {
     this.getPackData()
 
     if (this.props.getInvoiceId()) {
-      this.setState({ title: "Update Invoice" })
+      this.setState({ title: "Update price to user" })
       this.getInvoiceData(this.props.getInvoiceId())
       this.loadTime()
     } else {
-      this.setState({ title: "Create Invoice" })
+      this.setState({ title: "Assign price to user" })
       this.getPackData()
       this.loadTime()
     }
 
   }
 
-   componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any): void {
+  componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any): void {
     if ((prevState.categoryInput != this.state.categoryInput) || (prevState.locationInput != this.state.locationInput) || (prevState.priceTypeInput != this.state.priceTypeInput)) {
       this.priceCalculation()
     }
   }
 
-   loadTime() {
+  loadTime() {
     this.setState({ loaded: false })
     setTimeout(() => {
       this.setState({ loaded: true })
     }, 500);
   }
 
-   searchUserData(search: any) {
+  searchUserData(search: any) {
     new RequestsRoutes().get(this.state.routeUser + "/search/" + search).then((response) => {
       this._user = response.data.data
-      this.setState({userFounded: true})
+      this.setState({ userFounded: true })
     })
   }
 
-   getUserData(id: any) {
+  getUserData(id: any) {
     new RequestsRoutes().get(this.state.routeUser + "/" + id).then((response) => {
       this._user = response.data.data[0]
     })
   }
 
-   getInvoiceData(id: any) {
+  getInvoiceData(id: any) {
     new RequestsRoutes().get(this.state.route + "/" + id).then((response) => {
       this._invoice = response.data.invoices.data[0]
       this._event = response.data.eventinfo[0]
-      this.setState({userId: this._invoice.user_id})
-      this.setState({price: this._invoice.subtotal})
+      this.setState({ userId: this._invoice.user_id })
+      this.setState({ price: this._invoice.subtotal })
       this.loadTime()
     });
   }
@@ -113,7 +113,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
     })
   }
 
-  private  priceCalculation(): void {
+  private priceCalculation(): void {
     this._packs.packinfo?.forEach((pack: any) => {
       if (pack.pack_name === this.state.categoryInput) {
         if (this.state.locationInput == 0 && this.state.priceTypeInput == 0) {
@@ -181,15 +181,15 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
         <div className="mb-3">
           <div className="input-group w-100">
             <input onChange={(e) => { this.setState({ search: e.target.value }) }} type="text" className="form-control" placeholder="Find by User name, email or Company Name" />
-            <button className="btn btn-outline-secondary btn-dark text-light " type="button" onClick={() => { 
-              this.state.search ? this.setState({ routePacks: "users/search/" + this.state.search.split(".")[0] }) : this.setState({ routePacks: "users" }) 
+            <button className="btn btn-outline-secondary btn-dark text-light " type="button" onClick={() => {
+              this.state.search ? this.setState({ routePacks: "users/search/" + this.state.search.split(".")[0] }) : this.setState({ routePacks: "users" })
               this.searchUserData(this.state.search)
-              }} > Search </button>
+            }} > Search </button>
           </div>
         </div>
 
         <div key={`${Math.floor((Math.random() * 1000))}-min`}>
-        {this.state.userFounded ? this._invoiceElements.getUsers([this._user], this._invoice,this.getSetUserId): null}
+          {this.state.userFounded ? this._invoiceElements.getUsers([this._user], this._invoice, this.getSetUserId) : null}
         </div>
 
 
@@ -233,14 +233,27 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
           <input type="hidden" name="category" value={this._invoice.category} />
           <input type="hidden" name="location" value={this._invoice.location} />
           <input type="hidden" name="pricetype" value={this._invoice.pricetype} />
-          
+
 
           <div className="row">
 
             <div className="col">
               <div className="mb-3">
-                <label htmlFor="contract_file" className="form-label"> Upload contract </label>
-                <input type="file" className="form-control" name="contract_file" id="contract_file" aria-describedby="contract_file" required={this.props.getInvoiceId() ? false : true} />
+                <label htmlFor="contract_file" className="form-label"> Upload contract (PDF - 2MB Max) * </label>
+                <input onChange={(e:any) => {
+
+                  const fileExt = e.target.value.split('.')[e.target.value.split('.').length - 1].toUpperCase()
+
+                  if (!["PDF"].includes(fileExt)) {
+                    e.target.value = ''
+                    alert('The contract file must be a PDF file.')
+                  }
+                  if(Math.round(e.target.files[0].size / 1024) > 2000){
+                    e.target.value = ''
+                    alert('The contract file size should not exceed 2MB')
+                  }
+
+                }} type="file" className="form-control" name="contract_file" id="contract_file" aria-describedby="contract_file" required={this.props.getInvoiceId() ? false : true} />
               </div>
             </div>
           </div>
