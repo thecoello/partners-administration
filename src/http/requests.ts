@@ -17,6 +17,22 @@ export default class RequestsRoutes {
         return error
       })
   }
+
+  public async resetPass(route: String | null, data: any) {
+    return await axios.put(this.url + route, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+      .then((response) => {
+        return response
+      })
+      .catch((error) => {
+        return error
+      })
+  }
+  
+
   
 
   public async authUser() {

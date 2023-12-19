@@ -14,6 +14,7 @@ import InvoiceFormPartner from './components/formsElements/invoiceFormPartner';
 import EventInfoForm from './components/formsElements/enventInfoForm';
 import Login from './components/login';
 import RequestsRoutes from './http/requests';
+import Home from './components/home';
 
 interface IProps {
 }
@@ -48,7 +49,11 @@ export default class App extends React.Component<IProps, IState> {
     this.router = createBrowserRouter([
       {
         path: '/',
-        element: <InvoiceTable userIdLogged={this.getUserIdLogged} userType={this.getUserType} setInvoiceId={this.setInvoiceId} />,
+        element: this.state.userType == 1  ? <InvoiceTable userIdLogged={this.getUserIdLogged} userType={this.getUserType} setInvoiceId={this.setInvoiceId} /> : <Home/>
+      },
+      {
+        path: '/home',
+        element: <Home/>
       },
       {
         path: '/invoices',
@@ -71,11 +76,11 @@ export default class App extends React.Component<IProps, IState> {
         element: this.state.userType == 1 ? <UserForm getUserId={this.getUserId} />: <InvoiceTable userIdLogged={this.getUserIdLogged} userType={this.getUserType} setInvoiceId={this.setInvoiceId} />,
       },
       {
-        path: '/informationtable',
+        path: '/boothinformation',
         element: <InformationTable userIdLogged={this.getUserIdLogged} userType={this.getUserType} setInvoiceD={this.setUserId} />,
       },
       {
-        path: '/informationtable/create',
+        path: '/boothinformation/create',
         element: <InformationForm getInvoiceId={this.getUserId} />,
       },
       {
@@ -88,7 +93,7 @@ export default class App extends React.Component<IProps, IState> {
   authUser() {
     new RequestsRoutes().authUser().then((response) => {
         
-      if(response.status == 200){
+      if(response?.status == 200){
         this.setState({ userType: response.data.user_type })
         this.setState({ userName: response.data.name })
         this.setState({ userIdLogged: response.data.id })

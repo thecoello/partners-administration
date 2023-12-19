@@ -15,39 +15,41 @@ export default class Menu extends React.Component<IProps, IState> {
     super(props);
   }
 
-  currentYear(): any {
-    return <b>{new Date().getFullYear()}</b>;
-  }
 
   render(): React.ReactNode {
     return (
       <>
         <nav className='navbar navbar-expand-lg bg-body-tertiary'>
           <div className='container-fluid'>
-            <a className='navbar-brand text-light' href='#'>
-              Sponsor Administration {this.currentYear()}
+            <a className='navbar-brand text-light' href='/'>
+            Partner summit for SME <span style={{fontSize:'0.8rem'}}>Sponsor Administration </span>
             </a>
 
             <div className='collapse navbar-collapse' id='navbarNav'>
               <ul className='navbar-nav'>
+              <li className='nav-item'>
+                  <a href='/home' className={window.location.href.includes('home') ? 'rounded-pill text-bg-light text-dark nav-link' : 'nav-link text-light '} aria-current='page'>
+                    Home
+                  </a>
+                </li>
                 <li className='nav-item'>
-                  <a href='/invoices' className='nav-link text-light ' aria-current='page'>
+                  <a href='/invoices' className={window.location.href.includes('invoices') ? 'rounded-pill text-bg-light text-dark nav-link' : 'nav-link text-light '} aria-current='page'>
                     Invoices
                   </a>
                 </li>
                 <li className='nav-item'>
-                  <a href='/informationtable' className='nav-link text-light ' aria-current='page'>
+                  <a href='/boothinformation' className={window.location.href.includes('boothinformation') ? 'rounded-pill text-bg-light text-dark nav-link' : 'nav-link text-light '} aria-current='page'>
                     Booth information
                   </a>
                 </li>
 
                 {this.props.userType == 1 ?<><li className='nav-item'>
-                  <a href='/users' className='nav-link text-light ' aria-current='page'>
+                  <a href='/users' className={window.location.href.includes('users') ? 'rounded-pill text-bg-light text-dark nav-link' : 'nav-link text-light '} aria-current='page'>
                     Users
                   </a>
                 </li>
                 <li className='nav-item'>
-                  <a href='/eventinformation' className='nav-link text-light ' aria-current='page'>
+                  <a href='/eventinformation' className={window.location.href.includes('eventinformation') ? 'rounded-pill text-bg-light text-dark nav-link' : 'nav-link text-light '} aria-current='page'>
                     Event information
                   </a>
                 </li></> : null}

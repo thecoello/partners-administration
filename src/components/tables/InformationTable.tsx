@@ -99,7 +99,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
               <th scope='col'>
                 <div className='d-flex'>
 
-                {data.voucher && data.payment_status == 'Payed' ? <Link to={{pathname:'/informationtable/create'}} onClick={(e) => {
+                {data.voucher && data.payment_status == 'Payed' ? <Link to={{pathname:'/boothinformation/create'}} onClick={(e) => {
                                       this.props.setInvoiceD(data.id)
                   }} type='button' className='btn btn-dark btn-sm'>
                     <EditIcon />
@@ -142,7 +142,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
       <>
         <div className='d-flex search mt-4 mb-4 justify-content-between'>
 
-          <div className='d-flex'><h3 className='m-0'>Sponsor information</h3> &nbsp;&nbsp;
+          <div className='d-flex'><h3 className='m-0'>Booth information</h3> &nbsp;&nbsp;
           
           {this.props.userType() == 1 ? <a onClick={() => {
 

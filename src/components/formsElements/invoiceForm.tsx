@@ -305,7 +305,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
               <div id="collapseTwo" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div className="accordion-body">
                   <h3>Partner Invoice Information </h3>
-                  {this._invoiceElements.taxinfoInputs(this.state.title, this._invoice, this.props.getInvoiceId())}
+                  {this._invoiceElements.taxinfoInputs(this.state.title, this._invoice, this.props.getInvoiceId(),1)}
                 </div>
               </div>
             </div>

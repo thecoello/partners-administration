@@ -36,7 +36,7 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
       this.getStandInformation(this.props.getInvoiceId())
       this.loadTime()
     } else {
-      window.location.href = '/informationtable'
+      window.location.href = '/boothinformation'
     }
   }
 

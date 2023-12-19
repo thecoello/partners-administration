@@ -81,7 +81,7 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
             <a href='/invoices' className='btn btn-outline-secondary btn-dark text-light ms-4' type='button' > Cancel </a>
           </div>
           <form encType='multipart/form-data' className='needs-validation' onSubmit={this.formUpdate.bind(this)}>    
-            {this._invoiceElements.taxinfoInputs(this.state.title, this._invoice, this.props.getInvoiceId())}
+            {this._invoiceElements.taxinfoInputs(this.state.title, this._invoice, this.props.getInvoiceId(),0)}
             <button type='submit' className='btn btn-dark'> Submit </button>
           </form>
         </div>

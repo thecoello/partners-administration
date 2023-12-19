@@ -101,7 +101,7 @@ export default class InvoiceElements {
     return invoiceTable
   }
 
-  taxinfoInputs(title: any, model: Invoice, invoiceID: any) {
+  taxinfoInputs(title: any, model: Invoice, invoiceID: any,userType :number) {
 
     return (
       <>
@@ -136,25 +136,25 @@ export default class InvoiceElements {
 
         <div className='mb-3'>
           <label htmlFor='company_name' className='form-label'> Company Name </label>
-          <input type='text' defaultValue={model.company_name} className='form-control' name='company_name' id='company_name' aria-describedby='company_name' required={!invoiceID || !model.contact ? false : true} />
+          <input type='text' defaultValue={model.company_name} className='form-control' name='company_name' id='company_name' aria-describedby='company_name' required={!invoiceID || !model.contact || userType == 1 ? false : true} />
         </div>
         <div className='mb-3'>
           <label htmlFor='address' className='form-label'> Address </label>
-          <input type='text' onChange={(e) => { model.address = e.target.value }} defaultValue={model.address} className='form-control' name='address' id='address' aria-describedby='address' required={!invoiceID || !model.contact ? false : true} />
+          <input type='text' onChange={(e) => { model.address = e.target.value }} defaultValue={model.address} className='form-control' name='address' id='address' aria-describedby='address' required={!invoiceID || !model.contact || userType == 1 ? false : true} />
         </div>
         <div className='mb-3'>
           <label htmlFor='zip' className='form-label'> ZIP/Postal Code </label>
-          <input type='text' onChange={(e) => { model.zip = e.target.value }} defaultValue={model.zip} className='form-control' name='zip' id='zip' aria-describedby='zip' required={!invoiceID || !model.contact ? false : true} />
+          <input type='text' onChange={(e) => { model.zip = e.target.value }} defaultValue={model.zip} className='form-control' name='zip' id='zip' aria-describedby='zip' required={!invoiceID || !model.contact || userType == 1 ? false : true} />
         </div>
         <div className='mb-3'>
           <label htmlFor='country' className='form-label'> Country </label>
-          <select onChange={(e) => { model.country = e.target.value }} defaultValue={model.country} className='form-select' name='country' key={`${Math.floor((Math.random() * 1000))}-min`} required={!invoiceID || !model.contact ? false : true} >
+          <select onChange={(e) => { model.country = e.target.value }} defaultValue={model.country} className='form-select' name='country' key={`${Math.floor((Math.random() * 1000))}-min`} required={!invoiceID || !model.contact || userType == 1 ? false : true} >
             <CountrySelector />
           </select>
         </div>
         <div className='mb-3'>
           <label htmlFor='vat' className='form-label'> Vat Number </label>
-          <input type='text' onChange={(e) => { model.vat = e.target.value }} defaultValue={model.vat} className='form-control' name='vat' id='vat' aria-describedby='vat' required={!invoiceID || !model.contact ? false : true} />
+          <input type='text' onChange={(e) => { model.vat = e.target.value }} defaultValue={model.vat} className='form-control' name='vat' id='vat' aria-describedby='vat' required={!invoiceID || !model.contact || userType == 1 ? false : true} />
           <p style={{ 'fontSize': '0.9rem' }}>If you do not have or do not need a VAT number for this invoice to be valid for accounting purposes, place a dash (-) in the VAT NUMBER field.</p>
         </div>
       </>
