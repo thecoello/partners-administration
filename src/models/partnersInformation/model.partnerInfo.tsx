@@ -31,4 +31,11 @@ export default class StandsPartnerInfo {
   socialmedia3?: string
   socialmedia4?: string
   socialmedia5?: string
+  speakername?: string
+  speakerjobtitle?: string
+  sessiontitle?: string
+  sessiondescription?: string
+  speakershortbio?: string
+  photo?: string
+  linkedin?: string
 }

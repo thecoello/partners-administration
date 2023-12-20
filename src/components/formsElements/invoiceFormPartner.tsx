@@ -8,6 +8,7 @@ interface IState{
   route: string
   title: string
   loaded: boolean
+  disableDiv?: string
 }
 
 interface IProps {
@@ -61,6 +62,7 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
         if (response.status === 200) {
           alert('Invoice Updated')
           this.getInvoiceData(this.props.getInvoiceId())
+          this.setState({disableDiv: ' pe-auto opacity-100 '})
           this.loadTime()
         }
       }).catch((error) => {
@@ -73,7 +75,7 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
 
   preRender() { 
     return (
-      <>
+      <div className={this.state.disableDiv}>
         {this._invoiceElements.invoiceResume(this._invoice, this._event)}
         <div className='border rounded p-4 pt-0 mt-2'>
           <div className='d-flex search mt-4 mb-4'>
@@ -82,10 +84,12 @@ export default class InvoiceFormPartner extends React.Component<IProps, IState> 
           </div>
           <form encType='multipart/form-data' className='needs-validation' onSubmit={this.formUpdate.bind(this)}>    
             {this._invoiceElements.taxinfoInputs(this.state.title, this._invoice, this.props.getInvoiceId(),0)}
-            <button type='submit' className='btn btn-dark'> Submit </button>
+            <button type='submit' className='btn btn-dark' onClick={()=>{
+                          this.setState({disableDiv: ' pe-none opacity-25 '})
+            }}> Submit </button>
           </form>
         </div>
-      </>
+      </div>
     )
   }
 

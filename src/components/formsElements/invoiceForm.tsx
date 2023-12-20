@@ -19,6 +19,7 @@ interface IState {
   title: string
   loaded: boolean
   userId: number | undefined
+  disableDiv?: string
 }
 
 interface IProps {
@@ -137,6 +138,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       new RequestsRoutes().post(this.state.route, e.target).then((response) => {
         if (response.status === 200) {
           alert("Invoice created")
+          this.setState({disableDiv: ' pe-auto opacity-100 '})
           window.location.href = "/"
         }
       }).catch((error) => {
@@ -153,9 +155,9 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
     if (this.state.userId) {
       new RequestsRoutes().putPost(this.state.route + "/" + this.props.getInvoiceId(), e.target).then((response) => {
         if (response.status === 200) {
-          this.setState({ loaded: false })
           alert("Invoice Updated")
           this.getInvoiceData(this.props.getInvoiceId())
+          this.setState({disableDiv: ' pe-auto opacity-100 '})
         }
       }).catch((error) => {
         alert(error)
@@ -167,7 +169,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
 
   private preRender() {
     return (
-      <>
+      <div className={this.state.disableDiv}>
         {this.props.getInvoiceId() ? this._invoiceElements.invoiceResume(this._invoice, this._event) : null}
 
 
@@ -311,9 +313,11 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
             </div>
           </div>
           <br /><br />
-          <button type="submit" className="btn btn-dark"> Submit </button>
+          <button type="submit" className="btn btn-dark" onClick={()=>{
+            this.setState({disableDiv: ' pe-none opacity-25 '})
+          }}> Submit </button>
         </form>
-      </>
+      </div>
     )
   }
 

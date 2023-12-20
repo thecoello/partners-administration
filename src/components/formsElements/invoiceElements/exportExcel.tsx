@@ -118,12 +118,19 @@ export default class ExportExcel {
     {key: "socialmedia2", header: "socialmedia2"}, 
     {key: "socialmedia3", header: "socialmedia3"}, 
     {key: "socialmedia4", header: "socialmedia4"}, 
-    {key: "socialmedia5", header: "socialmedia5"}]
+    {key: "socialmedia5", header: "socialmedia5"}, 
+    {key: "speakername", header: "speakername"}, 
+    {key: "speakerjobtitle", header: "speakerjobtitle"}, 
+    {key: "sessiontitle", header: "sessiontitle"}, 
+    {key: "sessiondescription", header: "sessiondescription"}, 
+    {key: "speakershortbio", header: "speakershortbio"}, 
+    {key: "photo", header: "photo"}, 
+    {key: "linkedin", header: "linkedin"}]
 
     worksheet.columns = standInfoColumns;
 
     data?.forEach((standInfo:any, i:any) => {
-      worksheet.addRow([standInfo.invoice_number,standInfo.location,standInfo.logo,standInfo.city_1,standInfo.headline_1,standInfo.bullet1_1,standInfo.bullet2_1,standInfo.bullet3_1,standInfo.city_2,standInfo.headline_2,standInfo.bullet1_2,standInfo.bullet2_2,standInfo.bullet3_2,standInfo.city_3,standInfo.headline_3,standInfo.bullet1_3,standInfo.bullet2_3,standInfo.bullet3_3,standInfo.companyname,standInfo.document1,standInfo.document2,standInfo.document3,standInfo.video1,standInfo.video2, standInfo.contactemail,standInfo.companydescription,standInfo.companywebsite,standInfo.socialmedia1,standInfo.socialmedia2,standInfo.socialmedia3,standInfo.socialmedia4,standInfo.socialmedia5])      
+      worksheet.addRow([standInfo.invoice_number,standInfo.location,import.meta.env.VITE_URL_SIMPLE + standInfo.logo,standInfo.city_1,standInfo.headline_1,standInfo.bullet1_1,standInfo.bullet2_1,standInfo.bullet3_1,standInfo.city_2,standInfo.headline_2,standInfo.bullet1_2,standInfo.bullet2_2,standInfo.bullet3_2,standInfo.city_3,standInfo.headline_3,standInfo.bullet1_3,standInfo.bullet2_3,standInfo.bullet3_3,standInfo.companyname,import.meta.env.VITE_URL_SIMPLE + standInfo.document1,import.meta.env.VITE_URL_SIMPLE + standInfo.document2,import.meta.env.VITE_URL_SIMPLE + standInfo.document3,standInfo.video1,standInfo.video2, standInfo.contactemail,standInfo.companydescription,standInfo.companywebsite,standInfo.socialmedia1,standInfo.socialmedia2,standInfo.socialmedia3,standInfo.socialmedia4,standInfo.socialmedia5, standInfo.speakername, standInfo.speakerjobtitle, standInfo.sessiontitle, standInfo.sessiondescription, standInfo.speakershortbio, import.meta.env.VITE_URL_SIMPLE + standInfo.photo, standInfo.linkedin])      
     });
 
     await workbook.xlsx.writeBuffer()

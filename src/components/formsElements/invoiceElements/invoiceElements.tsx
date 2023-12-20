@@ -79,9 +79,7 @@ export default class InvoiceElements {
                 <p className='m-0'>{this.infoInvoice(dataInvoice.email != null && dataInvoice.email != undefined, dataInvoice.email, 'Email', null)}</p>
               </div>
               <div className='col-3'>
-                <span className='badge rounded-pill text-bg-dark mb-1'>Description and price</span>
-                <p className='m-0'>{this.infoInvoice(dataInvoice.pricetype, dataInvoice.pricetype, 'Price type', null)}</p>
-                <hr />
+                <span className='badge rounded-pill text-bg-dark mb-1'>Subtotal, tax and Total</span>
                 <h5 className='m-0'>{this.infoInvoice(this.priceFormat.format(dataInvoice.subtotal), this.priceFormat.format(dataInvoice.subtotal), 'Subtotal', null)}</h5>
                 {dataInvoice.iva ? <h5 className='m-0'>{this.infoInvoice(dataInvoice.company_name && dataInvoice.country, this.priceFormat.format(dataInvoice.iva), 'IVA', '')}</h5> : null}
 

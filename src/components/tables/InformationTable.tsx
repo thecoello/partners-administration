@@ -43,28 +43,28 @@ export default class InformationTable extends React.Component<IProps, IState> {
     prevState: Readonly<IState>,
     snapshot?: any
   ): void {
-    if(prevState.route != this.state.route && this.props.userType() == 1){
+    if (prevState.route != this.state.route && this.props.userType() == 1) {
       this.getInvoices(this.state.route)
     }
 
-    if(prevState.route != this.state.route && this.props.userType() == 0){
+    if (prevState.route != this.state.route && this.props.userType() == 0) {
       this.getInvoices(this.state.route)
     }
   }
 
   componentDidMount(): void {
-    if(this.props.userType() != 1 ){
-       this.getInvoices('invoices/' + this.props.userIdLogged())
-      }else{
-        this.getInvoices('invoices');
-        this.getAllSponsorInformation('standsinformation')
-      }
+    if (this.props.userType() != 1) {
+      this.getInvoices('invoices/' + this.props.userIdLogged())
+    } else {
+      this.getInvoices('invoices');
+      this.getAllSponsorInformation('standsinformation')
+    }
 
   }
 
-  getAllSponsorInformation(route: any):any{
-    new RequestsRoutes().get(route).then((response)=> {
-      this.setState({standInformation: response.data})
+  getAllSponsorInformation(route: any): any {
+    new RequestsRoutes().get(route).then((response) => {
+      this.setState({ standInformation: response.data })
     })
   }
 
@@ -74,8 +74,8 @@ export default class InformationTable extends React.Component<IProps, IState> {
       let invoicesRow: JSX.Element[] = [];
 
       response.data.invoices.data.forEach((data: any, i: any) => {
-        
-        if (data.user_type != 1 && data.company_name && data.address && data.zip && data.country && data.vat){
+
+        if (data.user_type != 1 && data.company_name && data.address && data.zip && data.country && data.vat) {
           invoicesRow.push(
             <tr key={i} className='p-2 align-middle'>
               <th scope='col'>
@@ -84,34 +84,34 @@ export default class InformationTable extends React.Component<IProps, IState> {
                 </h6>
                 <p className='m-0' style={{ fontSize: '0.8rem' }}>{data.name}</p>
               </th>
-  
+
               <th scope='col'>
-              <p className='m-0'><b>{data.invoice_number}</b></p>
+                <p className='m-0'><b>{data.invoice_number}</b></p>
                 <p className='m-0' style={{ fontSize: '0.8rem' }}> {data.category} - {data.location}</p>
-                {data.voucher && data.payment_status == 'Payed' ?null: <p className='badge rounded-pill text-bg-danger m-0' style={{fontSize: '0.8rem'}}>Payment is required in order to add sponsor information  </p>}
+                {data.voucher && data.payment_status == 'Payed' ? null : <p className='badge rounded-pill text-bg-danger m-0' style={{ fontSize: '0.8rem' }}>Payment is required in order to add sponsor information  </p>}
               </th>
               <th scope='col'>
                 <p className='m-0'>{data.email}</p>
-                
-                  
+
+
               </th>
-  
+
               <th scope='col'>
                 <div className='d-flex'>
 
-                {data.voucher && data.payment_status == 'Payed' ? <Link to={{pathname:'/boothinformation/create'}} onClick={(e) => {
-                                      this.props.setInvoiceD(data.id)
+                  {data.voucher && data.payment_status == 'Payed' ? <Link to={{ pathname: '/boothinformation/create' }} onClick={(e) => {
+                    this.props.setInvoiceD(data.id)
                   }} type='button' className='btn btn-dark btn-sm'>
                     <EditIcon />
-                  </Link>  : null}
-                  
-                  
+                  </Link> : null}
+
+
                 </div>
               </th>
             </tr>
           );
         }
-        
+
 
       });
 
@@ -143,15 +143,15 @@ export default class InformationTable extends React.Component<IProps, IState> {
         <div className='d-flex search mt-4 mb-4 justify-content-between'>
 
           <div className='d-flex'><h3 className='m-0'>Booth information</h3> &nbsp;&nbsp;
-          
-          {this.props.userType() == 1 ? <a onClick={() => {
 
-                  new ExportExcel().exportStandInformation(this.state.standInformation)
-                 
-                }} className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a>: null}
+            {this.props.userType() == 1 ? <a onClick={() => {
+
+              new ExportExcel().exportStandInformation(this.state.standInformation)
+
+            }} className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a> : null}
+
+            <a href={import.meta.env.VITE_URL_SIMPLE + '/public/guidesponsor/index.html'} target='_blank' className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a>
           </div>
-
-
 
           {this.props.userType() == 1 ? <div className='input-group w-50 ms-4'>
             <input onChange={(e) => {
