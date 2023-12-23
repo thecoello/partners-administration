@@ -29,7 +29,7 @@ export default class Login extends React.Component<IProps, IState> {
     e.preventDefault()
     new RequestsRoutes().login('login', e.target).then((response) => {
       if (response?.status === 200) {
-        localStorage.setItem('Authorization', response.data.Authorization)
+        localStorage.setItem('Authtoken', response.data.Authtoken)
         window.location.reload()
       } else {
         alert("Wrong email or password")

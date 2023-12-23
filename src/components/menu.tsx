@@ -65,7 +65,7 @@ export default class Menu extends React.Component<IProps, IState> {
 
             <a  className='btn btn-light' href='/' onClick={(e)=>{
                 if(confirm('Are you sure you want to Sign out?')){
-                  localStorage.removeItem('Authorization')
+                  localStorage.removeItem('Authtoken')
                   localStorage.removeItem('user_id')
                 }
               }}> <span><Logout /></span></a>

@@ -92,14 +92,10 @@ export default class App extends React.Component<IProps, IState> {
 
   authUser() {
     new RequestsRoutes().authUser().then((response) => {
-        
       if(response?.status == 200){
         this.setState({ userType: response.data.user_type })
         this.setState({ userName: response.data.name })
         this.setState({ userIdLogged: response.data.id })
-      }else{
-        localStorage.removeItem('Authorization')
-        localStorage.removeItem('user_id')
       }
     });
   }
@@ -116,7 +112,7 @@ export default class App extends React.Component<IProps, IState> {
   componentDidMount(): void {
     this.authUser()
     this.loadTime()
-    if(localStorage.getItem('Authorization')){
+    if(localStorage.getItem('Authtoken')){
       this.setState({ logged: true })
     }else{
       this.setState({ logged: false })

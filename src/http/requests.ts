@@ -32,14 +32,11 @@ export default class RequestsRoutes {
       })
   }
   
-
-  
-
   public async authUser() {
-    if(localStorage.getItem('Authorization')){
+    if(localStorage.getItem('Authtoken')){
       return await axios.get(this.url + 'authuser', {
         headers: {
-          'Authorization': localStorage.getItem('Authorization')
+          'Authtoken': localStorage.getItem('Authtoken')
         }
       })
         .then((response) => {
@@ -52,10 +49,10 @@ export default class RequestsRoutes {
   }
 
   public async get(route: String | null) {
-    if(localStorage.getItem('Authorization')){
+    if(localStorage.getItem('Authtoken')){
       return await axios.get(this.url + route, {
         headers: {
-          'Authorization': localStorage.getItem('Authorization')
+          'Authtoken': localStorage.getItem('Authtoken')
         }
       })
         .then((response) => {
@@ -68,11 +65,11 @@ export default class RequestsRoutes {
   }
 
   public async post(route: String | null, data: any) {
-    if(localStorage.getItem('Authorization')){
+    if(localStorage.getItem('Authtoken')){
       return await axios.post(this.url + route, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': localStorage.getItem('Authorization')
+          'Authtoken': localStorage.getItem('Authtoken')
         }
       })
         .then((response) => {
@@ -87,11 +84,11 @@ export default class RequestsRoutes {
 
 
   public async put(route: String | null, data: any) {
-    if(localStorage.getItem('Authorization')){
+    if(localStorage.getItem('Authtoken')){
       return await axios.put(this.url + route, data, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': localStorage.getItem('Authorization')
+          'Authtoken': localStorage.getItem('Authtoken')
         }
       })
         .then((response) => {
@@ -105,11 +102,11 @@ export default class RequestsRoutes {
   }
 
   public async putPost(route: String | null, data: any) {
-    if(localStorage.getItem('Authorization')){
+    if(localStorage.getItem('Authtoken')){
       return await axios.post(this.url + route, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': localStorage.getItem('Authorization')
+          'Authtoken': localStorage.getItem('Authtoken')
         }
       },)
         .then((response) => {
@@ -123,10 +120,10 @@ export default class RequestsRoutes {
   }
 
   public async delete(route: String | null) {
-    if(localStorage.getItem('Authorization')){
+    if(localStorage.getItem('Authtoken')){
       return await axios.delete(this.url + route, {
         headers: {
-          'Authorization': localStorage.getItem('Authorization')
+          'Authtoken': localStorage.getItem('Authtoken')
         }
       })
         .then((response) => {

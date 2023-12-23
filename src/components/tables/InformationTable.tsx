@@ -88,7 +88,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
               <th scope='col'>
                 <p className='m-0'><b>{data.invoice_number}</b></p>
                 <p className='m-0' style={{ fontSize: '0.8rem' }}> {data.category} - {data.location}</p>
-                {data.voucher && data.payment_status == 'Payed' ? null : <p className='badge rounded-pill text-bg-danger m-0' style={{ fontSize: '0.8rem' }}>Payment is required in order to add sponsor information  </p>}
+                {data.voucher && data.payment_status == 'Payed' ? null : <p className='badge rounded-pill text-bg-danger m-0' style={{ fontSize: '0.8rem' }}>Payment is required in order to add the booth information  </p>}
               </th>
               <th scope='col'>
                 <p className='m-0'>{data.email}</p>
@@ -144,13 +144,17 @@ export default class InformationTable extends React.Component<IProps, IState> {
 
           <div className='d-flex'><h3 className='m-0'>Booth information</h3> &nbsp;&nbsp;
 
-            {this.props.userType() == 1 ? <a onClick={() => {
+            {this.props.userType() == 1 ? <>
+              <a onClick={() => {
 
-              new ExportExcel().exportStandInformation(this.state.standInformation)
+                new ExportExcel().exportStandInformation(this.state.standInformation)
 
-            }} className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a> : null}
+              }} className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a>
+              
+            </>
+              : null}
 
-            <a href={import.meta.env.VITE_URL_SIMPLE + '/public/guidesponsor/index.html'} target='_blank' className='btn btn-outline-dark btn-dark-outline' type='button'>Export all</a>
+<a href={import.meta.env.VITE_URL_SIMPLE + 'public/guidesponsor/index.html'} target='_blank' className='btn btn-dark btn-dark-outline' type='button'>Sponsor Guide</a>
           </div>
 
           {this.props.userType() == 1 ? <div className='input-group w-50 ms-4'>

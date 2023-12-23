@@ -551,13 +551,12 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
 
     new RequestsRoutes().login('login', e.target).then((response) => {
       if (response.status === 200) {
-        if (response.data.Authorization === window.localStorage.getItem('Authorization')) {
+        if (response.data.Authtoken === window.localStorage.getItem('Authtoken')) {
           new RequestsRoutes().authUser().then((response) => {
             form.append("id",response.data.id)
             if (response.status === 200) {
               if (confirm("Are you sure you want to reset the event, this action cannot be reversed")) {
                 new RequestsRoutes().post('resetevent',form).then((response)=> {
-                  console.log(response)
                   if(response.status === 200){
                     alert("Event reseted")
                     window.location.href = "/"
@@ -604,7 +603,7 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
 
         {this.state.showAuth ? <form encType='multipart/form-data' onSubmit={this.autorizathion.bind(this)} className='needs-validation d-flex align-items-start justify-content-center flex-column w-50 border rounded p-4 mt-4 mb-4'>
           <div className='w-100'>
-            <p><b>Authorization is required to restart the event</b></p>
+            <p><b>authtoken is required to restart the event</b></p>
 
             <div className='mb-3 w-100'>
               <input name='email' type='email' className='form-control' id='email' placeholder='Email' aria-describedby='email' required />
