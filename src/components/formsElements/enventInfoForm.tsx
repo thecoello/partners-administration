@@ -603,7 +603,7 @@ export default class EventInfoForm extends React.Component<IProps, IState> {
 
         {this.state.showAuth ? <form encType='multipart/form-data' onSubmit={this.autorizathion.bind(this)} className='needs-validation d-flex align-items-start justify-content-center flex-column w-50 border rounded p-4 mt-4 mb-4'>
           <div className='w-100'>
-            <p><b>authtoken is required to restart the event</b></p>
+            <p><b>Administrator user is required to restart the event</b></p>
 
             <div className='mb-3 w-100'>
               <input name='email' type='email' className='form-control' id='email' placeholder='Email' aria-describedby='email' required />

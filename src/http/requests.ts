@@ -8,6 +8,7 @@ export default class RequestsRoutes {
     return await axios.post(this.url + route, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'AppKey': import.meta.env.VITE_APP_KEY
       }
     })
       .then((response) => {
@@ -22,6 +23,7 @@ export default class RequestsRoutes {
     return await axios.put(this.url + route, data, {
       headers: {
         'Content-Type': 'application/json',
+        'AppKey': import.meta.env.VITE_APP_KEY
       }
     })
       .then((response) => {
@@ -36,7 +38,8 @@ export default class RequestsRoutes {
     if(localStorage.getItem('Authtoken')){
       return await axios.get(this.url + 'authuser', {
         headers: {
-          'Authtoken': localStorage.getItem('Authtoken')
+          'Authtoken': localStorage.getItem('Authtoken'),
+          'AppKey': import.meta.env.VITE_APP_KEY
         }
       })
         .then((response) => {

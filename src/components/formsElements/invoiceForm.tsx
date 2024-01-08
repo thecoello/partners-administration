@@ -146,6 +146,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
       })
     } else {
       alert("You must assign a user to the invoice")
+      this.setState({disableDiv: ' pe-auto opacity-100 '})
     }
   }
 
@@ -205,7 +206,7 @@ export default class InvoiceForm extends React.Component<IProps, IState> {
                     <label htmlFor="country" className="form-label"> Payment status </label>
                     <select className="form-select" onChange={(e) => { this._invoice.payment_status = e.target.value }} defaultValue={this._invoice.payment_status} name="payment_status">
                       <option value="">Select option</option>
-                      <option value="Payed">Payed</option>
+                      <option value="Payed">Paid</option>
                       <option value="Unpayed">Unpayed</option>
                     </select>
                   </div>

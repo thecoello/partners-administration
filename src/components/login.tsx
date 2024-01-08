@@ -22,7 +22,7 @@ export default class Login extends React.Component<IProps, IState> {
   }
 
   componentDidMount(): void {
-    window.location.href.includes('#passwordrest') ? this.setState({passwordReset: true}) : this.setState({passwordReset: false})
+    window.location.href.includes('passwordreset') ? this.setState({passwordReset: true}) : this.setState({passwordReset: false})
   }
 
   login(e: any) {
@@ -46,7 +46,7 @@ export default class Login extends React.Component<IProps, IState> {
       new RequestsRoutes()
       .resetPass('resetpass', e.target).then((response) => {
         if (response.status === 200) {
-          alert('Password reseted')
+          alert('Password changed')
           window.location.href = ''
         }else{
           alert('User does not exist or password does not match')
@@ -103,9 +103,6 @@ export default class Login extends React.Component<IProps, IState> {
           </div>
           <div className='mb-3 w-100'>
             <input name='password' type='password' className='form-control' placeholder='Password' id='password' required />
-          </div>
-          <div className='mb-3 w-100'>
-            <a className='text-dark text-decoration-none' onClick={() => { this.setState({ passwordReset: true }) }}>Reset password</a>
           </div>
           <button type='submit' className='btn btn-dark w-100'>Login</button>
         </div>
