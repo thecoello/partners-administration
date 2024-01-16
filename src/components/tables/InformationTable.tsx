@@ -88,7 +88,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
               <th scope='col'>
                 <p className='m-0'><b>{data.invoice_number}</b></p>
                 <p className='m-0' style={{ fontSize: '0.8rem' }}> {data.category} - {data.location}</p>
-                {data.voucher && data.payment_status == 'Payed' ? null : <p className='badge rounded-pill text-bg-danger m-0' style={{ fontSize: '0.8rem' }}>Payment is required in order to add the booth information  </p>}
+                {data.payment_status == 'Payed' ? null : <p className='badge rounded-pill text-bg-danger m-0' style={{ fontSize: '0.8rem' }}>Payment is required in order to add the booth information  </p>}
               </th>
               <th scope='col'>
                 <p className='m-0'>{data.email}</p>
@@ -99,7 +99,7 @@ export default class InformationTable extends React.Component<IProps, IState> {
               <th scope='col'>
                 <div className='d-flex'>
 
-                  {data.voucher && data.payment_status == 'Payed' ? <Link to={{ pathname: '/boothinformation/create' }} onClick={(e) => {
+                  {data.payment_status == 'Payed' ? <Link to={{ pathname: '/boothinformation/create' }} onClick={(e) => {
                     this.props.setInvoiceD(data.id)
                   }} type='button' className='btn btn-dark btn-sm'>
                     <EditIcon />

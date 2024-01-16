@@ -29,9 +29,9 @@ export default class ExportExcel {
     data?.forEach((invoice:Invoice, i:any) => {
       worksheet.addRow([invoice.invoice_date,
       invoice.invoice_number,
-      (event?.event_name + ' - ' + invoice.category  +' - '+ invoice.location +' - ' + ' - ' + invoice.pricetype),
+      (event?.event_name + ' - ' + invoice.category  + ' - ' + invoice.location + ' - ' + invoice.pricetype),
       'INGRESAR CUENTA ANALÍTICA ODOO',
-      invoice.company_name,
+      invoice.company_name ? invoice.company_name : invoice.contact,
       invoice.zip, invoice.subtotal,
       invoice.quantity,
       '',

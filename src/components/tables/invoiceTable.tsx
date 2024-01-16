@@ -21,13 +21,13 @@ interface IState {
   prevPageURL: string | null
   nextPageURL: string | null
   search: string
-  invoiceDataExport?: any
 }
 
 export default class InvoiceTable extends React.Component<IProps, IState> {
 
   _invoices?: Array<Invoice>
   _event = new Event()
+  _invoiceDataExport?: Array<Invoice>
 
   constructor(props: IProps) {
     super(props);
@@ -37,7 +37,6 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       prevPageURL: null,
       nextPageURL: null,
       search: '',
-      invoiceDataExport: undefined
     };
   }
 
@@ -46,8 +45,8 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
       this.getInvoices('invoices/' + this.props.userIdLogged())
     } else {
       this.getInvoices('invoices');
+      this.getAllInvoices('invoices/excel')
     }
-
   }
 
   getInvoices(route: any): void {
@@ -72,6 +71,12 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
         })
         : this.setState({ nextPageURL: null });
 
+    });
+  }
+
+  getAllInvoices(route: any): void {
+    new RequestsRoutes().get(route).then((response) => {
+      this._invoiceDataExport = response.data
     });
   }
 
@@ -107,10 +112,6 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               <b><Warning /> Missing tax information</b>
             </h6>}
             <p className='m-0' style={{ fontSize: '0.8rem' }}>{data.name} </p>
-          </th>
-          <th scope='col'>
-            <p className='m-0'>{data.invoice_number}</p>
-
             {data.payment_status == 'Payed' ? (
               <><span className='badge rounded-pill text-bg-success'>
                 Payed
@@ -129,7 +130,10 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
             </span> : null}
           </th>
           <th scope='col'>
-            <p className='m-0'><b>{data.contact} - {data.category}</b></p>
+            <p className='m-0'>{data.invoice_number}</p>
+          </th>
+          <th scope='col'>
+            <p className='m-0' style={{fontSize: '0.8rem'}}><b>{data.contact} - {data.category}</b></p>
             <p className='m-0' style={{ fontSize: '0.8rem' }}>{data.location}</p>
           </th>
           <th scope='col'>
@@ -137,7 +141,7 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
           </th>
           <th scope='col'>
             <p className='m-0'>{data.total + this._event.symbol}</p>
-            <p className='m-0' style={{ fontSize: '0.8rem' }}>Price type: {data.pricetype}</p>
+            <p className='m-0' style={{ fontSize: '0.7rem' }}>{data.pricetype}</p>
 
           </th>
           <th scope='col'>
@@ -185,11 +189,11 @@ export default class InvoiceTable extends React.Component<IProps, IState> {
               </button>
               <ul className="dropdown-menu">
                 <li><a className="dropdown-item" onClick={() => {
-                  new ExportExcel().exportUserInformation(this._invoices)
+                  new ExportExcel().exportUserInformation(this._invoiceDataExport)
 
                 }}>Export users information</a></li>
                 <li><a className="dropdown-item" onClick={() => {
-                  new ExportExcel().exportInvoice(this._invoices, this._event)
+                  new ExportExcel().exportInvoice(this._invoiceDataExport, this._event)
 
                 }}>Export invoices</a></li>
               </ul>
