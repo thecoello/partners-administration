@@ -270,7 +270,7 @@ export default class InhtmlFormationForm extends React.Component<IProps, IState>
                                         maxLength={50} defaultValue={this._standInfo?.bullet2_3} />
                                       </div>
                                       <div className='col-12'> <input className='form-control' name='bullet3_3' id='bullet3_3' type='text'
-                                        maxLength={50} defaultValue={this._locations[2].location_name} />
+                                        maxLength={50} defaultValue={this._standInfo?.bullet3_3} />
                                       </div>
                                     </div>
                                   </div>
